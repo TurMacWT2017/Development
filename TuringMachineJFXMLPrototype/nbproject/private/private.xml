@@ -3,9 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/student/NetBeansProjects/TuringMachineJFXMLPrototype/src/turingmachinejfxmlprototype/FXMLDocumentController.java</file>
-            <file>file:/home/student/NetBeansProjects/TuringMachineJFXMLPrototype/src/turingmachinejfxmlprototype/FXMLDocument.fxml</file>
-            <file>file:/home/student/NetBeansProjects/TuringMachineJFXMLPrototype/src/turingmachinejfxmlprototype/TuringMachineJFXMLPrototype.java</file>
+            <file>file:/home/student/Documents/turingMachine/TuringMachineJFXMLPrototype/src/controller/FXMLDocumentController.java</file>
+            <file>file:/home/student/Documents/turingMachine/TuringMachineJFXMLPrototype/src/view/FXMLDocument.fxml</file>
+            <file>file:/home/student/Documents/turingMachine/TuringMachineJFXMLPrototype/src/controller/TuringMachineJFXMLPrototype.java</file>
         </group>
     </open-files>
 </project-private>
