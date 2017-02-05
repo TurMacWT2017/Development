@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="turingmachinejfxmlprototype.FXMLDocumentController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FXMLDocumentController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -30,7 +30,7 @@
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Preferences…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
+            <MenuItem fx:id="menuQuitButton" mnemonicParsing="false" onAction="#menuQuitButtonClicked" text="Quit" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
@@ -64,23 +64,19 @@
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
             <Label layoutX="11.0" layoutY="1.0" text="Tape 1" />
-            <TextField layoutX="14.0" layoutY="20.0" prefHeight="26.0" prefWidth="557.0" />
-            <Button layoutX="580.0" layoutY="20.0" mnemonicParsing="false" text="Clear" />
+            <TextField fx:id="tape1Field" layoutX="14.0" layoutY="20.0" prefHeight="26.0" prefWidth="557.0" />
+            <Button fx:id="clearButton" layoutX="580.0" layoutY="20.0" mnemonicParsing="false" onAction="#clearButtonClicked" text="Clear" />
             <Label layoutX="12.0" layoutY="55.0" text="State Diagram" />
-            <ScrollPane layoutX="14.0" layoutY="77.0" prefHeight="285.0" prefWidth="434.0">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-              </content>
-            </ScrollPane>
+            <ScrollPane layoutX="14.0" layoutY="77.0" prefHeight="285.0" prefWidth="434.0" />
             <Label layoutX="490.0" layoutY="55.0" text="Machine Controls" />
             <Button fx:id="runButton" layoutX="499.0" layoutY="77.0" mnemonicParsing="false" onAction="#runButtonClicked" prefHeight="26.0" prefWidth="95.0" text="Run" />
-            <Button layoutX="469.0" layoutY="109.0" mnemonicParsing="false" text="Step" />
-            <Button layoutX="522.0" layoutY="109.0" mnemonicParsing="false" text="Stop" />
-            <Button layoutX="574.0" layoutY="109.0" mnemonicParsing="false" text="Reset" />
+            <Button fx:id="stepButton" layoutX="469.0" layoutY="109.0" mnemonicParsing="false" onAction="#stepButtonClicked" text="Step" />
+            <Button fx:id="stopButton" layoutX="522.0" layoutY="109.0" mnemonicParsing="false" onAction="#stopButtonClicked" text="Stop" />
+            <Button fx:id="resetButton" layoutX="574.0" layoutY="109.0" mnemonicParsing="false" onAction="#resetButtonClicked" text="Reset" />
             <Slider layoutX="476.0" layoutY="187.0" />
             <Label layoutX="524.0" layoutY="164.0" text="Speed" />
-            <TextField layoutX="459.0" layoutY="270.0" />
-            <TextField layoutX="459.0" layoutY="331.0" />
+            <TextField fx:id="currentStateField" alignment="CENTER" editable="false" layoutX="459.0" layoutY="270.0" />
+            <TextField fx:id="currentStepsField" alignment="CENTER" editable="false" layoutX="459.0" layoutY="331.0" />
             <Label layoutX="458.0" layoutY="248.0" text="Current State" />
             <Label layoutX="458.0" layoutY="309.0" text="Steps" />
          </children>
