@@ -5,14 +5,18 @@
  */
 package controller;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  *
@@ -20,15 +24,20 @@ import javafx.scene.control.Button;
  */
 public class FXMLDocumentController implements Initializable {
     
-    @FXML
     //UI Buttons
-    private Button runButton;
-    private Button stepButton;
-    private Button stopButton;
-    private Button resetButton;
-    private Button clearButton;
+    @FXML private Button runButton;
+    @FXML private Button stepButton;
+    @FXML private Button stopButton;
+    @FXML private Button resetButton;
+    @FXML private Button tapeOneClearButton;
     //Menu Buttons
-    private Button quitMenuButton;
+    
+    @FXML private Button quitMenuButton;
+    //Displays
+    @FXML private ScrollPane diagramDisplay;
+    @FXML private TextField currentState;
+    @FXML private TextField currentSteps;
+    @FXML private TextField tapeOne;
     
     @FXML
     private void runButtonClicked(ActionEvent event) {
@@ -64,6 +73,27 @@ public class FXMLDocumentController implements Initializable {
     private void clearButtonClicked(ActionEvent event) {
         System.out.println("Clear Tape 1");
     }
+    
+    @FXML
+    private void openFileMenuItemClicked(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Machine File");
+        fileChooser.getExtensionFilters().addAll(
+                new ExtensionFilter("Text Files", "*.txt"),
+                new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
+                new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.aac"),
+                new ExtensionFilter("All Files", "*.*"));
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+           System.out.println("A File was Chosen");
+        }   
+    }
+    
+    @FXML
+    private void tapeOneClearButtonClicked(ActionEvent event) {
+        tapeOne.setText("");
+    }
+    
     
     
     

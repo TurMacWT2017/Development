@@ -19,53 +19,38 @@
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
+            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openFileMenuItemClicked" text="Open…" />
             <Menu mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="menuQuitButton" mnemonicParsing="false" onAction="#menuQuitButtonClicked" text="Quit" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
-          </items>
-        </Menu>
+            <Menu mnemonicParsing="false" text="Tape Options">
+              <items>
+                  <Menu mnemonicParsing="false" text="Change Number of Tapes">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="1" />
+                        <MenuItem mnemonicParsing="false" text="2" />
+                        <MenuItem mnemonicParsing="false" text="3" />
+                    </items>
+                  </Menu>
+                  <MenuItem mnemonicParsing="false" text="Clear all Tapes" />
+              </items>
+            </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
             <MenuItem mnemonicParsing="false" text="Language Reference" />
                   <MenuItem mnemonicParsing="false" text="About" />
           </items>
         </Menu>
-            <Menu mnemonicParsing="false" text="Tape Options">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Change Number of Tapes" />
-                  <MenuItem mnemonicParsing="false" text="Clear all Tapes" />
-              </items>
-            </Menu>
       </menus>
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
             <Label layoutX="11.0" layoutY="1.0" text="Tape 1" AnchorPane.leftAnchor="11.0" AnchorPane.topAnchor="1.0" />
-            <TextField fx:id="tape1Field" layoutX="14.0" layoutY="20.0" prefHeight="26.0" prefWidth="557.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="69.0" />
-            <Button fx:id="clearButton" layoutX="580.0" layoutY="20.0" mnemonicParsing="false" onAction="#clearButtonClicked" text="Clear" AnchorPane.rightAnchor="8.0" />
+            <TextField fx:id="tapeOne" alignment="CENTER" layoutX="14.0" layoutY="20.0" prefHeight="26.0" prefWidth="557.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="69.0" />
+            <Button fx:id="tapeOneClearButton" layoutX="580.0" layoutY="20.0" mnemonicParsing="false" onAction="#tapeOneClearButtonClicked" text="Clear" AnchorPane.rightAnchor="8.0" />
             <Label layoutX="12.0" layoutY="55.0" text="State Diagram" AnchorPane.leftAnchor="11.0" />
             <Label layoutX="490.0" layoutY="55.0" text="Machine Controls" AnchorPane.rightAnchor="40.0" />
             <Button fx:id="runButton" layoutX="499.0" layoutY="77.0" mnemonicParsing="false" onAction="#runButtonClicked" prefHeight="26.0" prefWidth="95.0" text="Run" AnchorPane.rightAnchor="46.0" />
@@ -74,13 +59,13 @@
             <Button fx:id="resetButton" layoutX="575.0" layoutY="109.0" mnemonicParsing="false" onAction="#resetButtonClicked" text="Reset" AnchorPane.rightAnchor="10.0" />
             <Slider layoutX="476.0" layoutY="187.0" AnchorPane.rightAnchor="24.0" />
             <Label layoutX="524.0" layoutY="164.0" text="Speed" AnchorPane.rightAnchor="75.0" />
-            <TextField fx:id="currentStateField" alignment="CENTER" editable="false" layoutX="459.0" layoutY="270.0" AnchorPane.bottomAnchor="75.0" AnchorPane.rightAnchor="10.0" />
-            <TextField fx:id="currentStepsField" alignment="CENTER" editable="false" layoutX="460.0" layoutY="333.0" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="10.0" />
+            <TextField fx:id="currentState" alignment="CENTER" editable="false" layoutX="459.0" layoutY="270.0" AnchorPane.bottomAnchor="75.0" AnchorPane.rightAnchor="10.0" />
+            <TextField fx:id="currentSteps" alignment="CENTER" editable="false" layoutX="460.0" layoutY="333.0" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="10.0" />
             <Label layoutX="456.0" layoutY="246.0" text="Current State" AnchorPane.bottomAnchor="109.0" AnchorPane.rightAnchor="95.0" />
             <Label layoutX="458.0" layoutY="309.0" text="Steps" AnchorPane.bottomAnchor="46.0" AnchorPane.rightAnchor="145.0" />
             <AnchorPane layoutX="5.0" layoutY="75.0" prefHeight="290.0" prefWidth="442.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="193.0" AnchorPane.topAnchor="75.0">
                <children>
-                  <ScrollPane prefHeight="290.0" prefWidth="445.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ScrollPane fx:id="diagramDisplay" prefHeight="290.0" prefWidth="445.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
          </children>
