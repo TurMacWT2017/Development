@@ -9,12 +9,16 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Slider;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
@@ -38,6 +42,9 @@ public class FXMLDocumentController implements Initializable {
     @FXML private TextField currentState;
     @FXML private TextField currentSteps;
     @FXML private TextField tapeOne;
+    
+    @FXML private Slider speedSlider;
+    @FXML private Label changeLabel;
     
     @FXML
     private void runButtonClicked(ActionEvent event) {
@@ -93,13 +100,20 @@ public class FXMLDocumentController implements Initializable {
     private void tapeOneClearButtonClicked(ActionEvent event) {
         tapeOne.setText("");
     }
-    
-    
-    
+
+    @FXML
+    private void speedSliderChanged() {
+        // just some ish
+    }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        speedSlider.valueProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+                    changeLabel.textProperty().setValue(String.valueOf((int)speedSlider.getValue()));
+            }
+        });
     }    
     
 }

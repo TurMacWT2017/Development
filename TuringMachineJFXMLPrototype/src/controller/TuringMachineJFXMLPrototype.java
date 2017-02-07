@@ -10,6 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Label;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
 
 /**
  *
@@ -25,6 +30,7 @@ public class TuringMachineJFXMLPrototype extends Application {
         
         stage.setScene(scene);
         stage.setTitle("Turing Machine");
+        
         stage.show();
     }
 
