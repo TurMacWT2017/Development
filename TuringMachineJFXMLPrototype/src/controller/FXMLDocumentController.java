@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Slider;
@@ -35,8 +36,6 @@ public class FXMLDocumentController implements Initializable {
     @FXML private Button resetButton;
     @FXML private Button tapeOneClearButton;
     //Menu Buttons
-    
-    @FXML private Button quitMenuButton;
     //Displays
     @FXML private ScrollPane diagramDisplay;
     @FXML private TextField currentState;
@@ -45,6 +44,10 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML private Slider speedSlider;
     @FXML private Label changeLabel;
+    @FXML
+    private MenuItem openMenuItem;
+    @FXML
+    private MenuItem menuQuitButton;
     
     @FXML
     private void runButtonClicked(ActionEvent event) {
@@ -76,7 +79,6 @@ public class FXMLDocumentController implements Initializable {
         Platform.exit();
     }
     
-    @FXML
     private void clearButtonClicked(ActionEvent event) {
         System.out.println("Clear Tape 1");
     }
@@ -101,10 +103,6 @@ public class FXMLDocumentController implements Initializable {
         tapeOne.setText("");
     }
 
-    @FXML
-    private void speedSliderChanged() {
-        // just some ish
-    }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
