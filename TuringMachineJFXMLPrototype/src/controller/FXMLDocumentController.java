@@ -50,6 +50,8 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private MenuItem menuQuitButton;
     
+    private Tape tm = new charTape();
+    
     @FXML
     private void runButtonClicked(ActionEvent event) {
         if (runButton.getText().equals("Run")) {
@@ -73,6 +75,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void resetButtonClicked(ActionEvent event) {
         System.out.println("Machine Reset");
+        tm.resetRWHead();
     }
     
     @FXML
@@ -82,6 +85,7 @@ public class FXMLDocumentController implements Initializable {
     
     private void clearButtonClicked(ActionEvent event) {
         System.out.println("Clear Tape 1");
+        tm.clearTape();
     }
     
     @FXML
@@ -101,6 +105,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void tapeOneClearButtonClicked(ActionEvent event) {
         tapeOne.setText("");
+        tm.clearTape();
     }
 
     
