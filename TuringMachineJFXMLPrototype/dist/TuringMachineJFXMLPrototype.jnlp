@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="TuringMachineJFXMLPrototype.jar" size="5784" download="eager" />
+    <jar href="TuringMachineJFXMLPrototype.jar" size="9154" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="TuringMachineJFXMLPrototype" >
     <param name="requiredFXVersion" value="8.0+"/>

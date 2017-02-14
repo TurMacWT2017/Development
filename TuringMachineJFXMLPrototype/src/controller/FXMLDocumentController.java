@@ -22,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Slider;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import model.Interpreter;
 
 /**
  *
@@ -88,13 +89,12 @@ public class FXMLDocumentController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Machine File");
         fileChooser.getExtensionFilters().addAll(
-                new ExtensionFilter("Text Files", "*.txt"),
-                new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
-                new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.aac"),
-                new ExtensionFilter("All Files", "*.*"));
+                new ExtensionFilter("Machine Files", "*.tm"));
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
-           System.out.println("A File was Chosen");
+            Interpreter interp = new Interpreter();
+            interp.tokenize(selectedFile);
+            //launch window to show code or error
         }   
     }
     
