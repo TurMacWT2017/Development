@@ -8,7 +8,7 @@ public class Interpreter
     private String[] tokens;
     private ArrayList<String> tokenList;
     private String initialInput = "";
-    private int START = 0;
+    private String inputCode;
     /* Default interpreter constructor
     * @param selected file to interpret and tokenize
     * <pre> Interpreter does not yet exist </pre>
@@ -51,8 +51,8 @@ public class Interpreter
                 numberOfLines++;
             }
             
-            String input = sb.toString();
-            tokens = input.split(delim);
+            inputCode = sb.toString();
+            tokens = inputCode.split(delim);
             int tokensLength = tokens.length;
             for (int i = 0; i < tokensLength; i++)
             {
@@ -120,7 +120,7 @@ public class Interpreter
                     }
                     else 
                     {
-                        System.out.printf("Invalid direction on line %d", lineNum);
+                        System.out.printf("\nInvalid direction on line %d", lineNum);
                     }
                 }
                 
@@ -140,7 +140,10 @@ public class Interpreter
         System.out.println("Initial input provided: " + initialInput);
     }
     
-    
+    public String getMachineCode() 
+    {
+        return inputCode;
+    }
     public static void moveRight()
     {
         System.out.println("Moved Right");
