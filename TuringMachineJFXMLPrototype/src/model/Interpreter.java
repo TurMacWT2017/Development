@@ -144,6 +144,10 @@ public class Interpreter
     {
         return inputCode;
     }
+    
+    public String[] getTokens() {
+        return tokens;
+    }
     public static void moveRight()
     {
         System.out.println("Moved Right");
@@ -157,15 +161,6 @@ public class Interpreter
     public static void stay()
     {
         System.out.println("No movement");
-    }
-    
-//    public static void main(String[] args)
-//    {
-//        tokenize();
-//    }
-
-    public String[] getTokens() {
-        return tokens;
     }
 
 }
