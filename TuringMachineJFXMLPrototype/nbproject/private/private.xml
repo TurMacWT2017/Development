@@ -4,8 +4,10 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/student/cs4391/turingMachine/TuringMachineJFXMLPrototype/src/controller/TuringMachineJFXMLPrototype.java</file>
+            <file>file:/home/student/cs4391/turingMachine/TuringMachineJFXMLPrototype/src/controller/Tape.java</file>
             <file>file:/home/student/cs4391/turingMachine/TuringMachineJFXMLPrototype/src/view/FXMLDocument.fxml</file>
             <file>file:/home/student/cs4391/turingMachine/TuringMachineJFXMLPrototype/src/controller/FXMLDocumentController.java</file>
+            <file>file:/home/student/cs4391/turingMachine/TuringMachineJFXMLPrototype/src/controller/charTape.java</file>
         </group>
     </open-files>
 </project-private>
