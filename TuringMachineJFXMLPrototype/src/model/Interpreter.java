@@ -9,6 +9,7 @@ public class Interpreter
     private ArrayList<String> tokenList;
     private String initialInput = "";
     private String inputCode;
+    private final String delim = ",|;";
     /* Default interpreter constructor
     * @param selected file to interpret and tokenize
     * <pre> Interpreter does not yet exist </pre>
@@ -26,32 +27,42 @@ public class Interpreter
             System.out.println(textField.getSelectedText());
     }*/
         
-    public void tokenize(File file)
+    public void tokenize(String input)
     {
-        /* We're splitting the input lines by commas, and using semicolons as end-line characters */
-        String delim = ",|;";
-        
-        StringBuilder sb = new StringBuilder();
-        int numberOfLines = 0;
-        int lineNum = 0;
-        
-        //File file = new File("test.tm");
-        try {
-            Scanner in = new Scanner(file);
-            //read the optional input line if it's there
-            if (in.next().toLowerCase().startsWith("input:")) 
+//        /* We're splitting the input lines by commas, and using semicolons as end-line characters */
+//        String delim = ",|;";
+//        
+//        StringBuilder sb = new StringBuilder();
+//        int numberOfLines = 0;
+          int lineNum = 0;
+//        
+//        //File file = new File("test.tm");
+//        try {
+//            Scanner in = new Scanner(file);
+//            //read the optional input line if it's there
+//            if (in.next().toLowerCase().startsWith("input:")) 
+//            {
+//                initialInput = in.next().replaceAll("input:", "").trim();
+//                lineNum++;
+//            }
+//            
+//            while (in.hasNext())
+//            {
+//                sb.append(in.nextLine());
+//                numberOfLines++;
+//            }
+            if (input.toLowerCase().startsWith("input: ")) 
             {
-                initialInput = in.next().replaceAll("input:", "").trim();
+                System.out.println("Initial input provided");
+                //grab the value, set it, then nix the line
+                int colon = input.indexOf(":");
+                int semicolon = input.indexOf(";");
+                initialInput = input.substring(colon+1, semicolon).trim();
+                String firstLine = input.substring(0, semicolon+1);
+                input = input.replace(firstLine, "");
                 lineNum++;
             }
-            
-            while (in.hasNext())
-            {
-                sb.append(in.nextLine());
-                numberOfLines++;
-            }
-            
-            inputCode = sb.toString();
+            inputCode = input;
             tokens = inputCode.split(delim);
             int tokensLength = tokens.length;
             for (int i = 0; i < tokensLength; i++)
@@ -65,7 +76,7 @@ public class Interpreter
                         tokens[i] = "t1";
                         System.out.println("\nTape token: " + tokens[i] + " on line " + lineNum);
                     }
-                    else if (tokens[i].equalsIgnoreCase("t1")) 
+                    if (tokens[i].equalsIgnoreCase("t1")) 
                     {
                         System.out.println("\nTape token: " + tokens[i] + " on line " + lineNum);
                     }
@@ -79,9 +90,8 @@ public class Interpreter
                     }
                     else 
                     {
-                        System.out.println("\nError on line " + lineNum + "Invalid tape");
+                        System.out.println("\nError on line " + lineNum + "Invalid tape " + tokens[i]);
                     }
-                    
                 }
                 
                 // Get the initial state
@@ -131,12 +141,12 @@ public class Interpreter
                 }
             }
             
-        } catch(FileNotFoundException e) {
-            System.out.println("That is an invalid file.");
-        }
+//        } catch(FileNotFoundException e) {
+//            System.out.println("That is an invalid file.");
+//        }
         
         // Print the number of lines of the input file
-        System.out.println("Number of lines: " + numberOfLines);
+//        System.out.println("Number of lines: " + numberOfLines);
         System.out.println("Initial input provided: " + initialInput);
     }
     
@@ -144,7 +154,10 @@ public class Interpreter
     {
         return inputCode;
     }
-    
+    public String getInitialInput()
+    {
+        return initialInput;
+    }
     public String[] getTokens() {
         return tokens;
     }

@@ -28,7 +28,7 @@ import model.Interpreter;
  *
  * @author Nick Ahring
  */
-public class FXMLDocumentController implements Initializable {
+public class MachineViewController implements Initializable {
     
     //UI Buttons
     @FXML private Button runButton;
@@ -49,8 +49,10 @@ public class FXMLDocumentController implements Initializable {
     private MenuItem openMenuItem;
     @FXML
     private MenuItem menuQuitButton;
+    //Machine Controller
+    private MachineController controller = new MachineController();
     
-    private Tape tm = new charTape();
+    //private Tape tm = new charTape();
     
     @FXML
     private void runButtonClicked(ActionEvent event) {
@@ -75,7 +77,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void resetButtonClicked(ActionEvent event) {
         System.out.println("Machine Reset");
-        tm.resetRWHead();
+ //       tm.resetRWHead();
     }
     
     @FXML
@@ -85,7 +87,7 @@ public class FXMLDocumentController implements Initializable {
     
     private void clearButtonClicked(ActionEvent event) {
         System.out.println("Clear Tape 1");
-        tm.clearTape();
+ //       tm.clearTape();
     }
     
     @FXML
@@ -96,8 +98,10 @@ public class FXMLDocumentController implements Initializable {
                 new ExtensionFilter("Machine Files", "*.tm"));
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
+            String input = controller.openFile(selectedFile);
             Interpreter interp = new Interpreter();
-            interp.tokenize(selectedFile);
+            interp.tokenize(input);
+            tapeOne.setText(interp.getInitialInput());
             //launch window to show code or error
         }   
     }
@@ -105,7 +109,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void tapeOneClearButtonClicked(ActionEvent event) {
         tapeOne.setText("");
-        tm.clearTape();
+//        tm.clearTape();
     }
 
     
