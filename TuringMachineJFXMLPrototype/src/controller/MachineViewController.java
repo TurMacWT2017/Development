@@ -6,22 +6,30 @@
 package controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.Interpreter;
 
 /**
@@ -47,8 +55,13 @@ public class MachineViewController implements Initializable {
     @FXML private Label changeLabel;
     @FXML private MenuItem openMenuItem;
     @FXML private MenuItem menuQuitButton;
+    @FXML private MenuItem recentFilesMenu;
+    //Code Window 
+    @FXML private TextArea codeDisplay;
+    
     //Machine Controller
     private MachineController controller = new MachineController();
+    private ArrayList<File> recentFiles;
     
     //private Tape tm = new charTape();
     
@@ -100,8 +113,19 @@ public class MachineViewController implements Initializable {
             Interpreter interp = new Interpreter();
             interp.tokenize(input);
             tapeOne.setText(interp.getInitialInput());
+//            recentFiles.add(selectedFile);
             //launch window to show code or error
-        }   
+            if (interp.errorFound()) {
+                Platform.runLater(() -> { 
+                    launchCodeWindow(interp.getErrorReport());
+                });
+                
+            }
+            else
+                Platform.runLater(() -> {  
+                    launchCodeWindow(input);
+                });
+        }       
     }
     
     @FXML
@@ -109,8 +133,26 @@ public class MachineViewController implements Initializable {
         tapeOne.setText("");
 //        tm.clearTape();
     }
-
     
+    private void launchCodeWindow(String content) {
+        Parent root;
+        Stage stage;
+        try {
+            System.out.println("Making code window");
+            stage = new Stage();
+            root = FXMLLoader.load(getClass().getResource("/view/codeView.fxml"));
+            stage.setScene(new Scene(root, 450, 450));
+            stage.setTitle("Code Window");
+            stage.setOpacity(1);
+            stage.show();
+            //add the content
+            codeDisplay.setText(content);
+        }
+        catch (IOException e) {
+        }
+        
+    }
+        
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         speedSlider.valueProperty().addListener(new ChangeListener() {

@@ -10,6 +10,8 @@ public class Interpreter
     private String initialInput = "";
     private String inputCode;
     private final String delim = ",|;";
+    private StringBuilder errorReport = new StringBuilder();
+    private boolean errorsPresent = false;
     /* Default interpreter constructor
     * @param selected file to interpret and tokenize
     * <pre> Interpreter does not yet exist </pre>
@@ -35,6 +37,7 @@ public class Interpreter
 //        StringBuilder sb = new StringBuilder();
 //        int numberOfLines = 0;
           int lineNum = 0;
+          String errorString;
 //        
 //        //File file = new File("test.tm");
 //        try {
@@ -90,7 +93,9 @@ public class Interpreter
                     }
                     else 
                     {
-                        System.out.println("\nError on line " + lineNum + "Invalid tape " + tokens[i]);
+                        errorString = "Error on line " + lineNum + "Invalid tape " + tokens[i] + "\n";
+                        errorReport.append(errorString);
+                        errorsPresent = true;
                     }
                 }
                 
@@ -130,7 +135,9 @@ public class Interpreter
                     }
                     else 
                     {
-                        System.out.printf("\nInvalid direction on line %d", lineNum);
+                        errorString = "\nInvalid direction " + tokens[i] + "on line " + lineNum;
+                        errorReport.append(errorString);
+                        errorsPresent = true;
                     }
                 }
                 
@@ -148,6 +155,15 @@ public class Interpreter
         // Print the number of lines of the input file
 //        System.out.println("Number of lines: " + numberOfLines);
         System.out.println("Initial input provided: " + initialInput);
+    }
+    
+    public String getErrorReport() 
+    {
+        return errorReport.toString();        
+    }
+    
+    public boolean errorFound() {
+        return errorsPresent;
     }
     
     public String getMachineCode() 

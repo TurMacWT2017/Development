@@ -32,6 +32,7 @@ public class TuringMachineJFXMLPrototype extends Application {
         stage.setTitle("Turing Machine");
         
         stage.show();
+        
     }
 
     /**
