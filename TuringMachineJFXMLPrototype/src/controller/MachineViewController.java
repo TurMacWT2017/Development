@@ -45,10 +45,8 @@ public class MachineViewController implements Initializable {
     
     @FXML private Slider speedSlider;
     @FXML private Label changeLabel;
-    @FXML
-    private MenuItem openMenuItem;
-    @FXML
-    private MenuItem menuQuitButton;
+    @FXML private MenuItem openMenuItem;
+    @FXML private MenuItem menuQuitButton;
     //Machine Controller
     private MachineController controller = new MachineController();
     
@@ -96,7 +94,7 @@ public class MachineViewController implements Initializable {
         fileChooser.setTitle("Open Machine File");
         fileChooser.getExtensionFilters().addAll(
                 new ExtensionFilter("Machine Files", "*.tm"));
-        File selectedFile = fileChooser.showOpenDialog(null);
+        File selectedFile = fileChooser.showOpenDialog(tapeOne.getScene().getWindow());
         if (selectedFile != null) {
             String input = controller.openFile(selectedFile);
             Interpreter interp = new Interpreter();
