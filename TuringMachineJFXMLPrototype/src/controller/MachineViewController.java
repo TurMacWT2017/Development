@@ -159,6 +159,10 @@ public class MachineViewController implements Initializable {
         codeDisplay.setPrefWidth(450);
         layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        
+        layout.setFitToHeight(true);
+        layout.setFitToWidth(true);
+        
         layout.setContent(codeDisplay);        
         codeDisplay.setText(content);
         stage.setScene(new Scene(layout, 450, 450));
@@ -166,7 +170,7 @@ public class MachineViewController implements Initializable {
         stage.initOwner(tapeOne.getScene().getWindow());
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
         stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
-        stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8); 
+        stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
         stage.show();
     }
         
