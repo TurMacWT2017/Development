@@ -44,7 +44,7 @@ https://support.axosoft.com/Integrations/github
 	- simple set of codes to learn for commits
 	- tag within brackets is included WITHIN quotations for commit message at linux cmd line
 
-Ex:	[axof: 8 wl: 2 hours]
+Ex:	[axof: 8 wl: 2 hours]     
 -	this tag will book into axosoft feature item #8 the commit message with link to github code, and will also deduct the hours tagged from the estimated hours originally input to axosoft
 	Axosoft time unit tag codes:  min    hrs    days    wks    pts      (and for instance hrs can be typed "hours" as well)
 
