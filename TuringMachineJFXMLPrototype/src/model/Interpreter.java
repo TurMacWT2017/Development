@@ -112,7 +112,7 @@ public class Interpreter
                     }
                     else 
                     {
-                        errorString = "Error on line " + lineNum + "Invalid tape " + tokens[i] + "\n";
+                        errorString = "Error on line " + lineNum + ": Invalid tape " + tokens[i];
                         errorReport.append(errorString);
                         errorsPresent = true;
                     }
@@ -133,28 +133,31 @@ public class Interpreter
                 // Write desired token
                 if (i%6 == 3)
                 {
-                    System.out.println("Write token: " + tokens[i] + " on line " + lineNum);
+                    System.out.println("Write token: " + tokens[i] + " on line " + lineNum + "\n");
                 }
                 
                 // Get the direction the read/write head needs to move
                 if (i%6 == 4)
                 {
-                    System.out.println("Direction token: " + tokens[i] + " on line " + lineNum);
+                    System.out.println("Direction token: " + tokens[i] + " on line " + lineNum + "\n");
                     if (tokens[i].equalsIgnoreCase("R") || tokens[i].equalsIgnoreCase("right") || tokens[i].equals(">"))
                     {
                         //moveRight();
+                        System.out.println("Moved Right");
                     }
                     else if (tokens[i].equalsIgnoreCase("L") || tokens[i].equalsIgnoreCase("left") || tokens[i].equals("<"))
                     {
                         //moveLeft();
+                        System.out.println("Moved Left");
                     }
-                    else if (tokens[i].equalsIgnoreCase("*"))
+                    else if (tokens[i].equalsIgnoreCase("*") || tokens[i].equalsIgnoreCase("_") || tokens[i].equalsIgnoreCase(""))
                     {
                         //stay();
+                        System.out.println("No movement");
                     }
                     else 
                     {
-                        errorString = "\nInvalid direction " + tokens[i] + "on line " + lineNum;
+                        errorString = "\nInvalid direction on line " + lineNum + ":  "+ tokens[i] + "\n";
                         errorReport.append(errorString);
                         errorsPresent = true;
                     }
@@ -163,7 +166,7 @@ public class Interpreter
                 // Get the end-state of the transition
                 if (i%6 == 5)
                 {
-                    System.out.println("End state token: " + tokens[i] + " on line " + lineNum);
+                    System.out.println("End state token: " + tokens[i] + " on line " + lineNum + "\n");
                 }
             }
             
