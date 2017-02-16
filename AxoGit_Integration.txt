@@ -2,10 +2,19 @@
 	- ssh key generated on vm (AND on thor if not already done first!)
 	- key transmitted to thor from vm
 	- remote set-url commands to setup dual-push on commit
+
+The remote push additions may be made after the github account is set up:
+(replace X with your group number)
+git remote set-url --push origin git+ssh://git@github.com/<repo-acct-name>/<repo-name>.git
+git remote --add --push origin <single-sign-on-id>@thor.wtamu.edu:/exports/home/repos/CS4391-X/turingMachine	
+Use: git remote –v    to list your remote urls
+	Should have 1 fetch url for thor, 1 push url for thor, and 1 push url for github
+
 	- email address (buffs) used throughout this process!
 
 https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 https://www.howtogeek.com/168147/add-public-ssh-key-to-remote-server-in-a-single-command/
+
 
 
 2) Github setup:
@@ -20,11 +29,24 @@ https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/
 https://developer.github.com/webhooks/creating/
 
 
+
 3) Axosoft integration:				
 	- TOOLS> Manage Extensions > Github
+		- check box for ACTIVE, click the settings pencil to add keys, etc…
 	- apply Github API key to Axosoft
 
 https://support.axosoft.com/Integrations/github
 
 
+
+4) Axosoft tagging:							
+	- importance of proper time estimate and time application (actual)
+	- simple set of codes to learn for commits
+	- tag within brackets is included WITHIN quotations for commit message at linux cmd line
+
+Ex:	[axof: 8 wl: 2 hours]     
+-	this tag will book into axosoft feature item #8 the commit message with link to github code, and will also deduct the hours tagged from the estimated hours originally input to axosoft
+	Axosoft time unit tag codes:  min    hrs    days    wks    pts      (and for instance hrs can be typed "hours" as well)
+
+https://support.axosoft.com/integrations/commits
 
