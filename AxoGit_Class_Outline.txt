@@ -37,5 +37,9 @@ Other:		Security between groups… repos visible to all groups via github if acc
 		$7/mo FULL private is best if doable for REPO account ONLY.
 
 Final thought:	Learn this now to master it! Many job postings ask for Agile, SCRUM, Axosoft, and Git!!!!
+
 Finish with Q & A…
+
+
+
 
