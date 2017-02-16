@@ -1,0 +1,30 @@
+1) SSH key and git remote setup:
+	- ssh key generated on vm (AND on thor if not already done first!)
+	- key transmitted to thor from vm
+	- remote set-url commands to setup dual-push on commit
+	- email address (buffs) used throughout this process!
+
+https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
+https://www.howtogeek.com/168147/add-public-ssh-key-to-remote-server-in-a-single-command/
+
+
+2) Github setup:
+	- FREE account allows ALL to view, only COLLABORATORS to modify
+	- $7/mo account allows full privatization or full open
+	- setup a REPO acct (no collab) (give meaningful username, NOT repository name)
+	- setup account for each group member using same email address as git configured
+	- vm ssh key applied in repo account “SSH and GPG keys” for each team member
+	- member github usernames applied to github repo Settings> Collaborators
+
+https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/
+https://developer.github.com/webhooks/creating/
+
+
+3) Axosoft integration:				
+	- TOOLS> Manage Extensions > Github
+	- apply Github API key to Axosoft
+
+https://support.axosoft.com/Integrations/github
+
+
+
