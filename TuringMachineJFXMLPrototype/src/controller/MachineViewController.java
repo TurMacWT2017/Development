@@ -61,7 +61,10 @@ public class MachineViewController implements Initializable {
     
     //Machine Controller
     private MachineController controller = new MachineController();
+    //Interpreter instance (new interpreter is created on load of a program)
+    private Interpreter interp;
     private ArrayList<File> recentFiles;
+    
     
     //private Tape tm = new charTape();
     
@@ -69,25 +72,27 @@ public class MachineViewController implements Initializable {
     private void runButtonClicked(ActionEvent event) {
         if (runButton.getText().equals("Run")) {
             runButton.setText("Pause");
+            interp.run();
         }
         else {
             runButton.setText("Run");
+            interp.pause();
         }
     }
     
     @FXML
     private void stepButtonClicked(ActionEvent event) {
-        System.out.println("Step");
+        interp.step();
     }
     
     @FXML
     private void stopButtonClicked(ActionEvent event) {
-        System.out.println("Machine stopped");
+        interp.stop();
     }
     
     @FXML
     private void resetButtonClicked(ActionEvent event) {
-        System.out.println("Machine Reset");
+        interp.reset();
  //       tm.resetRWHead();
     }
     
@@ -110,8 +115,7 @@ public class MachineViewController implements Initializable {
         File selectedFile = fileChooser.showOpenDialog(tapeOne.getScene().getWindow());
         if (selectedFile != null) {
             String input = controller.openFile(selectedFile);
-            Interpreter interp = new Interpreter();
-            interp.tokenize(input);
+            interp = new Interpreter(input);
             tapeOne.setText(interp.getInitialInput());
 //            recentFiles.add(selectedFile);
             //launch window to show code or error

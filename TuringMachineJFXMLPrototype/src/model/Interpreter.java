@@ -2,6 +2,8 @@ package model;
 
 import java.util.*;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Interpreter
 {
@@ -10,14 +12,30 @@ public class Interpreter
     private String initialInput = "";
     private String inputCode;
     private final String delim = ",|;";
-    private StringBuilder errorReport = new StringBuilder();
+    private final StringBuilder errorReport = new StringBuilder();
     private boolean errorsPresent = false;
-    /* Default interpreter constructor
-    * @param selected file to interpret and tokenize
+    //keeps track of current state of interpreter, possible options are 
+    //HALT, RUN, PAUSE, STEP
+    private String interpRunState = "HALT";
+    private String interpState;
+    private ArrayList<StateTransition> transitions;
+    private Parser par;
+    private int controlPointer = 0;
+    private int speed = 1000;
+    
+    /** Default interpreter constructor
+    * 
     * <pre> Interpreter does not yet exist </pre>
     * Post condition: New Interpreter created
+     * @param input
     */
-    public Interpreter() {
+    public Interpreter(String input) {
+        
+        tokenize(input);
+        if (errorsPresent == false) {
+            par = new Parser(this);
+            transitions = par.compile();
+        }
         
     }
     /* To highlight text in a JavaFX textField */
@@ -29,7 +47,7 @@ public class Interpreter
             System.out.println(textField.getSelectedText());
     }*/
         
-    public void tokenize(String input)
+    private void tokenize(String input)
     {
 //        /* We're splitting the input lines by commas, and using semicolons as end-line characters */
 //        String delim = ",|;";
@@ -123,15 +141,15 @@ public class Interpreter
                     System.out.println("Direction token: " + tokens[i] + " on line " + lineNum);
                     if (tokens[i].equalsIgnoreCase("R") || tokens[i].equalsIgnoreCase("right") || tokens[i].equals(">"))
                     {
-                        moveRight();
+                        //moveRight();
                     }
                     else if (tokens[i].equalsIgnoreCase("L") || tokens[i].equalsIgnoreCase("left") || tokens[i].equals("<"))
                     {
-                        moveLeft();
+                        //moveLeft();
                     }
                     else if (tokens[i].equalsIgnoreCase("*"))
                     {
-                        stay();
+                        //stay();
                     }
                     else 
                     {
@@ -157,6 +175,81 @@ public class Interpreter
         System.out.println("Initial input provided: " + initialInput);
     }
     
+    /** Runs the current program 
+    *   <pre> Program will not be in run state </pre>
+    *   Postcondition: Program will be running
+    */
+    public void run() {
+        System.out.println("Program started");
+        //if currently halted, begin run start
+        if ("HALT".equals(interpRunState)) {
+            interpRunState = "RUN";
+            controlPointer = 0;
+            //while still in run state, run through program, when done, halt automatically
+            while (interpRunState.equals("RUN")) {
+                for (StateTransition tr: transitions) {
+                    performTransition(tr);
+                    controlPointer++;
+//                    try {
+//                        Thread.sleep(speed);
+//                    } catch (InterruptedException ex) {
+//                        Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+                }
+                interpRunState = "HALT";
+            }
+        }                
+        
+    }
+    
+    /**  Steps through current program
+    *   <pre> Program is in stopped or paused state </pre>
+    *   Postcondition: Next instruction will be carried out
+    */
+    public void step() {
+        System.out.println("Program stepped");
+        int size = transitions.size();
+        if ("HALT".equals(interpRunState) || "STEP".equals(interpRunState)) {
+            if (controlPointer == size) {
+                //we have stepped to the end, so halt
+                interpRunState = "HALT";
+                System.out.println("Reached end, please reset");
+            }
+            else {
+                interpRunState = "STEP";
+                StateTransition tr = transitions.get(controlPointer);
+                performTransition(tr);
+                controlPointer++;
+            }
+        }
+    }
+    
+    /**  Stop current program
+    *   <pre> Program is in run state </pre>
+    *   Postcondition: Program is in stop state 
+    */
+    public void stop() {
+        System.out.println("Program Stopped");
+        
+    }
+    
+    /**  Reset the interpreter
+    *   <pre> Program is in stop or run state </pre>
+    *   Postcondition: Interpreter is reset
+    */
+    public void reset() {
+        System.out.println("Interpreter reset");
+        controlPointer = 0;
+    }
+    
+    /**  Pause current program
+    *   <pre> Program is in run state </pre>
+    *   Postcondition: Program is in pause state 
+    */
+    public void pause() {
+        System.out.println("Machine paused");
+    }
+    
     public String getErrorReport() 
     {
         return errorReport.toString();        
@@ -177,19 +270,23 @@ public class Interpreter
     public String[] getTokens() {
         return tokens;
     }
-    public static void moveRight()
-    {
-        System.out.println("Moved Right");
+    
+    public String getState() {
+        return interpState;
     }
     
-    public static void moveLeft()
-    {
-        System.out.println("Moved Left");
+
+    private void performTransition(StateTransition transition) {
+        String tape = transition.getTape();
+        String initialState = transition.getInitialState();
+        String readToken = transition.getReadToken();
+        String writeToken = transition.getWriteToken();
+        String direction = transition.getDirection();
+        String endState = transition.getEndState();
+        
+        System.out.printf("On tape %s and initial state %s read for token %s and write token %s then move %s and end in state %s\n", tape, initialState, readToken, writeToken, direction, endState);
+        interpState = endState;
     }
     
-    public static void stay()
-    {
-        System.out.println("No movement");
-    }
 
 }
