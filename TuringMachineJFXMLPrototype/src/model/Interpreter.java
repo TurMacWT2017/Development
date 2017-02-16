@@ -30,8 +30,8 @@ public class Interpreter
     
     /** Default interpreter constructor
     * 
-    * <pre> Interpreter does not yet exist </pre>
-    * Post condition: New Interpreter created
+    * <pre> Pre condition: Interpreter does not yet exist </pre>
+    * <pre> Post condition: New Interpreter created </pre> 
      * @param input the String representation of the *.tm program file
     */
     public Interpreter(String input) 
@@ -59,7 +59,7 @@ public class Interpreter
      * 
      * @param input the String representation of the *.tm program file
      */
-    public void tokenize(String input)
+    private void tokenize(String input)
     {
         int lineNum = 0;
         String errorString;
@@ -169,8 +169,8 @@ public class Interpreter
     }
     
     /** Runs the current program 
-    *   <pre> Program will not be in run state </pre>
-    *   Post condition: Program will be running
+    *   <pre> Pre condition: Program will not be in run state </pre>
+    *   <pre> Post condition: Program will be running </pre>
     */
     public void run() 
     {
@@ -199,8 +199,8 @@ public class Interpreter
     }
     
     /**  Steps through current program
-    *   <pre> Program is in stopped or paused state </pre>
-    *   Post condition: Next instruction will be carried out
+    *   <pre> Pre condition: Program is in stopped or paused state </pre>
+    *   <pre> Post condition: Next instruction will be carried out </pre>
     */
     public void step() 
     {
@@ -225,8 +225,8 @@ public class Interpreter
     }
     
     /**  Stop current program
-    *   <pre> Program is in run state </pre>
-    *   Post condition: Program is in stop state 
+    *   <pre> Pre condition: Program is in run state </pre>
+    *   <pre> Post condition: Program is in stop state </pre>
     */
     public void stop() 
     {
@@ -235,8 +235,8 @@ public class Interpreter
     }
     
     /**  Reset the interpreter
-    *   <pre> Program is in stop or run state </pre>
-    *   Post condition: Interpreter is reset
+    *   <pre> Pre condition: Program is in stop or run state </pre>
+    *   <pre> Post condition: Interpreter is reset </pre>
     */
     public void reset() 
     {
@@ -245,45 +245,72 @@ public class Interpreter
     }
     
     /**  Pause current program
-    *   <pre> Program is in run state </pre>
-    *   Post condition: Program is in pause state 
+    *   <pre> Pre condition: Program is in run state </pre>
+    *   <pre> Post condition: Program is in pause state </pre>
     */
     public void pause() 
     {
         System.out.println("Machine paused");
     }
     
+    /**
+     * Retrieves a description of what errors occurred
+     * @return 
+     */
     public String getErrorReport() 
     {
         return errorReport.toString();        
     }
     
+    /**
+     * Used to find if there are errors
+     * @return 
+     */
     public boolean errorFound() 
     {
         return errorsPresent;
     }
     
+    /**
+     * Retrieves the *.tm program code
+     * @return 
+     */
     public String getMachineCode() 
     {
         return inputCode;
     }
     
+    /**
+     * Retrieves the initial input if provided in the program file
+     * @return 
+     */
     public String getInitialInput()
     {
         return initialInput;
     }
     
+    /**
+     * Retrieves the individual tokens
+     * @return 
+     */
     public String[] getTokens() 
     {
         return tokens;
     }
     
+    /**
+     * Returns the current state of the machine
+     * @return 
+     */
     public String getState() 
     {
         return interpState;
     }
     
-
+    /**
+     * Performs the provided state transition
+     * @param transition the state transition to be performed
+     */
     private void performTransition(StateTransition transition) 
     {
         String tape = transition.getTape();
