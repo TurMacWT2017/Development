@@ -6,28 +6,37 @@
 package controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import model.Interpreter;
 
 /**
  *
  * @author Nick Ahring
  */
-public class FXMLDocumentController implements Initializable {
+public class MachineViewController implements Initializable {
     
     //UI Buttons
     @FXML private Button runButton;
@@ -44,37 +53,47 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML private Slider speedSlider;
     @FXML private Label changeLabel;
-    @FXML
-    private MenuItem openMenuItem;
-    @FXML
-    private MenuItem menuQuitButton;
+    @FXML private MenuItem openMenuItem;
+    @FXML private MenuItem menuQuitButton;
+    @FXML private MenuItem recentFilesMenu;
+    //Code Window 
+    @FXML private TextArea codeDisplay;
     
-    private Tape tm = new charTape();
+    //Machine Controller
+    private MachineController controller = new MachineController();
+    //Interpreter instance (new interpreter is created on load of a program)
+    private Interpreter interp;
+    private ArrayList<File> recentFiles;
+    
+    
+    //private Tape tm = new charTape();
     
     @FXML
     private void runButtonClicked(ActionEvent event) {
         if (runButton.getText().equals("Run")) {
             runButton.setText("Pause");
+            interp.run();
         }
         else {
             runButton.setText("Run");
+            interp.pause();
         }
     }
     
     @FXML
     private void stepButtonClicked(ActionEvent event) {
-        System.out.println("Step");
+        interp.step();
     }
     
     @FXML
     private void stopButtonClicked(ActionEvent event) {
-        System.out.println("Machine stopped");
+        interp.stop();
     }
     
     @FXML
     private void resetButtonClicked(ActionEvent event) {
-        System.out.println("Machine Reset");
-        tm.resetRWHead();
+        interp.reset();
+ //       tm.resetRWHead();
     }
     
     @FXML
@@ -84,7 +103,7 @@ public class FXMLDocumentController implements Initializable {
     
     private void clearButtonClicked(ActionEvent event) {
         System.out.println("Clear Tape 1");
-        tm.clearTape();
+ //       tm.clearTape();
     }
     
     @FXML
@@ -92,23 +111,52 @@ public class FXMLDocumentController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Machine File");
         fileChooser.getExtensionFilters().addAll(
-                new ExtensionFilter("Text Files", "*.txt"),
-                new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
-                new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.aac"),
-                new ExtensionFilter("All Files", "*.*"));
-        File selectedFile = fileChooser.showOpenDialog(null);
+                new ExtensionFilter("Machine Files", "*.tm"));
+        File selectedFile = fileChooser.showOpenDialog(tapeOne.getScene().getWindow());
         if (selectedFile != null) {
-           System.out.println("A File was Chosen");
-        }   
+            String input = controller.openFile(selectedFile);
+            interp = new Interpreter(input);
+            tapeOne.setText(interp.getInitialInput());
+//            recentFiles.add(selectedFile);
+            //launch window to show code or error
+            if (interp.errorFound()) {
+                Platform.runLater(() -> { 
+                    launchCodeWindow(interp.getErrorReport());
+                });
+                
+            }
+            else
+                Platform.runLater(() -> {  
+                    launchCodeWindow(input);
+                });
+        }       
     }
     
     @FXML
     private void tapeOneClearButtonClicked(ActionEvent event) {
         tapeOne.setText("");
-        tm.clearTape();
+//        tm.clearTape();
     }
-
     
+    private void launchCodeWindow(String content) {
+        Parent root;
+        Stage stage;
+        try {
+            System.out.println("Making code window");
+            stage = new Stage();
+            root = FXMLLoader.load(getClass().getResource("/view/codeView.fxml"));
+            stage.setScene(new Scene(root, 450, 450));
+            stage.setTitle("Code Window");
+            stage.setOpacity(1);
+            stage.show();
+            //add the content
+            codeDisplay.setText(content);
+        }
+        catch (IOException e) {
+        }
+        
+    }
+        
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         speedSlider.valueProperty().addListener(new ChangeListener() {

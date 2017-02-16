@@ -1,0 +1,7 @@
+4) Axosoft tagging:							
+	- importance of proper time estimate and then time application (actual)
+	- simple set of codes to learn for commits
+
+https://support.axosoft.com/integrations/commits
+
+
