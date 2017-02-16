@@ -83,6 +83,7 @@ public class Interpreter
                 input = input.replace(firstLine, "");
                 lineNum++;
             }
+            input = input.replaceAll("\n", "");
             inputCode = input;
             tokens = inputCode.split(delim);
             int tokensLength = tokens.length;

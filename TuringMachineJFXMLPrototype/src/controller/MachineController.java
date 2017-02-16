@@ -33,7 +33,7 @@ public class MachineController {
                 String line;
                 while ((line = bw.readLine()) != null) {
                     sb.append(line);
-//                    sb.append("\n");
+                    sb.append("\n");
                 }
             }
         } catch (FileNotFoundException ex) {
