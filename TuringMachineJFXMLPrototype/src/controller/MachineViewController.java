@@ -165,6 +165,8 @@ public class MachineViewController implements Initializable {
         
         layout.setContent(codeDisplay);        
         codeDisplay.setText(content);
+        codeDisplay.setEditable(false);
+        
         stage.setScene(new Scene(layout, 450, 450));
         stage.setTitle("Code Window");
         stage.initOwner(tapeOne.getScene().getWindow());
