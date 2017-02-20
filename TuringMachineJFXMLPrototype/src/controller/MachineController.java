@@ -32,8 +32,13 @@ public class MachineController {
 
                 String line;
                 while ((line = bw.readLine()) != null) {
-                    sb.append(line);
-                    sb.append("\n");
+                    
+
+                        line = line.replaceAll("[ \t]*#[^\\n]*", "").trim();
+                        if (!line.equals("")) {
+                            sb.append(line);
+                            sb.append("\n");
+                        }
                 }
             }
         } catch (FileNotFoundException ex) {

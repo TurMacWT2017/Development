@@ -3,7 +3,6 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
             <file>file:/home/student/Documents/turingMachine/TuringMachineJFXMLPrototype/src/controller/MachineController.java</file>
             <file>file:/home/student/Documents/turingMachine/TuringMachineJFXMLPrototype/src/view/codeView.fxml</file>
             <file>file:/home/student/Documents/turingMachine/TuringMachineJFXMLPrototype/src/model/Interpreter.java</file>
@@ -11,10 +10,6 @@
             <file>file:/home/student/Documents/turingMachine/TuringMachineJFXMLPrototype/src/model/StateTransition.java</file>
             <file>file:/home/student/Documents/turingMachine/TuringMachineJFXMLPrototype/src/model/Parser.java</file>
             <file>file:/home/student/Documents/turingMachine/TuringMachineJFXMLPrototype/src/controller/MachineViewController.java</file>
-=======
-            <file>file:/home/landon/cs4391/turingMachine/TuringMachineJFXMLPrototype/src/controller/MachineViewController.java</file>
-            <file>file:/home/landon/cs4391/turingMachine/TuringMachineJFXMLPrototype/src/model/Interpreter.java</file>
->>>>>>> 12205103f8fe109182408a252f4ad276fce6f67f
         </group>
     </open-files>
 </project-private>

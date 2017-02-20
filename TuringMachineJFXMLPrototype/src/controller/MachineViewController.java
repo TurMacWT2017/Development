@@ -121,7 +121,6 @@ public class MachineViewController implements Initializable {
         if (selectedFile != null) {
             String input = controller.openFile(selectedFile);
             interp = new Interpreter(input);
-            tapeOne.setText(interp.getInitialInput());
 //            recentFiles.add(selectedFile);
             //launch window to show code or error
             if (interp.errorFound()) {
@@ -135,6 +134,7 @@ public class MachineViewController implements Initializable {
             else
                 try {
                     launchCodeWindow(input);
+                    tapeOne.setText(interp.getInitialInput());
                 } catch (IOException ex) {
                     Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }

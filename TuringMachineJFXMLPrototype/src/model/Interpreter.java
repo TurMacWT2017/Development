@@ -132,19 +132,20 @@ public class Interpreter
 
             // Get the direction the read/write head needs to move
             if (i%6 == 4)
-            {
+            {  
+                String token = tokens[i].trim();
                 System.out.println("Direction token: " + tokens[i] + " on line " + lineNum + "\n");
-                if (tokens[i].equalsIgnoreCase("R") || tokens[i].equalsIgnoreCase("right") || tokens[i].equals(">"))
+                if (token.matches("(R|r|right|Right|>)"))
                 {
                     //moveRight();
                     System.out.println("Moved Right");
                 }
-                else if (tokens[i].equalsIgnoreCase("L") || tokens[i].equalsIgnoreCase("left") || tokens[i].equals("<"))
+                else if (token.matches("(L|l|<|left|Left)"))
                 {
                     //moveLeft();
                     System.out.println("Moved Left");
                 }
-                else if (tokens[i].equalsIgnoreCase("*") || tokens[i].equalsIgnoreCase("_") || tokens[i].equalsIgnoreCase(""))
+                else if (token.matches("[*|_]"))
                 {
                     //stay();
                     System.out.println("No movement");
