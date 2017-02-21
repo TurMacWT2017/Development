@@ -87,8 +87,7 @@ public class Interpreter
         //set the view to the start state
         view.setStartState();
         interpThread = new InterpreterThread();
-        //update the tape with the input present in the tape
-        currentTape.setContent(view.getTapeInput());
+
         
     }
     
@@ -163,18 +162,21 @@ public class Interpreter
             if (i%6 == 2)
             {
                 String token = tokens[i].trim();
-                if (token.matches("[*|_]")) {
-                    tokens[i] = "*";
+                if (token.matches("[*]")) {
+                    tokens[i] = "WILDCARD";
                 }
+                tokens[i] = token;
+                
             }
 
             // Write desired token
             if (i%6 == 3)
             {
                 String token = tokens[i].trim();
-                if (token.matches("[*|_]")) {
-                    tokens[i] = "*";
+                if (token.matches("[*]")) {
+                    tokens[i] = "NO_CHANGE";
                 }
+                tokens[i] = token;
             }
 
             // Get the direction the read/write head needs to move
@@ -354,14 +356,23 @@ public class Interpreter
         String direction = transition.getDirection();
         String endState = transition.getEndState().trim();
         
-        if ((currentTape.read() == readToken.charAt(0)) || readToken.equals("*")) {
-            interpState = endState;
+        //if current token matches or is wildcard
+        if ((currentTape.read() == readToken.charAt(0)) || readToken.equals("WILDCARD")) {
+            //if no change requested, write no new token, otherwise write
+            if (!writeToken.equals("NO_CHANGE")) {
+                System.out.println("New token");
+                currentTape.write(writeToken.charAt(0));
+            }
+            //move left or right as needed
             if (direction.equals("LEFT")) {
                 currentTape.moveHeadLeft();
             }
             else if (direction.equals("RIGHT")) {
                 currentTape.moveHeadRight();
             }
+            //go to new state
+            System.out.println(currentTape.getContent());
+            interpState = endState;
         }
         System.out.printf("On tape %s and initial state %s read for token %s and write token %s then move %s and end in state %s\n", tape, initialState, readToken, writeToken, direction, endState);
         
@@ -410,6 +421,7 @@ public class Interpreter
                             stepCount++;
                             view.updateStepCount(stepCount);
                             view.updateState(interpState);
+                            System.out.println(currentTape.getContent());
                             view.setTapeContent(currentTape.getContent());
                         }
                         try {
