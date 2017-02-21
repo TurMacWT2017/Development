@@ -51,5 +51,6 @@ public class StateTransition {
     
     public String getEndState() {
         return endState;
-    }    
+    }
+
 }

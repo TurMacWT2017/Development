@@ -36,6 +36,7 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Interpreter;
+import model.InterpreterException;
 
 /**
  *
@@ -106,6 +107,7 @@ public class MachineViewController implements Initializable {
         Platform.exit();
     }
     
+    @FXML
     private void clearButtonClicked(ActionEvent event) {
         System.out.println("Clear Tape 1");
  //       tm.clearTape();
@@ -121,6 +123,7 @@ public class MachineViewController implements Initializable {
         if (selectedFile != null) {
             String input = controller.openFile(selectedFile);
             interp = new Interpreter(input);
+            interp.setViewController(this);
 //            recentFiles.add(selectedFile);
             //launch window to show code or error
             if (interp.errorFound()) {
@@ -133,8 +136,13 @@ public class MachineViewController implements Initializable {
             }
             else
                 try {
-                    launchCodeWindow(input);
+                    launchCodeWindow(input);                    
                     tapeOne.setText(interp.getInitialInput());
+                try {
+                    interp.start();
+                } catch (InterpreterException ex) {
+                    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 } catch (IOException ex) {
                     Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -175,9 +183,45 @@ public class MachineViewController implements Initializable {
         stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
         stage.show();
     }
+    
+    @FXML
+    public void setStartState() {
+        System.out.println("Machine started..."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @FXML
+    public void setStepState() {
+        System.out.println("Machine in step state");
+    }
+
+    @FXML
+    public void setStoppedState() {
+        System.out.println("Machine stopped");
+        runButton.setText("Run");
+    }
+
+    @FXML
+    public void updateStepCount(int stepCount) {
+        currentSteps.setText(Integer.toString(stepCount));
+    }
+    
+    @FXML
+    public void updateState(String state) {
+        currentState.setText(state);
+    }
+    
+    @FXML
+    public String getTapeInput() {
+        return tapeOne.getText();
+    }
         
+    public void setTapeContent(String content) {
+        tapeOne.setText(content);
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         speedSlider.valueProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue arg0, Object arg1, Object arg2) {
@@ -185,5 +229,4 @@ public class MachineViewController implements Initializable {
             }
         });
     }    
-    
 }

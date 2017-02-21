@@ -1,5 +1,8 @@
 package model;
 
+import controller.MachineViewController;
+import controller.Tape;
+import controller.TuringMachineJFXMLPrototype;
 import java.util.*;
 import java.io.*;
 import java.util.logging.Level;
@@ -7,7 +10,8 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Landon Bressler
+ * @author Landon Bressler 
+ * @author Nick Ahring
  */
 public class Interpreter
 {
@@ -17,8 +21,8 @@ public class Interpreter
     private String inputCode;
     private final String delim = ",|;";
     private final StringBuilder errorReport = new StringBuilder();
-    private boolean errorsPresent = false;
-    
+    private MachineViewController view; 
+    private boolean errorsPresent = false;    
     /* keeps track of current state of interpreter, possible options are 
     HALT, RUN, PAUSE, STEP */
     private String interpRunState = "HALT";
@@ -27,6 +31,14 @@ public class Interpreter
     private Parser par;
     private int controlPointer = 0;
     private int speed = 1000;
+    private int stepCount = 0;
+    //used to stop the thread if needed.
+    private boolean notInterrupted = true;
+    private boolean turnedOff = false;
+    private boolean reset = false;
+    private InterpreterThread interpThread;
+    private final Object monitor = new Object();
+    private Tape currentTape;
     
     /** Default interpreter constructor
     * 
@@ -42,9 +54,16 @@ public class Interpreter
         {
             par = new Parser(this);
             transitions = par.compile();
+            currentTape = new Tape(initialInput);
+            
         }
         
     }
+    
+    public void setViewController(MachineViewController view) {
+        this.view = view;
+    }
+    
     
     /* To highlight text in a JavaFX textField */
     /*public void handle(ActionEvent t) {
@@ -54,6 +73,25 @@ public class Interpreter
 
             System.out.println(textField.getSelectedText());
     }*/
+    
+    /** Starts up the interpreter 
+     * <pre> Pre-condition: Interpreter not started</pre>
+     * <pre> Post condition: Interpreter and interpreter thread started</pre>
+     * @throws model.InterpreterException
+     */
+    public void start() throws InterpreterException { 
+        
+        turnedOff = false;
+        reset = false;
+        
+        //set the view to the start state
+        view.setStartState();
+        interpThread = new InterpreterThread();
+        //update the tape with the input present in the tape
+        currentTape.setContent(view.getTapeInput());
+        
+    }
+    
     
     /** Parses the input program into tokens that can be interpreted into the correct symbols
      * 
@@ -90,19 +128,22 @@ public class Interpreter
                 if (tokens[i].equals(""))
                 {
                     tokens[i] = "t1";
-                    System.out.println("\nTape token: " + tokens[i] + " on line " + lineNum);
+                    //System.out.println("\nTape token: " + tokens[i] + " on line " + lineNum);
                 }
                 if (tokens[i].equalsIgnoreCase("t1")) 
                 {
-                    System.out.println("\nTape token: " + tokens[i] + " on line " + lineNum);
+                    tokens[i] = "t1";
+                    //System.out.println("\nTape token: " + tokens[i] + " on line " + lineNum);
                 }
                 else if (tokens[i].equalsIgnoreCase("t2"))
                 {
-                    System.out.println("\nTape 2 token: " + tokens[i] + " on line " + lineNum);
+                    tokens[i] = "t2";
+                    //System.out.println("\nTape 2 token: " + tokens[i] + " on line " + lineNum);
                 }
                 else if (tokens[i].equalsIgnoreCase("t3"))
                 {
-                    System.out.println("\nTape 3 token: " + tokens[i] + " on line " + lineNum);
+                    tokens[i] = "t3";
+                    //System.out.println("\nTape 3 token: " + tokens[i] + " on line " + lineNum);
                 }
                 else 
                 {
@@ -121,13 +162,19 @@ public class Interpreter
             // Get the token being read
             if (i%6 == 2)
             {
-                System.out.println("Read token: " + tokens[i] + " on line " + lineNum);
+                String token = tokens[i].trim();
+                if (token.matches("[*|_]")) {
+                    tokens[i] = "*";
+                }
             }
 
             // Write desired token
             if (i%6 == 3)
             {
-                System.out.println("Write token: " + tokens[i] + " on line " + lineNum + "\n");
+                String token = tokens[i].trim();
+                if (token.matches("[*|_]")) {
+                    tokens[i] = "*";
+                }
             }
 
             // Get the direction the read/write head needs to move
@@ -138,17 +185,17 @@ public class Interpreter
                 if (token.matches("(R|r|right|Right|>)"))
                 {
                     //moveRight();
-                    System.out.println("Moved Right");
+                    tokens[i] = "RIGHT";
                 }
                 else if (token.matches("(L|l|<|left|Left)"))
                 {
                     //moveLeft();
-                    System.out.println("Moved Left");
+                    tokens[i] = "LEFT";
                 }
                 else if (token.matches("[*|_]"))
                 {
                     //stay();
-                    System.out.println("No movement");
+                    tokens[i] = "STAY";
                 }
                 else 
                 {
@@ -175,28 +222,13 @@ public class Interpreter
     */
     public void run() 
     {
-        System.out.println("Program started");
-        //if currently halted, begin run start
-        if ("HALT".equals(interpRunState)) 
-        {
-            interpRunState = "RUN";
-            controlPointer = 0;
-            //while still in run state, run through program, when done, halt automatically
-            while (interpRunState.equals("RUN")) 
-            {
-                for (StateTransition tr: transitions) 
-                {
-                    performTransition(tr);
-                    controlPointer++;
-//                    try {
-//                        Thread.sleep(speed);
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
-                }
-                interpRunState = "HALT";
-            }
-        }                       
+        // don't create an interpreter thread if one is already running
+        if (interpThread!= null && !interpThread.isAlive()) {
+            view.setStartState(); 
+            notInterrupted = true;
+            interpThread = new InterpreterThread();
+            interpThread.start();
+        }
     }
     
     /**  Steps through current program
@@ -205,23 +237,12 @@ public class Interpreter
     */
     public void step() 
     {
-        System.out.println("Program stepped");
-        int size = transitions.size();
-        if ("HALT".equals(interpRunState) || "STEP".equals(interpRunState)) 
-        {
-            if (controlPointer == size) 
-            {
-                //we have stepped to the end, so halt
-                interpRunState = "HALT";
-                System.out.println("Reached end, please reset");
-            }
-            else 
-            {
-                interpRunState = "STEP";
-                StateTransition tr = transitions.get(controlPointer);
-                performTransition(tr);
-                controlPointer++;
-            }
+    // don't create an interpreter thread if one is already running
+        if (interpThread!= null && !interpThread.isAlive()) {
+            view.setStepState(); 
+            notInterrupted = false;
+            interpThread = new InterpreterThread();
+            interpThread.start();
         }
     }
     
@@ -231,7 +252,13 @@ public class Interpreter
     */
     public void stop() 
     {
-        System.out.println("Program Stopped");
+        notInterrupted = false;
+        controlPointer = 0;
+        stepCount = 0;
+                
+        synchronized(monitor) {
+            view.setStoppedState();
+        }
         
     }
     
@@ -242,7 +269,11 @@ public class Interpreter
     public void reset() 
     {
         System.out.println("Interpreter reset");
+        reset = true;
+        notInterrupted = false;
         controlPointer = 0;
+        stepCount = 0;
+        
     }
     
     /**  Pause current program
@@ -252,6 +283,8 @@ public class Interpreter
     public void pause() 
     {
         System.out.println("Machine paused");
+        notInterrupted = false;
+        //view.setPauseState();
     }
     
     /**
@@ -315,13 +348,79 @@ public class Interpreter
     private void performTransition(StateTransition transition) 
     {
         String tape = transition.getTape();
-        String initialState = transition.getInitialState();
+        String initialState = transition.getInitialState().trim();
         String readToken = transition.getReadToken();
         String writeToken = transition.getWriteToken();
         String direction = transition.getDirection();
-        String endState = transition.getEndState();
+        String endState = transition.getEndState().trim();
         
+        if ((currentTape.read() == readToken.charAt(0)) || readToken.equals("*")) {
+            interpState = endState;
+            if (direction.equals("LEFT")) {
+                currentTape.moveHeadLeft();
+            }
+            else if (direction.equals("RIGHT")) {
+                currentTape.moveHeadRight();
+            }
+        }
         System.out.printf("On tape %s and initial state %s read for token %s and write token %s then move %s and end in state %s\n", tape, initialState, readToken, writeToken, direction, endState);
-        interpState = endState;
+        
     }
+    
+    private class InterpreterThread extends Thread {
+                /** Handles running of the robot by steeping through commands
+                 * 
+                 * @precondition robot is on and has been run
+                 * @postcondition robot will have stepped through commands
+                 */
+                @Override
+                public void run() {
+                    // step once
+                    synchronized(monitor) {
+                            step();
+                    }
+                    
+                    // continue to step while not interrupted
+                    while (notInterrupted) {
+                            synchronized(monitor) {
+                                step();
+                            }
+                            
+                    }
+                    reset = false;
+                }
+                
+                public void step() {
+                    System.out.println("Program stepped");
+                    int size = transitions.size();
+                    if ("HALT".equals(interpRunState) || "STEP".equals(interpRunState)) 
+                    {
+                        if (controlPointer == size) 
+                        {
+                            //we have stepped to the end, so halt
+                            interpRunState = "HALT";
+                            notInterrupted = false;
+                        }
+                        else 
+                        {
+                            interpRunState = "STEP";
+                            StateTransition tr = transitions.get(controlPointer);
+                            performTransition(tr);
+                            controlPointer++;
+                            stepCount++;
+                            view.updateStepCount(stepCount);
+                            view.updateState(interpState);
+                            view.setTapeContent(currentTape.getContent());
+                        }
+                        try {
+                        //sleep before next instruction
+                            InterpreterThread.sleep(speed);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }                   
+                }
+                    
+    }
+    
 }
