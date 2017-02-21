@@ -229,4 +229,8 @@ public class MachineViewController implements Initializable {
             }
         });
     }    
+
+    public void updateHighlight() {
+        //update the highlight
+    }
 }

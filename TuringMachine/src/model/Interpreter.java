@@ -366,13 +366,16 @@ public class Interpreter
             //move left or right as needed
             if (direction.equals("LEFT")) {
                 currentTape.moveHeadLeft();
+                view.updateHighlight();
             }
             else if (direction.equals("RIGHT")) {
                 currentTape.moveHeadRight();
+                view.updateHighlight();
             }
             //go to new state
             System.out.println(currentTape.getContent());
             interpState = endState;
+            stepCount++;
         }
         System.out.printf("On tape %s and initial state %s read for token %s and write token %s then move %s and end in state %s\n", tape, initialState, readToken, writeToken, direction, endState);
         
@@ -418,7 +421,7 @@ public class Interpreter
                             StateTransition tr = transitions.get(controlPointer);
                             performTransition(tr);
                             controlPointer++;
-                            stepCount++;
+                            //UI update
                             view.updateStepCount(stepCount);
                             view.updateState(interpState);
                             System.out.println(currentTape.getContent());
