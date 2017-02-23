@@ -397,11 +397,7 @@ public class Interpreter
                 public void run() {
                     // step once
                     synchronized(monitor) {
-                        try {
-                            interpThread.sleep(1000-10*view.getSpeed());
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                     
                             step();
                     }
                     
