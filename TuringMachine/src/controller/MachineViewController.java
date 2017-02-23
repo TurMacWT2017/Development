@@ -226,11 +226,17 @@ public class MachineViewController implements Initializable {
             @Override
             public void changed(ObservableValue arg0, Object arg1, Object arg2) {
                     changeLabel.textProperty().setValue(String.valueOf((int)speedSlider.getValue()));
+
+                    //System.out.println("Speed slider = " + getSpeed());  //output speed changes
             }
         });
     }    
 
     public void updateHighlight() {
         //update the highlight
+    }
+    
+    public int getSpeed(){
+        return (int)speedSlider.getValue();
     }
 }

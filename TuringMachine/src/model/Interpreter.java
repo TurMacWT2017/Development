@@ -55,7 +55,6 @@ public class Interpreter
             par = new Parser(this);
             transitions = par.compile();
             currentTape = new Tape(initialInput);
-            
         }
         
     }
@@ -289,6 +288,10 @@ public class Interpreter
         //view.setPauseState();
     }
     
+    public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+    
     /**
      * Retrieves a description of what errors occurred
      * @return 
@@ -315,6 +318,8 @@ public class Interpreter
     {
         return inputCode;
     }
+    
+  
     
     /**
      * Retrieves the initial input if provided in the program file
@@ -388,16 +393,27 @@ public class Interpreter
                  * @postcondition robot will have stepped through commands
                  */
                 @Override
+                @SuppressWarnings("static-access")
                 public void run() {
                     // step once
                     synchronized(monitor) {
+                        try {
+                            interpThread.sleep(1000-10*view.getSpeed());
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                             step();
                     }
                     
                     // continue to step while not interrupted
                     while (notInterrupted) {
                             synchronized(monitor) {
-                                step();
+                                try {
+                                    interpThread.sleep(1000-10*view.getSpeed());
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                    step();
                             }
                             
                     }

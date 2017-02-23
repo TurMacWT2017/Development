@@ -54,7 +54,7 @@ public class Tape {
     }
     
     public char read() {
-        return content[rwHead];
+            return content[rwHead];
     }
     
 }
