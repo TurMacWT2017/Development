@@ -397,23 +397,36 @@ public class Interpreter
                 public void run() {
                     // step once
                     synchronized(monitor) {
-                     
+                           
                             step();
                     }
                     
                     // continue to step while not interrupted
                     while (notInterrupted) {
                             synchronized(monitor) {
-                                try {
-                                    interpThread.sleep(1000-10*view.getSpeed());
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                                    sleep();
                                     step();
                             }
                             
                     }
                     reset = false;
+                }
+                
+                public void sleep(){
+                    //try {
+                        //sleep before next instruction
+                             try {
+                                    if(view.getSpeed()==0)
+                                        interpThread.sleep(5000);
+                                    else
+                                        interpThread.sleep(1000-10*view.getSpeed()+100);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            //InterpreterThread.sleep(speed);
+                        //} catch (InterruptedException ex) {
+                            //Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
+                        //}
                 }
                 
                 public void step() {
@@ -439,12 +452,7 @@ public class Interpreter
                             System.out.println(currentTape.getContent());
                             view.setTapeContent(currentTape.getContent());
                         }
-                        try {
-                        //sleep before next instruction
-                            InterpreterThread.sleep(speed);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        
                     }                   
                 }
                     

@@ -57,7 +57,7 @@
             <Button fx:id="stepButton" layoutX="469.0" layoutY="109.0" mnemonicParsing="false" onAction="#stepButtonClicked" text="Step" AnchorPane.rightAnchor="125.0" />
             <Button fx:id="stopButton" layoutX="522.0" layoutY="109.0" mnemonicParsing="false" onAction="#stopButtonClicked" text="Stop" AnchorPane.rightAnchor="70.0" />
             <Button fx:id="resetButton" layoutX="575.0" layoutY="109.0" mnemonicParsing="false" onAction="#resetButtonClicked" text="Reset" AnchorPane.rightAnchor="10.0" />
-            <Slider fx:id="speedSlider" layoutX="476.0" layoutY="187.0" showTickLabels="true" showTickMarks="true" AnchorPane.rightAnchor="24.0" />
+            <Slider fx:id="speedSlider" layoutX="476.0" layoutY="187.0" showTickLabels="true" showTickMarks="true" value="50" AnchorPane.rightAnchor="24.0" />
             <Label fx:id="changeLabel" layoutX="592.0" layoutY="165.0" text="" AnchorPane.rightAnchor="32.0" />
             <Label layoutX="524.0" layoutY="164.0" text="Speed" AnchorPane.rightAnchor="75.0" />
             <TextField fx:id="currentState" alignment="CENTER" editable="false" layoutX="459.0" layoutY="270.0" AnchorPane.bottomAnchor="75.0" AnchorPane.rightAnchor="10.0" />
