@@ -409,8 +409,7 @@ public class Interpreter
                 
                 public void sleep(){
                         //sleep before next instruction
-                             try {
-                                 
+                             try {                                 
                                     if(view.getSpeed()==0)
                                         interpThread.sleep(5000);
                                     else
