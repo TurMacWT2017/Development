@@ -288,10 +288,6 @@ public class Interpreter
         //view.setPauseState();
     }
     
-    public void setSpeed(int speed) {
-		this.speed = speed;
-	}
-    
     /**
      * Retrieves a description of what errors occurred
      * @return 
@@ -382,7 +378,7 @@ public class Interpreter
             interpState = endState;
             stepCount++;
         }
-        System.out.printf("On tape %s and initial state %s read for token %s and write token %s then move %s and end in state %s\n", tape, initialState, readToken, writeToken, direction, endState);
+        System.out.printf("On tape %s and initial state %s read for token %s and write token %s then move %s and end in state %s at speed %d\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
         
     }
     
@@ -396,8 +392,7 @@ public class Interpreter
                 @SuppressWarnings("static-access")
                 public void run() {
                     // step once
-                    synchronized(monitor) {
-                           
+                    synchronized(monitor) {                           
                             step();
                     }
                     
@@ -413,20 +408,15 @@ public class Interpreter
                 }
                 
                 public void sleep(){
-                    //try {
                         //sleep before next instruction
                              try {
                                     if(view.getSpeed()==0)
                                         interpThread.sleep(5000);
                                     else
-                                        interpThread.sleep(1000-10*view.getSpeed()+100);
+                                        interpThread.sleep(2000-20*view.getSpeed());
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                            //InterpreterThread.sleep(speed);
-                        //} catch (InterruptedException ex) {
-                            //Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
-                        //}
                 }
                 
                 public void step() {
