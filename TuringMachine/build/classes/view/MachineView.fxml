@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MachineViewController">
@@ -20,7 +21,7 @@
         <Menu mnemonicParsing="false" text="File">
           <items>
             <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openFileMenuItemClicked" text="Open…" />
-            <Menu fx:id ="recentFilesMenu" mnemonicParsing="false" text="Open Recent"/>
+            <Menu fx:id="recentFilesMenu" mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Close" />
             <MenuItem fx:id="menuQuitButton" mnemonicParsing="false" onAction="#menuQuitButtonClicked" text="Quit" />
@@ -66,7 +67,11 @@
             <Label layoutX="458.0" layoutY="309.0" text="Steps" AnchorPane.bottomAnchor="46.0" AnchorPane.rightAnchor="145.0" />
             <AnchorPane layoutX="5.0" layoutY="75.0" prefHeight="290.0" prefWidth="442.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="193.0" AnchorPane.topAnchor="75.0">
                <children>
-                  <ScrollPane fx:id="diagramDisplay" prefHeight="290.0" prefWidth="445.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Pane fx:id="diagramDisplay" prefHeight="290.0" prefWidth="442.0">
+                     <children>
+                        <Canvas fx:id="canvas" height="5000" width="5000" />
+                     </children>
+                  </Pane>
                </children>
             </AnchorPane>
          </children>

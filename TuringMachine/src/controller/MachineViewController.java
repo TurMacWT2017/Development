@@ -30,6 +30,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -37,6 +38,12 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Interpreter;
 import model.InterpreterException;
+
+import javafx.scene.canvas.Canvas;
+import javafx.scene.input.MouseEvent;
+import javafx.event.EventHandler;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -52,10 +59,15 @@ public class MachineViewController implements Initializable {
     @FXML private Button tapeOneClearButton;
     //Menu Buttons
     //Displays
-    @FXML private ScrollPane diagramDisplay;
+    @FXML private Pane diagramDisplay;
     @FXML private TextField currentState;
     @FXML private TextField currentSteps;
     @FXML private TextField tapeOne;
+    
+    @FXML private Canvas canvas;
+    private static int XCOORD = 10;
+    private static int YCOORD = 10;
+    private static final int RADIUS = 30;
     
     @FXML private Slider speedSlider;
     @FXML private Label changeLabel;
@@ -230,6 +242,8 @@ public class MachineViewController implements Initializable {
                     //System.out.println("Speed slider = " + getSpeed());  //output speed changes
             }
         });
+        
+        drawState();
     }    
 
     public void updateHighlight() {
@@ -238,5 +252,32 @@ public class MachineViewController implements Initializable {
     
     public int getSpeed(){
         return (int)speedSlider.getValue();
+    }
+    
+    public void drawState() {
+        // Draw circles representing State Diagrams
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setFill(Color.BLACK);
+        gc.setStroke(Color.CHARTREUSE);
+        gc.setLineWidth(5);
+        
+        diagramDisplay.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                // fillOval is a filled in circle, strokeOval is an outline
+                gc.fillOval(XCOORD, YCOORD, RADIUS, RADIUS);
+                gc.strokeOval(XCOORD, YCOORD, RADIUS, RADIUS);
+
+                if (XCOORD + 50 < diagramDisplay.getWidth())
+                {
+                    XCOORD += 50;
+                }
+                else
+                {
+                    XCOORD = 10;
+                    YCOORD +=50;
+                }
+            }
+        });
     }
 }
