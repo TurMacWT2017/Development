@@ -245,8 +245,8 @@ public class MachineViewController implements Initializable {
             }
         });
         
-        canvas.minHeight(diagramDisplay.getHeight());
-        canvas.minWidth(diagramDisplay.getWidth());
+        //canvas.minHeight(diagramDisplay.getHeight());
+        //canvas.minWidth(diagramDisplay.getWidth());
         
         drawState();
     }    
@@ -272,6 +272,8 @@ public class MachineViewController implements Initializable {
                 // fillOval is a filled in circle, strokeOval is an outline
                 gc.fillOval(XCOORD, YCOORD, RADIUS, RADIUS);
                 gc.strokeOval(XCOORD, YCOORD, RADIUS, RADIUS);
+                
+                // connect the "states" with a line from center to center
                 gc.strokeLine(XCOORD+15, YCOORD+15, XCOORD+115, YCOORD+15);
 
                 if (XCOORD + 100 < diagramDisplay.getWidth())
