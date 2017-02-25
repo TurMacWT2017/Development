@@ -44,6 +44,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 
 /**
  *
@@ -67,7 +69,7 @@ public class MachineViewController implements Initializable {
     @FXML private Canvas canvas;
     private static int XCOORD = 10;
     private static int YCOORD = 10;
-    private static final int RADIUS = 30;
+    private static final double RADIUS = 30.0;
     
     @FXML private Slider speedSlider;
     @FXML private Label changeLabel;
@@ -243,6 +245,9 @@ public class MachineViewController implements Initializable {
             }
         });
         
+        canvas.minHeight(diagramDisplay.getHeight());
+        canvas.minWidth(diagramDisplay.getWidth());
+        
         drawState();
     }    
 
@@ -258,24 +263,25 @@ public class MachineViewController implements Initializable {
         // Draw circles representing State Diagrams
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.BLACK);
-        gc.setStroke(Color.CHARTREUSE);
-        gc.setLineWidth(5);
-        
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+
         diagramDisplay.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
                 // fillOval is a filled in circle, strokeOval is an outline
                 gc.fillOval(XCOORD, YCOORD, RADIUS, RADIUS);
                 gc.strokeOval(XCOORD, YCOORD, RADIUS, RADIUS);
+                gc.strokeLine(XCOORD+15, YCOORD+15, XCOORD+115, YCOORD+15);
 
-                if (XCOORD + 50 < diagramDisplay.getWidth())
+                if (XCOORD + 100 < diagramDisplay.getWidth())
                 {
-                    XCOORD += 50;
+                    XCOORD += 100;
                 }
                 else
                 {
                     XCOORD = 10;
-                    YCOORD +=50;
+                    YCOORD += 100;
                 }
             }
         });

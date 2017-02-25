@@ -69,7 +69,7 @@
                <children>
                   <Pane fx:id="diagramDisplay" prefHeight="290.0" prefWidth="442.0">
                      <children>
-                        <Canvas fx:id="canvas" height="5000" width="5000" />
+                        <Canvas fx:id="canvas" height="290" width="442"/>
                      </children>
                   </Pane>
                </children>
