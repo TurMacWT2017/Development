@@ -5,6 +5,7 @@
         <group>
             <file>file:/home/student/cs4391/turingMachine/TuringMachine/src/model/Interpreter.java</file>
             <file>file:/home/student/cs4391/turingMachine/TuringMachine/src/controller/MachineViewController.java</file>
+            <file>file:/home/student/cs4391/turingMachine/TuringMachine/src/view/codeView.fxml</file>
             <file>file:/home/student/cs4391/turingMachine/TuringMachine/src/view/MachineView.fxml</file>
             <file>file:/home/student/cs4391/turingMachine/TuringMachine/src/controller/Tape.java</file>
         </group>

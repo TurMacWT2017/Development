@@ -72,7 +72,7 @@
          </children>
     </AnchorPane>
   </children>
-  <stylesheets>
-    <URL value="@../TuringMachinePrototype/BasicApplication.css" />
-  </stylesheets>
+  <!-- <stylesheets> -->
+   <!-- <URL value="@../TuringMachinePrototype/BasicApplication.css" /> -->
+  <!-- </stylesheets> -->
 </VBox>

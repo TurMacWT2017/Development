@@ -7,6 +7,7 @@ import java.util.*;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.TextInputDialog;
 
 /**
  *
@@ -110,6 +111,23 @@ public class Interpreter
             String firstLine = input.substring(0, semicolon+1);
             input = input.replace(firstLine, "");
             lineNum++;
+        }
+        else
+        {
+            TextInputDialog dialog = new TextInputDialog("Tape String");
+            dialog.setTitle("Initial Tape Input a");
+            dialog.setHeaderText("Initial Tape Input");
+            dialog.setContentText("Enter initial Tape input:");
+
+            // Traditional way to get the response value.
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()){
+                System.out.println("Tape Input: " + result.get());
+                initialInput = result.get();
+            }
+
+            // The Java 8 way to get the response value (with lambda expression).
+            //result.ifPresent(input -> System.out.println("Input: " + input));
         }
         
         input = input.replaceAll("\n", "");
@@ -412,8 +430,10 @@ public class Interpreter
                              try {
                                  
                                     if(view.getSpeed()==0)
+                                        //interpThread.sleep(500);
                                         interpThread.sleep(5000);
                                     else
+                                        //interpThread.sleep(500);
                                         interpThread.sleep(2000-20*view.getSpeed());
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
