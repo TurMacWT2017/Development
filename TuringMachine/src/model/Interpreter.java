@@ -101,6 +101,7 @@ public class Interpreter
         int lineNum = 0;
         String errorString;
        
+        // if initial tape input string supplied by .tm program
         if (input.toLowerCase().startsWith("input: ")) 
         {
             System.out.println("Initial input provided");
@@ -113,21 +114,18 @@ public class Interpreter
             lineNum++;
         }
         else
-        {
+        {   // if no tape input initial string supplied...
             TextInputDialog dialog = new TextInputDialog("Tape String");
             dialog.setTitle("Initial Tape Input a");
             dialog.setHeaderText("Initial Tape Input");
             dialog.setContentText("Enter initial Tape input:");
 
-            // Traditional way to get the response value.
+            // User input acceptance, for tape input string
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()){
                 System.out.println("Tape Input: " + result.get());
                 initialInput = result.get();
             }
-
-            // The Java 8 way to get the response value (with lambda expression).
-            //result.ifPresent(input -> System.out.println("Input: " + input));
         }
         
         input = input.replaceAll("\n", "");
