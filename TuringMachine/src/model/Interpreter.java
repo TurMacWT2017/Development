@@ -177,7 +177,7 @@ public class Interpreter
             if (i%6 == 2)
             {
                 String token = tokens[i].trim();
-                if (token.matches("[*]")) {
+                if (token.equals("*")) {
                     tokens[i] = "WILDCARD";
                 }
                 tokens[i] = token;
@@ -209,7 +209,7 @@ public class Interpreter
                     //moveLeft();
                     tokens[i] = "LEFT";
                 }
-                else if (token.matches("[*|_]"))
+                else if (token.equalsIgnoreCase("*") || token.equalsIgnoreCase("_"))
                 {
                     //stay();
                     tokens[i] = "STAY";

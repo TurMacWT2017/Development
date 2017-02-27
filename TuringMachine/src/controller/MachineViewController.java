@@ -43,6 +43,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
@@ -61,7 +62,6 @@ public class MachineViewController implements Initializable {
     @FXML private Button tapeOneClearButton;
     //Menu Buttons
     //Displays
-    @FXML private Pane diagramDisplay;
     @FXML private TextField currentState;
     @FXML private TextField currentSteps;
     @FXML private TextField tapeOne;
@@ -76,11 +76,12 @@ public class MachineViewController implements Initializable {
     @FXML private MenuItem openMenuItem;
     @FXML private MenuItem menuQuitButton;
     @FXML private MenuItem recentFilesMenu;
+    @FXML private AnchorPane diagramDisplay;
     //Code Window 
     //@FXML private TextArea codeDisplay;
     
     //Machine Controller
-    private MachineController controller = new MachineController();
+    private final MachineController controller = new MachineController();
     //Interpreter instance (new interpreter is created on load of a program)
     private Interpreter interp;
     private ArrayList<File> recentFiles;
@@ -245,8 +246,15 @@ public class MachineViewController implements Initializable {
             }
         });
         
-        //canvas.minHeight(diagramDisplay.getHeight());
-        //canvas.minWidth(diagramDisplay.getWidth());
+        diagramDisplay.prefWidthProperty().addListener((ov, oldValue, newValue) -> {
+            canvas.setWidth(newValue.doubleValue());
+            System.out.println("diagram display resized");
+        });
+
+        diagramDisplay.prefHeightProperty().addListener((ov, oldValue, newValue) -> {
+            canvas.setHeight(newValue.doubleValue());
+            System.out.println("diagram display resized");
+        });
         
         drawState();
     }    
@@ -266,7 +274,7 @@ public class MachineViewController implements Initializable {
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
 
-        diagramDisplay.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
                 // fillOval is a filled in circle, strokeOval is an outline
@@ -276,7 +284,7 @@ public class MachineViewController implements Initializable {
                 // connect the "states" with a line from center to center
                 gc.strokeLine(XCOORD+15, YCOORD+15, XCOORD+115, YCOORD+15);
 
-                if (XCOORD + 100 < diagramDisplay.getWidth())
+                if (XCOORD + 100 < canvas.getWidth())
                 {
                     XCOORD += 100;
                 }
