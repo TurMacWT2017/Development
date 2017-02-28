@@ -152,6 +152,7 @@ public class MachineViewController implements Initializable {
         fileChooser.setInitialDirectory(initialDirectory);
         File selectedFile = fileChooser.showOpenDialog(tapeOne.getScene().getWindow());
         if (selectedFile != null) {
+            tapeOne.getChildren().clear();
             String input = controller.openFile(selectedFile);
             //when initializing interpreter, give it both an input and a view controller (this) to work with
             interp = new Interpreter(input, this);
