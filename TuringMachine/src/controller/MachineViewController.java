@@ -158,9 +158,9 @@ public class MachineViewController implements Initializable {
                 }
                 
             }
-            else
-                try {
-                    launchCodeWindow(input);
+            else {
+                //try {
+                //    launchCodeWindow(input);
                     Text text1 = new Text(input);
                     text1.setFont(Font.font("Courier New", 14));
                     codeViewTab.getChildren().add(text1);
@@ -172,8 +172,8 @@ public class MachineViewController implements Initializable {
                 } catch (InterpreterException ex) {
                     Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                } catch (IOException ex) {
-                    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+                //} catch (IOException ex) {
+                //    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }
         }       
     }
