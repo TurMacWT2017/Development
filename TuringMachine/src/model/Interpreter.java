@@ -67,7 +67,7 @@ public class Interpreter
     }
     
     
-    /* To highlight text in a JavaFX textField */
+    /* To highlight text in a JavaFX textField (for R/W Head location) */
     /*public void handle(ActionEvent t) {
             textField.requestFocus(); // get focus first
             textField.positionCaret(0);
@@ -384,12 +384,19 @@ public class Interpreter
     private void performTransition(StateTransition transition) 
     {
         String tape = transition.getTape();
+        //System.out.println(tape);
         String initialState = transition.getInitialState().trim();
+        //System.out.println(initialState);
         String readToken = transition.getReadToken();
+        //System.out.println(readToken);
         String writeToken = transition.getWriteToken();
+        //System.out.println(writeToken);
         String direction = transition.getDirection();
+        //System.out.println(direction);
         String endState = transition.getEndState().trim();
+        //System.out.println(endState);
         
+        interpState = initialState;
         //if current token matches or is wildcard
         if ((currentTape.read() == readToken.charAt(0)) || readToken.equals("WILDCARD")) {
             //if no change requested, write no new token, otherwise write
@@ -416,7 +423,12 @@ public class Interpreter
             }
             stepCount++;
         }
-        System.out.printf("On tape %s and initial state %s read for token %s and write token %s then move %s and end in state %s at speed %d\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
+        else {
+            // else stuff
+            interpState = initialState;
+            stepCount++;
+        }
+        System.out.printf("Tape %s\n Initial state %s\n Read Token %s\n Write Token %s\n Move %s\n End State %s\n Speed %d\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
         
     }
     
