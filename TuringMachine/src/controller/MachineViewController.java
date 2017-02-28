@@ -298,6 +298,10 @@ public class MachineViewController implements Initializable {
         
         //draw all the states
         for (int i = 0; i< nodeCount; i++) {
+                String stateName = states.get(i).getInitialState();
+                String rToken = states.get(i).getReadToken();
+                String wToken = states.get(i).getWriteToken();
+                String direction = states.get(i).getDirection();
                 gc.setFill(Color.WHITE);
                 // fillOval is a filled in circle, strokeOval is an outline
                 gc.fillOval(XCOORD, YCOORD, RADIUS, RADIUS);
@@ -309,10 +313,6 @@ public class MachineViewController implements Initializable {
                     gc.strokeLine(XCOORD+30, YCOORD+15, XCOORD+130, YCOORD+15);
                 
                 //draw label
-                String stateName = states.get(i).getInitialState();
-                String rToken = states.get(i).getReadToken();
-                String wToken = states.get(i).getWriteToken();
-                String direction = states.get(i).getDirection();
                 //change font color to black
                 gc.setFill(Color.BLACK);
                 gc.fillText(stateName, XCOORD + RADIUS, YCOORD + RADIUS);
