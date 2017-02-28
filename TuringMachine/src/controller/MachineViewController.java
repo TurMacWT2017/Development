@@ -47,6 +47,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import javafx.scene.text.Text;
+import model.StateTransition;
 
 /**
  *
@@ -137,8 +139,8 @@ public class MachineViewController implements Initializable {
         File selectedFile = fileChooser.showOpenDialog(tapeOne.getScene().getWindow());
         if (selectedFile != null) {
             String input = controller.openFile(selectedFile);
-            interp = new Interpreter(input);
-            interp.setViewController(this);
+            //when initializing interpreter, give it both an input and a view controller (this) to work with
+            interp = new Interpreter(input, this);
 //            recentFiles.add(selectedFile);
             //launch window to show code or error
             if (interp.errorFound()) {
@@ -201,7 +203,9 @@ public class MachineViewController implements Initializable {
     
     @FXML
     public void setStartState() {
-        System.out.println("Machine started..."); //To change body of generated methods, choose Tools | Templates.
+        runButton.setDisable(false);
+        stopButton.setDisable(false);
+        stepButton.setDisable(false);
     }
     
     @FXML
@@ -212,7 +216,13 @@ public class MachineViewController implements Initializable {
     @FXML
     public void setStoppedState() {
         System.out.println("Machine stopped");
-        runButton.setText("Run");
+        Platform.runLater(() -> {
+            runButton.setText("Run");
+        });
+        runButton.setDisable(true);
+        stopButton.setDisable(true);
+        stepButton.setDisable(true);
+        
     }
 
     @FXML
@@ -256,7 +266,11 @@ public class MachineViewController implements Initializable {
             System.out.println("diagram display resized");
         });
         
-        drawState();
+        canvas.widthProperty().bind(
+                       diagramDisplay.widthProperty());
+        canvas.heightProperty().bind(
+                       diagramDisplay.heightProperty());
+        
     }    
 
     public void updateHighlight() {
@@ -267,33 +281,47 @@ public class MachineViewController implements Initializable {
         return (int)speedSlider.getValue();
     }
     
-    public void drawState() {
+    public void drawStates(ArrayList<StateTransition> states) {
         // Draw circles representing State Diagrams
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setFill(Color.BLACK);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
-
-        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
+        //get the number of states
+        int nodeCount = states.size();
+        
+        //draw all the states
+        for (int i = 0; i< nodeCount; i++) {
+                gc.setFill(Color.WHITE);
                 // fillOval is a filled in circle, strokeOval is an outline
                 gc.fillOval(XCOORD, YCOORD, RADIUS, RADIUS);
                 gc.strokeOval(XCOORD, YCOORD, RADIUS, RADIUS);
                 
                 // connect the "states" with a line from center to center
-                gc.strokeLine(XCOORD+15, YCOORD+15, XCOORD+115, YCOORD+15);
+                // unless it's the last state, then it won't need a line.
+                if (i < nodeCount - 1) 
+                    gc.strokeLine(XCOORD+30, YCOORD+15, XCOORD+130, YCOORD+15);
+                
+                //draw label
+                String stateName = states.get(i).getInitialState();
+                String rToken = states.get(i).getReadToken();
+                String wToken = states.get(i).getWriteToken();
+                String direction = states.get(i).getDirection();
+                //change font color to black
+                gc.setFill(Color.BLACK);
+                gc.fillText(stateName, XCOORD + RADIUS, YCOORD + RADIUS);
+                //draw transition info
+                gc.fillText(rToken + ", " + wToken + ", " + direction, XCOORD + 35, YCOORD+10);
 
-                if (XCOORD + 100 < canvas.getWidth())
+                if (XCOORD + 150 < canvas.getWidth())
                 {
-                    XCOORD += 100;
+                    XCOORD += 115;
                 }
                 else
                 {
                     XCOORD = 10;
-                    YCOORD += 100;
+                    YCOORD += 50;
                 }
-            }
-        });
+        }
+            
     }
 }

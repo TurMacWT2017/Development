@@ -47,15 +47,16 @@ public class Interpreter
     * <pre> Post condition: New Interpreter created </pre> 
      * @param input the String representation of the *.tm program file
     */
-    public Interpreter(String input) 
+    public Interpreter(String input, MachineViewController view) 
     {
-        
+        this.view = view;
         tokenize(input);
         if (errorsPresent == false) 
         {
             par = new Parser(this);
             transitions = par.compile();
             currentTape = new Tape(initialInput);
+            view.drawStates(transitions);
         }
         
     }
@@ -290,6 +291,13 @@ public class Interpreter
         notInterrupted = false;
         controlPointer = 0;
         stepCount = 0;
+        //update the tape
+        currentTape.setContent(initialInput);
+        //update the view
+        view.setTapeContent(initialInput);
+        view.updateState("");
+        view.updateStepCount(0);
+        view.setStartState();
         
     }
     
@@ -392,6 +400,11 @@ public class Interpreter
             //go to new state
             System.out.println(currentTape.getContent());
             interpState = endState;
+            //check if a halt state has been reached, if so, HALT
+            if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejectHalt")) {
+                notInterrupted = false;
+                view.setStoppedState();
+            }
             stepCount++;
         }
         System.out.printf("On tape %s and initial state %s read for token %s and write token %s then move %s and end in state %s at speed %d\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
@@ -424,17 +437,17 @@ public class Interpreter
                 }
                 
                 public void sleep(){
-                        //sleep before next instruction
-                             try {                                 
-                                    if(view.getSpeed()==0)
-                                        //interpThread.sleep(500);
-                                        interpThread.sleep(5000);
-                                    else
-                                        //interpThread.sleep(500);
-                                        interpThread.sleep(2000-20*view.getSpeed());
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                    //sleep before next instruction
+                    try {                                 
+                           if(view.getSpeed()==0)
+                               //interpThread.sleep(500);
+                               interpThread.sleep(5000);
+                           else
+                               //interpThread.sleep(500);
+                               interpThread.sleep(2000-20*view.getSpeed());
+                       } catch (InterruptedException ex) {
+                           Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
+                       }
                 }
                 
                 public void step() {
@@ -447,6 +460,7 @@ public class Interpreter
                             //we have stepped to the end, so halt
                             interpRunState = "HALT";
                             notInterrupted = false;
+                            view.setStoppedState();
                         }
                         else 
                         {
@@ -459,6 +473,7 @@ public class Interpreter
                             view.updateState(interpState);
                             System.out.println(currentTape.getContent());
                             view.setTapeContent(currentTape.getContent());
+
                         }
                         
                     }                   

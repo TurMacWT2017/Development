@@ -5,6 +5,7 @@
  */
 package model;
 
+import controller.MachineViewController;
 import java.util.ArrayList;
 
 /**
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class Parser {
     private Interpreter interp;
     private String[] tokens;
+    private MachineViewController view;
     
     public Parser(Interpreter interp) {
         this.interp = interp;
@@ -39,6 +41,7 @@ public class Parser {
             String dir = tokens[i+4];
             String eS = tokens[i+5];
             transitions.add(new StateTransition(tape, iS, read, write, dir, eS));
+            
         }
         return transitions;
     }
