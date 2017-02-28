@@ -123,6 +123,7 @@ public class MachineViewController implements Initializable {
     @FXML
     private void resetButtonClicked(ActionEvent event) {
         interp.reset();
+        tapeOne.getChildren().clear();
  //       tm.resetRWHead();
     }
     
