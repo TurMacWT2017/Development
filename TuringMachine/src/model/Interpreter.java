@@ -291,6 +291,8 @@ public class Interpreter
         notInterrupted = false;
         controlPointer = 0;
         stepCount = 0;
+        //reset rwhead
+        currentTape.resetHead();
         //update the tape
         currentTape.setContent(initialInput);
         //update the view

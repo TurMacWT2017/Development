@@ -7,6 +7,10 @@
             <file>file:/home/student/Documents/turingMachine/TuringMachine/src/model/Interpreter.java</file>
             <file>file:/home/student/Documents/turingMachine/TuringMachine/src/controller/Tape.java</file>
             <file>file:/home/student/Documents/turingMachine/TuringMachine/src/view/MachineView.fxml</file>
+            <file>file:/home/student/Documents/turingMachine/TuringMachine/src/model/StateTransition.java</file>
+            <file>file:/home/student/Documents/turingMachine/TuringMachine/src/model/Parser.java</file>
+            <file>file:/home/student/Documents/turingMachine/TuringMachine/src/view/machineViewStyle.css</file>
+            <file>file:/home/student/Documents/turingMachine/TuringMachine/src/controller/MachineController.java</file>
         </group>
     </open-files>
 </project-private>

@@ -48,7 +48,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import model.StateTransition;
 
@@ -68,7 +70,7 @@ public class MachineViewController implements Initializable {
     //Displays
     @FXML private TextField currentState;
     @FXML private TextField currentSteps;
-    @FXML private TextField tapeOne;
+    @FXML private TextFlow tapeOne;
     
     @FXML private Canvas canvas;
     private static int XCOORD = 10;
@@ -162,7 +164,9 @@ public class MachineViewController implements Initializable {
                     Text text1 = new Text(input);
                     text1.setFont(Font.font("Courier New", 14));
                     codeViewTab.getChildren().add(text1);
-                    tapeOne.setText(interp.getInitialInput());
+                    Text inputText = new Text(interp.getInitialInput());
+                    tapeOne.getChildren().add(inputText);
+                    //tapeOne.setText(interp.getInitialInput());
                 try {
                     interp.start();
                 } catch (InterpreterException ex) {
@@ -176,8 +180,9 @@ public class MachineViewController implements Initializable {
     
     @FXML
     private void tapeOneClearButtonClicked(ActionEvent event) {
-        tapeOne.setText("");
+        //tapeOne.setText("");
 //        tm.clearTape();
+        tapeOne.getChildren().clear();
     }
     
     private void launchCodeWindow(String content) throws IOException {
@@ -245,11 +250,20 @@ public class MachineViewController implements Initializable {
     
     @FXML
     public String getTapeInput() {
-        return tapeOne.getText();
+        return tapeOne.getChildren().toString();
     }
         
     public void setTapeContent(String content) {
-        tapeOne.setText(content);
+        Text tapeContent = new Text(content);
+        tapeContent.setFill(Color.RED);
+        tapeContent.setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
+        tapeContent.setTextAlignment(TextAlignment.CENTER);
+        Platform.runLater(() -> {
+            tapeOne.getChildren().clear();
+            tapeOne.getChildren().add(tapeContent);
+        });
+        
+//        tapeOne.setText(content);
     }
     
     @Override
