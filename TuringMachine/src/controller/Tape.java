@@ -57,4 +57,8 @@ public class Tape {
         return content[rwHead];
     }
     
+    public int getHead() {
+        return rwHead;
+    }
+    
 }

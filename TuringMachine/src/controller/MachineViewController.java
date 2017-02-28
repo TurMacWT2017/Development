@@ -60,6 +60,10 @@ import model.StateTransition;
  */
 public class MachineViewController implements Initializable {
     
+    //used for text formatting in tape, changing text here will change tape text for the program
+    private String family = "Helvetica";
+    private int size = 16;
+    
     //UI Buttons
     @FXML private Button runButton;
     @FXML private Button stepButton;
@@ -164,8 +168,6 @@ public class MachineViewController implements Initializable {
                     Text text1 = new Text(input);
                     text1.setFont(Font.font("Courier New", 14));
                     codeViewTab.getChildren().add(text1);
-                    Text inputText = new Text(interp.getInitialInput());
-                    tapeOne.getChildren().add(inputText);
                     //tapeOne.setText(interp.getInitialInput());
                 try {
                     interp.start();
@@ -252,16 +254,45 @@ public class MachineViewController implements Initializable {
     public String getTapeInput() {
         return tapeOne.getChildren().toString();
     }
-        
+    @FXML
+    public void setInitialTapeContent(String content) {
+        Text input = new Text(content);
+        input.setFont((Font.font(family, size)));
+        tapeOne.getChildren().add(input);
+    }
+    @FXML
     public void setTapeContent(String content) {
-        Text tapeContent = new Text(content);
-        tapeContent.setFill(Color.RED);
-        tapeContent.setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
-        tapeContent.setTextAlignment(TextAlignment.CENTER);
-        Platform.runLater(() -> {
-            tapeOne.getChildren().clear();
-            tapeOne.getChildren().add(tapeContent);
-        });
+       
+        int headLocation = interp.getRWHead();
+        System.out.println(headLocation);
+        if (headLocation == 0) {
+            Text tapeContentHead = new Text(Character.toString(content.charAt(0)));
+            Text tapeContentRight = new Text(content.substring(headLocation + 1));
+            tapeContentHead.setFill(Color.RED);
+            tapeContentHead.setFont((Font.font(family, FontWeight.BOLD, size)));
+            tapeContentRight.setFont((Font.font(family, size)));
+            Platform.runLater(() -> {
+                tapeOne.getChildren().clear();
+                tapeOne.getChildren().addAll(tapeContentHead, tapeContentRight);
+            });
+        }
+        else {
+            Text tapeContentLeft = new Text(content.substring(0, headLocation));
+            Text tapeContentRight = new Text(content.substring(headLocation + 1));
+            //Text tapeContentHead = new Text(content.substring(headLocation, headLocation));
+            Text tapeContentHead = new Text(Character.toString(content.charAt(headLocation)));
+            tapeContentHead.setFill(Color.RED);
+            tapeContentHead.setFont((Font.font(family, FontWeight.BOLD, size)));
+            tapeContentLeft.setFont((Font.font(family, size)));
+            tapeContentRight.setFont((Font.font(family, size)));
+            //tapeContentHead.setFont(Font.font("Helvetica",FontWeight.BOLD, 15));
+            Platform.runLater(() -> {
+                tapeOne.getChildren().clear();
+                tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
+            });
+        }
+
+
         
 //        tapeOne.setText(content);
     }

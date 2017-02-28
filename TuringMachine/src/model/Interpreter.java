@@ -57,6 +57,7 @@ public class Interpreter
             transitions = par.compile();
             currentTape = new Tape(initialInput);
             view.drawStates(transitions);
+            view.setInitialTapeContent(initialInput);
         }
         
     }
@@ -334,15 +335,21 @@ public class Interpreter
     
     /**
      * Retrieves the *.tm program code
-     * @return 
+     * @return input code
      */
     public String getMachineCode() 
     {
         return inputCode;
     }
     
-  
-    
+    /**
+     * Retrieves the current rwHead location
+     * @return rwhead location
+     */
+    public int getRWHead() {
+        return currentTape.getHead();
+    }
+       
     /**
      * Retrieves the initial input if provided in the program file
      * @return 
@@ -403,7 +410,7 @@ public class Interpreter
             System.out.println(currentTape.getContent());
             interpState = endState;
             //check if a halt state has been reached, if so, HALT
-            if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejectHalt")) {
+            if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejecthalt")) {
                 notInterrupted = false;
                 view.setStoppedState();
             }
