@@ -47,7 +47,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import model.StateTransition;
 
 /**
@@ -79,6 +81,7 @@ public class MachineViewController implements Initializable {
     @FXML private MenuItem menuQuitButton;
     @FXML private MenuItem recentFilesMenu;
     @FXML private AnchorPane diagramDisplay;
+    @FXML private TextFlow codeViewTab;
     //Code Window 
     //@FXML private TextArea codeDisplay;
     
@@ -87,6 +90,8 @@ public class MachineViewController implements Initializable {
     //Interpreter instance (new interpreter is created on load of a program)
     private Interpreter interp;
     private ArrayList<File> recentFiles;
+    //list of states, used in drawing
+    ArrayList<StateTransition> currentStates;
     
     
     //private Tape tm = new charTape();
@@ -153,7 +158,10 @@ public class MachineViewController implements Initializable {
             }
             else
                 try {
-                    launchCodeWindow(input);                    
+                    launchCodeWindow(input);
+                    Text text1 = new Text(input);
+                    text1.setFont(Font.font("Courier New", 14));
+                    codeViewTab.getChildren().add(text1);
                     tapeOne.setText(interp.getInitialInput());
                 try {
                     interp.start();
@@ -255,16 +263,9 @@ public class MachineViewController implements Initializable {
                     //System.out.println("Speed slider = " + getSpeed());  //output speed changes
             }
         });
-        
-        diagramDisplay.prefWidthProperty().addListener((ov, oldValue, newValue) -> {
-            canvas.setWidth(newValue.doubleValue());
-            System.out.println("diagram display resized");
-        });
 
-        diagramDisplay.prefHeightProperty().addListener((ov, oldValue, newValue) -> {
-            canvas.setHeight(newValue.doubleValue());
-            System.out.println("diagram display resized");
-        });
+        canvas.widthProperty().addListener(observable -> redraw());
+        canvas.heightProperty().addListener(observable -> redraw());
         
         canvas.widthProperty().bind(
                        diagramDisplay.widthProperty());
@@ -283,7 +284,13 @@ public class MachineViewController implements Initializable {
     
     public void drawStates(ArrayList<StateTransition> states) {
         // Draw circles representing State Diagrams
+        // keep the states in case we have to redraw because of a resize
+        currentStates = states;
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        // Reset the canvas from any previous drawings
+        XCOORD = 10;
+        YCOORD = 10;
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
         //get the number of states
@@ -323,5 +330,12 @@ public class MachineViewController implements Initializable {
                 }
         }
             
+    }
+
+    private void redraw() {
+        if (currentStates != null) {
+            drawStates(currentStates);
+        }
+        
     }
 }
