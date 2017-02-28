@@ -300,6 +300,7 @@ public class Interpreter
         view.setTapeContent(initialInput);
         view.updateState("");
         view.updateStepCount(0);
+        
         view.setStartState();
         
     }
