@@ -46,6 +46,7 @@ public class Interpreter
     * <pre> Pre condition: Interpreter does not yet exist </pre>
     * <pre> Post condition: New Interpreter created </pre> 
      * @param input the String representation of the *.tm program file
+     * @param view an instance of the view controller this interpreter will use
     */
     public Interpreter(String input, MachineViewController view) 
     {
@@ -62,6 +63,10 @@ public class Interpreter
         
     }
     
+    /**
+     * Used for setting the view controller of this interpreter to a specific view controller
+     * @param view the view controller to be used
+     */
     public void setViewController(MachineViewController view) {
         this.view = view;
     }
@@ -178,22 +183,22 @@ public class Interpreter
             // Get the token being read
             if (i%6 == 2)
             {
-                String token = tokens[i].trim();
-                if (token.equals("*")) {
-                    tokens[i] = "WILDCARD";
-                }
-                tokens[i] = token;
+                tokens[i] = tokens[i].trim();
+//                if (token.equalsIgnoreCase("*")) {
+//                    tokens[i] = "WILDCARD";
+//                }
+                //tokens[i] = token;
                 
             }
 
             // Write desired token
             if (i%6 == 3)
             {
-                String token = tokens[i].trim();
-                if (token.matches("[*]")) {
-                    tokens[i] = "NO_CHANGE";
-                }
-                tokens[i] = token;
+                tokens[i] = tokens[i].trim();
+//                if (token.equalsIgnoreCase("*")) {
+//                    tokens[i] = "NO_CHANGE";
+//                }
+                //tokens[i] = token;
             }
 
             // Get the direction the read/write head needs to move
@@ -353,7 +358,7 @@ public class Interpreter
        
     /**
      * Retrieves the initial input if provided in the program file
-     * @return 
+     * @return initialInput Strong
      */
     public String getInitialInput()
     {
@@ -362,7 +367,7 @@ public class Interpreter
     
     /**
      * Retrieves the individual tokens
-     * @return 
+     * @return the tokens provided to this interpreter
      */
     public String[] getTokens() 
     {
@@ -371,7 +376,7 @@ public class Interpreter
     
     /**
      * Returns the current state of the machine
-     * @return 
+     * @return current state of this interpreter
      */
     public String getState() 
     {
@@ -399,9 +404,9 @@ public class Interpreter
         
         interpState = initialState;
         //if current token matches or is wildcard
-        if ((currentTape.read() == readToken.charAt(0)) || readToken.equals("WILDCARD")) {
+        if ((currentTape.read() == readToken.charAt(0)) || (readToken.equals("*"))) {
             //if no change requested, write no new token, otherwise write
-            if (!writeToken.equals("NO_CHANGE")) {
+            if (!writeToken.equals("*")) {
                 System.out.println("New token");
                 currentTape.write(writeToken.charAt(0));
             }
@@ -421,6 +426,7 @@ public class Interpreter
             if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejecthalt")) {
                 notInterrupted = false;
                 view.setStoppedState();
+                view.updateState(interpState);
             }
             stepCount++;
         }
@@ -429,6 +435,10 @@ public class Interpreter
             interpState = initialState;
             stepCount++;
         }
+        view.updateStepCount(stepCount);
+        view.updateState(interpState);
+        System.out.println(currentTape.getContent());
+        view.setTapeContent(currentTape.getContent());
         System.out.printf("Tape %s\n Initial state %s\n Read Token %s\n Write Token %s\n Move %s\n End State %s\n Speed %d\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
         
     }
@@ -436,8 +446,8 @@ public class Interpreter
     private class InterpreterThread extends Thread {
                 /** Handles running of the robot by steeping through commands
                  * 
-                 * @precondition robot is on and has been run
-                 * @postcondition robot will have stepped through commands
+                 * <pre> Pre-Condition: interpreter not running </pre>
+                 * <pre> Post-Condition: run will be completed or will have been paused </pre>
                  */
                 @Override
                 @SuppressWarnings("static-access")
@@ -458,6 +468,11 @@ public class Interpreter
                     reset = false;
                 }
                 
+                /**
+                 * Sleeps the interpreter thread between instructions
+                 * <pre> Pre-Condition: Interpreter is running </pre>
+                 * <pre> Post-condition: Interpreter will have sleep for speed </pre>
+                 */
                 public void sleep(){
                     //sleep before next instruction
                     try {                                 
@@ -472,17 +487,32 @@ public class Interpreter
                        }
                 }
                 
+                /**
+                 * Steps through one instruction in the instruction set
+                 * <pre> Pre-condition: Step has been requested </pre>
+                 * <pre> Post-condition: Step will be completed </pre>
+                 */
                 public void step() {
                     System.out.println("Program stepped");
                     int size = transitions.size();
-                    if ("HALT".equals(interpRunState) || "STEP".equals(interpRunState)) 
-                    {
+                    //if ("HALT".equals(interpRunState) || "STEP".equals(interpRunState)) 
+                    //{
                         if (controlPointer == size) 
                         {
                             //we have stepped to the end, so halt
                             interpRunState = "HALT";
                             notInterrupted = false;
                             view.setStoppedState();
+                            if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejecthalt")) {
+                                    //notInterrupted = false;
+                                    //view.setStoppedState();
+                                    view.updateState(interpState);
+                                    System.out.println("end of commands was reached in a halt state");
+                            }
+                            else {
+                                    System.out.println("end of commands was reached but no halt state");
+                            }
+                            
                         }
                         else 
                         {
@@ -490,15 +520,10 @@ public class Interpreter
                             StateTransition tr = transitions.get(controlPointer);
                             performTransition(tr);
                             controlPointer++;
-                            //UI update
-                            view.updateStepCount(stepCount);
-                            view.updateState(interpState);
-                            System.out.println(currentTape.getContent());
-                            view.setTapeContent(currentTape.getContent());
 
                         }
                         
-                    }                   
+                    //}                   
                 }
                     
     }
