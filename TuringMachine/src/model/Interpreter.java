@@ -302,7 +302,7 @@ public class Interpreter
         //update the tape
         currentTape.setContent(initialInput);
         //update the view
-        view.setTapeContent(initialInput);
+        view.updateTapeContent(initialInput);
         view.updateState("");
         view.updateStepCount(0);
         
@@ -438,7 +438,7 @@ public class Interpreter
         view.updateStepCount(stepCount);
         view.updateState(interpState);
         System.out.println(currentTape.getContent());
-        view.setTapeContent(currentTape.getContent());
+        view.updateTapeContent(currentTape.getContent());
         System.out.printf("Tape %s\n Initial state %s\n Read Token %s\n Write Token %s\n Move %s\n End State %s\n Speed %d\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
         
     }
