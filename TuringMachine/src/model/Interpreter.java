@@ -98,6 +98,22 @@ public class Interpreter
         
     }
     
+    public void popup() {
+        
+        // if no tape input initial string supplied...
+        TextInputDialog dialog = new TextInputDialog("Tape String");
+        dialog.setTitle("Initial Tape Input a");
+        dialog.setHeaderText("Initial Tape Input");
+        dialog.setContentText("Enter initial Tape input:");
+
+        // User input acceptance, for tape input string
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            System.out.println("Tape Input: " + result.get());
+            initialInput = result.get();
+        }
+    }
+    
     
     /** Parses the input program into tokens that can be interpreted into the correct symbols
      * 
@@ -121,18 +137,8 @@ public class Interpreter
             lineNum++;
         }
         else
-        {   // if no tape input initial string supplied...
-            TextInputDialog dialog = new TextInputDialog("Tape String");
-            dialog.setTitle("Initial Tape Input a");
-            dialog.setHeaderText("Initial Tape Input");
-            dialog.setContentText("Enter initial Tape input:");
-
-            // User input acceptance, for tape input string
-            Optional<String> result = dialog.showAndWait();
-            if (result.isPresent()){
-                System.out.println("Tape Input: " + result.get());
-                initialInput = result.get();
-            }
+        {   
+            popup();
         }
         
         input = input.replaceAll("\n", "");

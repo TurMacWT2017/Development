@@ -189,6 +189,7 @@ public class MachineViewController implements Initializable {
         //tapeOne.setText("");
 //        tm.clearTape();
         tapeOne.getChildren().clear();
+        interp.popup();
     }
     
     private void launchCodeWindow(String content) throws IOException {
