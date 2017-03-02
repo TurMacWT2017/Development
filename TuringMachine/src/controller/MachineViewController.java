@@ -145,11 +145,11 @@ public class MachineViewController implements Initializable {
     @FXML
     private void openFileMenuItemClicked(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        File initialDirectory = new File("../TestFiles");
+        //File initialDirectory = new File("../TestFiles");
         fileChooser.setTitle("Open Machine File");
         fileChooser.getExtensionFilters().addAll(
                 new ExtensionFilter("Machine Files", "*.tm"));
-        fileChooser.setInitialDirectory(initialDirectory);
+        //fileChooser.setInitialDirectory(initialDirectory);
         File selectedFile = fileChooser.showOpenDialog(tapeOne.getScene().getWindow());
         if (selectedFile != null) {
             tapeOne.getChildren().clear();
