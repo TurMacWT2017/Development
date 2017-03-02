@@ -1,0 +1,10 @@
+Error log:
+
+Input characters disappear sporadically
+If file is opened in full screen, input cannot be seen
+If the machine is resized during run, current state and step boxes are blank
+When adjusting speed during run-time, it freezes the machine.
+When clear button is pressed, the popup box now comes up for a new input, but the input doesn't update until the reset button is pressed.
+TMPal.tm ends with a NullPointerException error in acceptHalt state
+PalindromeNoComment.tm ends in a rejectHalt state 
+If input is not a palindrome and length is 3, throws a StringIndexOutOfBoundsException
