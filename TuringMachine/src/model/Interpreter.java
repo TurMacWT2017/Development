@@ -59,6 +59,9 @@ public class Interpreter
             currentTape = new Tape(initialInput);
             view.drawStates(transitions);
             view.setInitialTapeContent(initialInput);
+            
+            // Set interpreter state to be the start state of the program
+            interpState = transitions.get(0).getInitialState().trim();
         }
         
     }
@@ -408,13 +411,15 @@ public class Interpreter
         String endState = transition.getEndState().trim();
         //System.out.println(endState);
         
-        interpState = initialState;
+        //interpState = initialState;
         //if current token matches or is wildcard
-        if ((currentTape.read() == readToken.charAt(0)) || (readToken.equals("*"))) {
+        //if (interpState.equalsIgnoreCase(initialState) ) {
+            if ((currentTape.read() == readToken.charAt(0)) || (readToken.equals("*"))) {
             //if no change requested, write no new token, otherwise write
             if (!writeToken.equals("*")) {
                 System.out.println("New token");
                 currentTape.write(writeToken.charAt(0));
+                view.updateTapeContent(currentTape.getContent());
             }
             //move left or right as needed
             if (direction.equals("LEFT")) {
@@ -428,23 +433,24 @@ public class Interpreter
             //go to new state
             System.out.println(currentTape.getContent());
             interpState = endState;
+            view.updateState(interpState);
             //check if a halt state has been reached, if so, HALT
             if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejecthalt")) {
                 notInterrupted = false;
                 view.setStoppedState();
-                view.updateState(interpState);
             }
             stepCount++;
-        }
-        else {
-            // else stuff
-            interpState = initialState;
-            stepCount++;
-        }
+            }
+            else {
+                // else stuff
+                //interpState = initialState;
+                stepCount++;
+            }
+        //}
         view.updateStepCount(stepCount);
-        view.updateState(interpState);
+        
         System.out.println(currentTape.getContent());
-        view.updateTapeContent(currentTape.getContent());
+        
         System.out.printf("Tape %s\n Initial state %s\n Read Token %s\n Write Token %s\n Move %s\n End State %s\n Speed %d\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
         
     }

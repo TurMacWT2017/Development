@@ -190,6 +190,7 @@ public class MachineViewController implements Initializable {
 //        tm.clearTape();
         tapeOne.getChildren().clear();
         interp.popup();
+        interp.reset();
     }
     
     private void launchCodeWindow(String content) throws IOException {
