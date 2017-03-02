@@ -42,4 +42,9 @@ public class TuringMachineJFXMLPrototype extends Application {
         launch(args);
     }
     
+    @Override
+    public void stop() {
+        model.Interpreter.haltSimulation();
+    }
+    
 }

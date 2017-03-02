@@ -34,7 +34,7 @@ public class Interpreter
     private int speed = 1000;
     private int stepCount = 0;
     //used to stop the thread if needed.
-    private boolean notInterrupted = true;
+    private static boolean notInterrupted = true;
     private boolean turnedOff = false;
     private boolean reset = false;
     private InterpreterThread interpThread;
@@ -62,6 +62,8 @@ public class Interpreter
             
             // Set interpreter state to be the start state of the program
             interpState = transitions.get(0).getInitialState().trim();
+            view.updateState(interpState);
+            view.updateStepCount(0);
         }
         
     }
@@ -312,9 +314,8 @@ public class Interpreter
         currentTape.setContent(initialInput);
         //update the view
         view.updateTapeContent(initialInput);
-        view.updateState("");
+        view.updateState(transitions.get(0).getInitialState().trim());
         view.updateStepCount(0);
-        
         view.setStartState();
         
     }
@@ -453,6 +454,12 @@ public class Interpreter
         
         System.out.printf("Tape %s\n Initial state %s\n Read Token %s\n Write Token %s\n Move %s\n End State %s\n Speed %d\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
         
+    }
+    /**
+     * Used if an outside class needs to halt simulation in case of close during runtime or other unforeseen issue
+     */
+    public static void haltSimulation() {
+        notInterrupted = false;
     }
     
     private class InterpreterThread extends Thread {
