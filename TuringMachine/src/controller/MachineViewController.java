@@ -43,6 +43,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
@@ -70,22 +72,23 @@ public class MachineViewController implements Initializable {
     @FXML private Button stopButton;
     @FXML private Button resetButton;
     @FXML private Button tapeOneClearButton;
-    //Menu Buttons
     //Displays
     @FXML private TextField currentState;
     @FXML private TextField currentSteps;
     @FXML private TextFlow tapeOne;
-    
+    //Canvas
     @FXML private Canvas canvas;
     private static int XCOORD = 10;
     private static int YCOORD = 10;
     private static final double RADIUS = 30.0;
-    
+    //Slider
     @FXML private Slider speedSlider;
     @FXML private Label changeLabel;
+    //Menu items
     @FXML private MenuItem openMenuItem;
     @FXML private MenuItem menuQuitButton;
     @FXML private MenuItem recentFilesMenu;
+    @FXML private MenuItem showCodeWindow;
     @FXML private AnchorPane diagramDisplay;
     @FXML private TextFlow codeViewTab;
     //Code Window 
@@ -98,19 +101,42 @@ public class MachineViewController implements Initializable {
     private ArrayList<File> recentFiles;
     //list of states, used in drawing
     ArrayList<StateTransition> currentStates;
+    //keeps track of file status
+    boolean fileLoaded = false;
     
     
     //private Tape tm = new charTape();
     
     @FXML
     private void runButtonClicked(ActionEvent event) {
-        if (runButton.getText().equals("Run")) {
-            runButton.setText("Pause");
-            interp.run();
+        //Check and make sure the user has actually loaded a program
+        //Also inform them of errors in the program if they need to correct them and reload
+        //else, process their request
+        if (fileLoaded) {
+            if (interp.errorFound()) {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText("Your program contained errors");
+                alert.setContentText("Please correct them or load a different program");
+                alert.showAndWait();
+            }
+                else {
+                if (runButton.getText().equals("Run")) {
+                    runButton.setText("Pause");
+                    interp.run();
+                }
+                else {
+                    runButton.setText("Run");
+                    interp.pause();
+                }
+            }
         }
         else {
-            runButton.setText("Run");
-            interp.pause();
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText("You have not loaded a program");
+            alert.setContentText("Please load the program you want to run first");
+            alert.showAndWait();
         }
     }
     
@@ -152,19 +178,17 @@ public class MachineViewController implements Initializable {
         //fileChooser.setInitialDirectory(initialDirectory);
         File selectedFile = fileChooser.showOpenDialog(tapeOne.getScene().getWindow());
         if (selectedFile != null) {
+            //note that a file was loaded
+            fileLoaded = true;
             tapeOne.getChildren().clear();
             codeViewTab.getChildren().clear();
             String input = controller.openFile(selectedFile);
             //when initializing interpreter, give it both an input and a view controller (this) to work with
             interp = new Interpreter(input, this);
 //            recentFiles.add(selectedFile);
-            //launch window to show code or error
+            //Show code or error report
             if (interp.errorFound()) {
-                try {
-                    launchCodeWindow(interp.getErrorReport());
-                } catch (IOException ex) {
-                    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
-                }                
+                updateCodeTabContent(interp.getErrorReport());
             }
             else {
                 //try {
@@ -186,40 +210,50 @@ public class MachineViewController implements Initializable {
     
     @FXML
     private void tapeOneClearButtonClicked(ActionEvent event) {
-        //tapeOne.setText("");
-//        tm.clearTape();
-        tapeOne.getChildren().clear();
-        interp.popup();
-        interp.reset();
+        if (fileLoaded) {
+            tapeOne.getChildren().clear();
+            interp.popup();
+            interp.reset();
+        }
     }
     
-    private void launchCodeWindow(String content) throws IOException {
+    @FXML
+    private void launchCodeWindow(ActionEvent event) {
         //Parent root;
-        Stage stage;
-        System.out.println("Making code window");
-        stage = new Stage();
-        //root = FXMLLoader.load(getClass().getResource("/view/codeView.fxml"));
-        ScrollPane layout = new ScrollPane();
-        TextArea codeDisplay = new TextArea();
-        codeDisplay.setPrefHeight(450);
-        codeDisplay.setPrefWidth(450);
-        layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        
-        layout.setFitToHeight(true);
-        layout.setFitToWidth(true);
-        
-        layout.setContent(codeDisplay);        
-        codeDisplay.setText(content);
-        codeDisplay.setEditable(false);
-        
-        stage.setScene(new Scene(layout, 450, 450));
-        stage.setTitle("Code Window");
-        stage.initOwner(tapeOne.getScene().getWindow());
-        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
-        stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
-        stage.show();
+        if (fileLoaded) {
+            Stage stage;
+            System.out.println("Making code window");
+            stage = new Stage();
+            ScrollPane layout = new ScrollPane();
+            TextFlow codeDisplay = new TextFlow();
+            codeDisplay.setPrefHeight(450);
+            codeDisplay.setPrefWidth(450);
+            layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
+            layout.setFitToHeight(true);
+            layout.setFitToWidth(true);        
+            layout.setContent(codeDisplay);
+            //build the content
+            Text content = new Text(interp.getMachineCode());
+            //style the content and add it
+            content.setFont((Font.font(family, size)));
+            codeDisplay.getChildren().add(content);
+            //set the scene and its owner
+            stage.setScene(new Scene(layout, 450, 450));
+            stage.setTitle("Code Window");
+            stage.initOwner(tapeOne.getScene().getWindow());
+            Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
+            stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
+            stage.show();
+        }
+        else {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText(null);
+            alert.setContentText("Please load a program first");
+            alert.showAndWait();
+        }
     }
     
     @FXML
@@ -272,32 +306,6 @@ public class MachineViewController implements Initializable {
        
         int headLocation = interp.getRWHead();
         System.out.println(headLocation);
-//        if (headLocation == 0) {
-//            Text tapeContentHead = new Text(Character.toString(content.charAt(0)));
-//            Text tapeContentRight = new Text(content.substring(headLocation + 1));
-//            tapeContentHead.setFill(Color.RED);
-//            tapeContentHead.setFont((Font.font(family, FontWeight.BOLD, size)));
-//            tapeContentRight.setFont((Font.font(family, size)));
-//            Platform.runLater(() -> {
-//                tapeOne.getChildren().clear();
-//                tapeOne.getChildren().addAll(tapeContentHead, tapeContentRight);
-//            });
-//        }
-//        else {
-//            Text tapeContentLeft = new Text(content.substring(0, headLocation));
-//            Text tapeContentRight = new Text(content.substring(headLocation + 1));
-//            //Text tapeContentHead = new Text(content.substring(headLocation, headLocation));
-//            Text tapeContentHead = new Text(Character.toString(content.charAt(headLocation)));
-//            tapeContentHead.setFill(Color.RED);
-//            tapeContentHead.setFont((Font.font(family, FontWeight.BOLD, size)));
-//            tapeContentLeft.setFont((Font.font(family, size)));
-//            tapeContentRight.setFont((Font.font(family, size)));
-//            //tapeContentHead.setFont(Font.font("Helvetica",FontWeight.BOLD, 15));
-//            Platform.runLater(() -> {
-//                tapeOne.getChildren().clear();
-//                tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
-//            });
-//        }
 
         //compensates for possibility of head being at left or right
         boolean headAtRight = false;
@@ -347,6 +355,18 @@ public class MachineViewController implements Initializable {
             
     }
     
+    /**
+     * Allows this controller to update the content of its code tab
+     * if necessary
+     * @param content the content to put in the tab
+     */
+    private void updateCodeTabContent(String content) {
+        Text newContent = new Text(content);
+        newContent.setFont((Font.font(family, size)));        
+        codeViewTab.getChildren().add(newContent);
+    }
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
@@ -359,6 +379,7 @@ public class MachineViewController implements Initializable {
             }
         });
 
+        //these lines allow the canvas to dynamically resize when the program does
         canvas.widthProperty().addListener(observable -> redraw());
         canvas.heightProperty().addListener(observable -> redraw());
         

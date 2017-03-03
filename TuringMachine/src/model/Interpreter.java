@@ -146,9 +146,11 @@ public class Interpreter
             popup();
         }
         
-        input = input.replaceAll("\n", "");
+        //store the input code before removing the new line, in case the 
+        //formatted version is needed later
         inputCode = input;
-        tokens = inputCode.split(delim);
+        input = input.replaceAll("\n", "");
+        tokens = input.split(delim);
         int tokensLength = tokens.length;
         
         for (int i = 0; i < tokensLength; i++)

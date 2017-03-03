@@ -41,6 +41,11 @@
                   <MenuItem mnemonicParsing="false" text="Clear all Tapes" />
               </items>
             </Menu>
+            <Menu mnemonicParsing="false" text="Code Options">
+              <items>
+                <MenuItem fx:id="showCodeWindow" mnemonicParsing="false" onAction="#launchCodeWindow" text="Show Code in a new window" />
+              </items>
+            </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
             <MenuItem mnemonicParsing="false" text="Language Reference" />
@@ -79,7 +84,7 @@
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <content>
                                           <TextFlow fx:id="codeViewTab" prefHeight="283.0" prefWidth="442.0" />
                                        </content>
