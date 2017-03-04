@@ -414,13 +414,13 @@ public class Interpreter
         String endState = transition.getEndState().trim();
         //System.out.println(endState);
         
-        //interpState = initialState;
+        interpState = initialState;
         //if current token matches or is wildcard
         //if (interpState.equalsIgnoreCase(initialState) ) {
             if ((currentTape.read() == readToken.charAt(0)) || (readToken.equals("*"))) {
             //if no change requested, write no new token, otherwise write
             if (!writeToken.equals("*")) {
-                System.out.println("New token");
+                //System.out.println("New token");
                 currentTape.write(writeToken.charAt(0));
                 view.updateTapeContent(currentTape.getContent());
             }
@@ -454,7 +454,7 @@ public class Interpreter
         
         System.out.println(currentTape.getContent());
         
-        System.out.printf("Tape %s\n Initial state %s\n Read Token %s\n Write Token %s\n Move %s\n End State %s\n Speed %d\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
+        System.out.printf("Tape\t%s\nInitial state\t%s\nRead Token\t%s\nWrite Token\t%s\nMove\t%s\nEnd State\t%s\nSpeed\t%d\n\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
         
     }
     /**
@@ -515,32 +515,54 @@ public class Interpreter
                  */
                 public void step() {
                     System.out.println("Program stepped");
+                    boolean checkState = true;
                     int size = transitions.size();
                     //if ("HALT".equals(interpRunState) || "STEP".equals(interpRunState)) 
                     //{
                         if (controlPointer == size) 
                         {
                             //we have stepped to the end, so halt
-                            interpRunState = "HALT";
-                            notInterrupted = false;
-                            view.setStoppedState();
-                            if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejecthalt")) {
-                                    //notInterrupted = false;
-                                    //view.setStoppedState();
-                                    view.updateState(interpState);
-                                    System.out.println("end of commands was reached in a halt state");
+                            //interpRunState = "HALT";
+                            if (interpRunState.equalsIgnoreCase("HALT")) {
+                                notInterrupted = false;
+                                view.setStoppedState();
+                                if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejecthalt")) {
+                                        //notInterrupted = false;
+                                        //view.setStoppedState();
+                                        view.updateState(interpState);
+                                        System.out.println("end of commands was reached in a halt state");
+                                }
+                                else {
+                                        System.out.println("end of commands was reached but no halt state");
+                                }
                             }
                             else {
-                                    System.out.println("end of commands was reached but no halt state");
+                                controlPointer = 0;
                             }
-                            
                         }
                         else 
                         {
                             interpRunState = "STEP";
-                            StateTransition tr = transitions.get(controlPointer);
-                            performTransition(tr);
-                            controlPointer++;
+                            //StateTransition tr = transitions.get(controlPointer);
+                                                        
+                            while (checkState) {
+                                StateTransition tr = transitions.get(controlPointer);
+                                System.out.println(interpState);
+                                System.out.println(tr.getInitialState());
+                                if (interpState.equalsIgnoreCase(tr.getInitialState())) {
+                                    performTransition(tr);
+                                    controlPointer++;
+                                    checkState = false;
+                                }
+                                else if (controlPointer < size-1) {
+                                    controlPointer++;
+                                }
+                                else {
+                                    controlPointer = 0;
+                                }
+                            }
+                            //performTransition(tr);
+                            //controlPointer++;
 
                         }
                         

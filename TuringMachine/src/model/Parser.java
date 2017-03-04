@@ -17,6 +17,8 @@ public class Parser {
     private String[] tokens;
     private MachineViewController view;
     
+    String tape, iS, read, write, dir, eS;
+    
     public Parser(Interpreter interp) {
         this.interp = interp;
     }
@@ -26,20 +28,21 @@ public class Parser {
         ArrayList<StateTransition> transitions = new ArrayList();
         
         int tokensLength = tokens.length;
-        for (int i = 0; i < tokensLength; i++) {
+        /*for (int i = 0; i < tokensLength; i++) {
             System.out.println(tokens[i]);
-        }
-        System.out.println(tokensLength);
+        }*/
+        //System.out.println(tokensLength);
         //This loop works because input is "tuples" of 6
         //NOTE: This would have to be edited if the tuple was expanded
         for (int i = 0; i < tokensLength - 1; i+= 6) {
             //grab each set of 6 and build the transition
-            String tape = tokens[i];
-            String iS = tokens[i+1];
-            String read = tokens[i+2];
-            String write = tokens[i+3];
-            String dir = tokens[i+4];
-            String eS = tokens[i+5];
+            tape = tokens[i];
+            iS = tokens[i+1];
+            read = tokens[i+2];
+            write = tokens[i+3];
+            dir = tokens[i+4];
+            eS = tokens[i+5];
+            //System.out.printf("\n%s %s %s %s %s %s\n", tape, iS, read, write, dir, eS);
             transitions.add(new StateTransition(tape, iS, read, write, dir, eS));
             
         }
