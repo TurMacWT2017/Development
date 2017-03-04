@@ -46,6 +46,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
@@ -189,12 +192,34 @@ public class MachineViewController implements Initializable {
             //Show code or error report
             if (interp.errorFound()) {
                 updateCodeTabContent(interp.getErrorReport());
+                //show an error dialog explaining the errors
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Errors Found");
+                alert.setHeaderText("The program you have loaded contains syntax errors");
+                alert.setContentText("Please correct them or load a different program"
+                        + "\nA complete error report can be found in the code tab");
+//                Label label = new Label("Errors found:");
+//
+//                TextArea textArea = new TextArea(interp.getErrorReport());
+//                textArea.setEditable(false);
+//                textArea.setWrapText(true);
+//                textArea.setMaxWidth(Double.MAX_VALUE);
+//                textArea.setMaxHeight(Double.MAX_VALUE);
+//                GridPane expContent = new GridPane();
+//                expContent.add(label, 0, 0);
+//                expContent.add(textArea, 0, 1);
+//                GridPane.setVgrow(textArea, Priority.ALWAYS);
+//                GridPane.setHgrow(textArea, Priority.ALWAYS);
+//                expContent.setMaxWidth(Double.MAX_VALUE);
+                // Set expandable Exception into the dialog pane.
+                //alert.getDialogPane().setExpandableContent(expContent);
+                alert.showAndWait();
             }
             else {
                 //try {
                 //    launchCodeWindow(input);
                     Text text1 = new Text(input);
-                    text1.setFont(Font.font("Courier New", 14));
+                    text1.setFont(Font.font(family, size));
                     codeViewTab.getChildren().add(text1);
                     //tapeOne.setText(interp.getInitialInput());
                 try {
@@ -234,7 +259,14 @@ public class MachineViewController implements Initializable {
             layout.setFitToWidth(true);        
             layout.setContent(codeDisplay);
             //build the content
-            Text content = new Text(interp.getMachineCode());
+            String code;
+            if (interp.errorFound()) {
+                code = interp.getErrorReport();
+            }
+            else {
+                code = interp.getMachineCode();
+            }
+            Text content = new Text(code);
             //style the content and add it
             content.setFont((Font.font(family, size)));
             codeDisplay.getChildren().add(content);
@@ -365,6 +397,15 @@ public class MachineViewController implements Initializable {
         newContent.setFont((Font.font(family, size)));        
         codeViewTab.getChildren().add(newContent);
     }
+    
+    /**
+     * Gets the content from the code tab
+     * @return String code tab content
+     */
+    private String getCodeTabContent() {
+        return codeViewTab.getChildren().toString();
+    }
+    
     
     
     @Override
