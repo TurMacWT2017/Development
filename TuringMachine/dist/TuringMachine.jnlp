@@ -8,7 +8,11 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+<<<<<<< HEAD
     <jar href="TuringMachine.jar" size="24525" download="eager" />
+=======
+    <jar href="TuringMachine.jar" size="23556" download="eager" />
+>>>>>>> c5dc405c993b83d97b713c32c63ece57434fb5d8
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="TuringMachine" >
     <param name="requiredFXVersion" value="8.0+"/>

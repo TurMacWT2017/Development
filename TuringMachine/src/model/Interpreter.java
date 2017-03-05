@@ -32,7 +32,7 @@ public class Interpreter
     private ArrayList<StateTransition> transitions;
     private Parser par;
     private int controlPointer = 0;
-    private int speed = 1000;
+    private final int speed = 1000;
     private int stepCount = 0;
     //used to stop the thread if needed.
     private static boolean notInterrupted = true;
@@ -380,7 +380,7 @@ public class Interpreter
      */
     public String getInitialInput()
     {
-        return initialInput;
+        return initialInput + "_"; // append _ end of line marker TK
     }
     
     /**
@@ -505,10 +505,10 @@ public class Interpreter
                     try {                                 
                            if(view.getSpeed()==0)
                                //interpThread.sleep(500);
-                               interpThread.sleep(5000);
+                               InterpreterThread.sleep(5000);
                            else
                                //interpThread.sleep(500);
-                               interpThread.sleep(2000-20*view.getSpeed());
+                               InterpreterThread.sleep(2000-20*view.getSpeed());
                        } catch (InterruptedException ex) {
                            Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
                        }
