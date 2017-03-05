@@ -7,6 +7,7 @@ import java.util.*;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.control.TextInputDialog;
 
 /**
@@ -190,7 +191,8 @@ public class Interpreter
             // Get the initial state
             if (i%6 == 1)
             {
-                System.out.println("Initial state token: " + tokens[i] + " on line " + lineNum);
+                tokens[i] = tokens[i].trim();
+                //System.out.println("Initial state token: " + tokens[i] + " on line " + lineNum);
             }
 
             // Get the token being read
@@ -245,7 +247,8 @@ public class Interpreter
             // Get the end-state of the transition
             if (i%6 == 5)
             {
-                System.out.println("End state token: " + tokens[i] + " on line " + lineNum + "\n");
+                tokens[i] = tokens[i].trim();
+                //System.out.println("End state token: " + tokens[i] + " on line " + lineNum + "\n");
             }
         }
             
@@ -292,6 +295,7 @@ public class Interpreter
         notInterrupted = false;
         controlPointer = 0;
         stepCount = 0;
+        interpRunState = "HALT";
                 
         synchronized(monitor) {
             view.setStoppedState();
@@ -307,6 +311,8 @@ public class Interpreter
     {
         System.out.println("Interpreter reset");
         reset = true;
+        //Make sure the interpreter state is halted
+        interpRunState = "HALT";
         notInterrupted = false;
         controlPointer = 0;
         stepCount = 0;
@@ -403,7 +409,7 @@ public class Interpreter
     {
         String tape = transition.getTape();
         //System.out.println(tape);
-        String initialState = transition.getInitialState().trim();
+        String initialState = transition.getInitialState();
         //System.out.println(initialState);
         String readToken = transition.getReadToken();
         //System.out.println(readToken);
@@ -411,7 +417,7 @@ public class Interpreter
         //System.out.println(writeToken);
         String direction = transition.getDirection();
         //System.out.println(direction);
-        String endState = transition.getEndState().trim();
+        String endState = transition.getEndState();
         //System.out.println(endState);
         
         interpState = initialState;
@@ -419,30 +425,30 @@ public class Interpreter
         //if (interpState.equalsIgnoreCase(initialState) ) {
             if ((currentTape.read() == readToken.charAt(0)) || (readToken.equals("*"))) {
             //if no change requested, write no new token, otherwise write
-            if (!writeToken.equals("*")) {
-                //System.out.println("New token");
-                currentTape.write(writeToken.charAt(0));
-                view.updateTapeContent(currentTape.getContent());
-            }
-            //move left or right as needed
-            if (direction.equals("LEFT")) {
-                currentTape.moveHeadLeft();
-                view.updateHighlight();
-            }
-            else if (direction.equals("RIGHT")) {
-                currentTape.moveHeadRight();
-                view.updateHighlight();
-            }
-            //go to new state
-            System.out.println(currentTape.getContent());
-            interpState = endState;
-            view.updateState(interpState);
-            //check if a halt state has been reached, if so, HALT
-            if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejecthalt")) {
-                notInterrupted = false;
-                view.setStoppedState();
-            }
-            stepCount++;
+                if (!writeToken.equals("*")) {
+                    //System.out.println("New token");
+                    currentTape.write(writeToken.charAt(0));
+                    view.updateTapeContent(currentTape.getContent());
+                }
+                //move left or right as needed
+                if (direction.equals("LEFT")) {
+                    currentTape.moveHeadLeft();
+                    view.updateHighlight();
+                }
+                else if (direction.equals("RIGHT")) {
+                    currentTape.moveHeadRight();
+                    view.updateHighlight();
+                }
+                //go to new state
+                System.out.println(currentTape.getContent());
+                interpState = endState;
+                view.updateState(interpState);
+                //check if a halt state has been reached, if so, HALT
+                if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejecthalt")) {
+                    notInterrupted = false;
+                    view.setStoppedState();
+                }
+                stepCount++;
             }
             else {
                 // else stuff
@@ -543,9 +549,14 @@ public class Interpreter
                         else 
                         {
                             interpRunState = "STEP";
+                            int timesLooped = 0;
                             //StateTransition tr = transitions.get(controlPointer);
                                                         
                             while (checkState) {
+                                if (interpRunState.equals("HALT")) {
+                                    notInterrupted = false;
+                                    break;
+                                }
                                 StateTransition tr = transitions.get(controlPointer);
                                 System.out.println(interpState);
                                 System.out.println(tr.getInitialState());
@@ -559,6 +570,18 @@ public class Interpreter
                                 }
                                 else {
                                     controlPointer = 0;
+                                    timesLooped++;
+                                    if (timesLooped > 4) {
+                                        interpRunState = "HALT";
+                                        notInterrupted = false;
+                                        Platform.runLater(() -> {
+                                            String lookingForState = tr.getInitialState();
+                                            view.showAutoStopDialog(lookingForState);
+                                            view.setStoppedState();
+                                        });
+                                        break;
+                                    }
+                                    
                                 }
                             }
                             //performTransition(tr);

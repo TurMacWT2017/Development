@@ -115,49 +115,42 @@ public class MachineViewController implements Initializable {
         //Check and make sure the user has actually loaded a program
         //Also inform them of errors in the program if they need to correct them and reload
         //else, process their request
-        if (fileLoaded) {
-            if (interp.errorFound()) {
-                Alert alert = new Alert(AlertType.WARNING);
-                alert.setTitle("Warning");
-                alert.setHeaderText("Your program contained errors");
-                alert.setContentText("Please correct them or load a different program");
-                alert.showAndWait();
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
+            if (runButton.getText().equals("Run")) {
+                runButton.setText("Pause");
+                interp.run();
             }
-                else {
-                if (runButton.getText().equals("Run")) {
-                    runButton.setText("Pause");
-                    interp.run();
-                }
-                else {
-                    runButton.setText("Run");
-                    interp.pause();
-                }
+            else {
+                runButton.setText("Run");
+                interp.pause();
             }
-        }
-        else {
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Information");
-            alert.setHeaderText("You have not loaded a program");
-            alert.setContentText("Please load the program you want to run first");
-            alert.showAndWait();
         }
     }
     
     @FXML
     private void stepButtonClicked(ActionEvent event) {
-        interp.step();
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
+            interp.step();
+        }
     }
     
     @FXML
     private void stopButtonClicked(ActionEvent event) {
-        interp.stop();
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
+            interp.stop();
+        }
     }
     
     @FXML
     private void resetButtonClicked(ActionEvent event) {
-        interp.reset();
-        tapeOne.getChildren().clear();
- //       tm.resetRWHead();
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
+            interp.reset();
+            tapeOne.getChildren().clear();
+        }
     }
     
     @FXML
@@ -495,4 +488,51 @@ public class MachineViewController implements Initializable {
         }
         
     }
+    
+    /**
+     * Helper method used to prevent the user from attempting to run, stop, reset, step, etc.
+     * without a valid program loaded. Called before any of these actions and will return 
+     * a boolean status okay to proceed
+     * @return boolean machineReady
+     */
+    private boolean checkProgramStatus() {
+        boolean machineReady = true;
+        
+        //Check and make sure the user has actually loaded a program
+        //Also inform them of errors in the program if they need to correct them and reload
+        //else, process their request
+        if (fileLoaded) {
+            if (interp.errorFound()) {
+                machineReady = false;
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText("Your program contained errors");
+                alert.setContentText("Please correct them or load a different program");
+                alert.showAndWait();
+            }
+        }
+        else {
+            machineReady = false;
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText("You have not loaded a program");
+            alert.setContentText("Please load the program you want to run first");
+            alert.showAndWait();
+        }
+        
+        return machineReady;
+    }
+
+    public void showAutoStopDialog(String lookingForState) {
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText("Your program might be getting stuck in an infinite loop looking for state " + lookingForState);
+        alert.setContentText("The machine has gone through your file four times, but still hasn't found the next state to go to."
+                + "\nWe've stopped your program for now, but you can run again if you really want to"
+                + "\nThis most likely means that there is an error in your program logic causing an infinite loop."
+                + "\nIf you keep seeing this error, please check your program and its logic for errors");
+        alert.showAndWait();
+    }
+    
+    
 }
