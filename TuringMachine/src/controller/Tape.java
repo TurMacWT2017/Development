@@ -5,7 +5,6 @@
  */
 package controller;
 
-import java.util.Arrays;
 
 /** Represents a Turing machine tape
  *

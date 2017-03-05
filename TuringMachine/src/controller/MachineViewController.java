@@ -6,7 +6,7 @@
 package controller;
 
 import java.io.File;
-import java.io.IOException;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -17,10 +17,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -28,34 +28,29 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.Pane;
+
+
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Modality;
+
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Interpreter;
 import model.InterpreterException;
 
 import javafx.scene.canvas.Canvas;
-import javafx.scene.input.MouseEvent;
-import javafx.event.EventHandler;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.ArcType;
+
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
+
 import javafx.scene.text.TextFlow;
 import model.StateTransition;
 
@@ -66,8 +61,8 @@ import model.StateTransition;
 public class MachineViewController implements Initializable {
     
     //used for text formatting in tape, changing text here will change tape text for the program
-    private String family = "Helvetica";
-    private int size = 16;
+    private final String family = "Helvetica";
+    private final int size = 16;
     
     //UI Buttons
     @FXML private Button runButton;
@@ -411,14 +406,7 @@ public class MachineViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        speedSlider.valueProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-                    changeLabel.textProperty().setValue(String.valueOf((int)speedSlider.getValue()));
-
-                    //System.out.println("Speed slider = " + getSpeed());  //output speed changes
-            }
-        });
+        speedSlider.valueProperty().addListener(new ChangeListenerImpl());
 
         //these lines allow the canvas to dynamically resize when the program does
         canvas.widthProperty().addListener(observable -> redraw());
@@ -494,5 +482,18 @@ public class MachineViewController implements Initializable {
             drawStates(currentStates);
         }
         
+    }
+
+    private class ChangeListenerImpl implements ChangeListener {
+
+        public ChangeListenerImpl() {
+        }
+
+        @Override
+        public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+            changeLabel.textProperty().setValue(String.valueOf((int)speedSlider.getValue()));
+            
+            //System.out.println("Speed slider = " + getSpeed());  //output speed changes
+        }
     }
 }
