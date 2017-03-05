@@ -476,7 +476,6 @@ public class MachineViewController implements Initializable {
         }
         
     }
-<<<<<<< HEAD
     
     /**
      * Helper method used to prevent the user from attempting to run, stop, reset, step, etc.
@@ -523,9 +522,6 @@ public class MachineViewController implements Initializable {
         alert.showAndWait();
     }
     
-    
-=======
-
     private class ChangeListenerImpl implements ChangeListener {
 
         public ChangeListenerImpl() {
@@ -538,5 +534,4 @@ public class MachineViewController implements Initializable {
             //System.out.println("Speed slider = " + getSpeed());  //output speed changes
         }
     }
->>>>>>> c5dc405c993b83d97b713c32c63ece57434fb5d8
 }
