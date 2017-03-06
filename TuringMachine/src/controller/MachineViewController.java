@@ -316,9 +316,12 @@ public class MachineViewController implements Initializable {
     }
     @FXML
     public void setInitialTapeContent(String content) {
-        Text input = new Text(content);
+        Text input = new Text(content.substring(1));
+        Text underHead = new Text(Character.toString(content.charAt(0)));
         input.setFont((Font.font(family, size)));
-        tapeOne.getChildren().add(input);
+        underHead.setFill(Color.RED);
+        underHead.setFont((Font.font(family, FontWeight.BOLD, size)));
+        tapeOne.getChildren().addAll(underHead, input);
     }
     
     @FXML
@@ -332,10 +335,10 @@ public class MachineViewController implements Initializable {
         boolean headAtLeft = false;
         
         //check if head is at left or right
-        if (content.substring(0, headLocation) == null) {
+        if (headLocation == 0) {
             headAtLeft = true;            
         }
-        else if (content.substring(headLocation + 1) == null) {
+        else if (headLocation == interp.getTapeLength() - 1) {
             headAtRight = true;            
         }
         

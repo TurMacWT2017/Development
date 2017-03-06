@@ -325,6 +325,8 @@ public class Interpreter
         view.updateState(transitions.get(0).getInitialState().trim());
         view.updateStepCount(0);
         view.setStartState();
+        //set this interpreter state back to the starting state
+        interpState = transitions.get(0).getInitialState().trim();
         
     }
     
@@ -373,6 +375,14 @@ public class Interpreter
     public int getRWHead() {
         return currentTape.getHead();
     }
+    
+    /**
+     * Retrieves the current length of this interpreter's tape
+     * @return int length
+     */
+    public int getTapeLength() {
+        return currentTape.getLength();
+    }
        
     /**
      * Retrieves the initial input if provided in the program file
@@ -380,7 +390,7 @@ public class Interpreter
      */
     public String getInitialInput()
     {
-        return initialInput + "_"; // append _ end of line marker TK
+        return initialInput; // append _ end of line marker TK
     }
     
     /**
@@ -428,17 +438,17 @@ public class Interpreter
                 if (!writeToken.equals("*")) {
                     //System.out.println("New token");
                     currentTape.write(writeToken.charAt(0));
-                    view.updateTapeContent(currentTape.getContent());
                 }
                 //move left or right as needed
                 if (direction.equals("LEFT")) {
                     currentTape.moveHeadLeft();
-                    view.updateHighlight();
+                    view.updateTapeContent(currentTape.getContent());
                 }
                 else if (direction.equals("RIGHT")) {
                     currentTape.moveHeadRight();
-                    view.updateHighlight();
+                    view.updateTapeContent(currentTape.getContent());
                 }
+                view.updateTapeContent(currentTape.getContent());
                 //go to new state
                 System.out.println(currentTape.getContent());
                 interpState = endState;

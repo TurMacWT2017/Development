@@ -15,33 +15,46 @@ public class Tape {
     int rwHead;
     
     public Tape(String initialContent) {
-        this.content = initialContent.toCharArray();
-        this.rwHead = 0;
+        content = initialContent.toCharArray();
+        rwHead = 0;
     }
     
     public Tape() {
-        this.rwHead = 0;
+        rwHead = 0;
     }
     
     
-    public void setContent(String content) {
-        this.content = content.trim().toCharArray();
+    public void setContent(String newContent) {
+        content = newContent.toCharArray();
     }
     
     public String getContent() {
         String tapeContents = new String(content);
         return tapeContents;
     }
-    
-    
+        
     public void moveHeadLeft() {
-        if (rwHead > 0) {
-            rwHead--;
+        rwHead--;
+        if (rwHead < 0) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("_");
+            sb.append(content);
+            setContent(sb.toString());
         }
     }
     
     public void moveHeadRight() {
         rwHead++;
+        if (rwHead > content.length - 1) {
+            StringBuilder sb = new StringBuilder();
+            String oldContent = new String(content);
+            sb.append(oldContent);
+            sb.append("_");
+            setContent(sb.toString());
+            System.out.println(sb.toString());
+        }
+        System.out.println(rwHead);
+        System.out.println(content.length);
     }
     
     public void resetHead() {
@@ -60,4 +73,7 @@ public class Tape {
         return rwHead;
     }
     
+    public int getLength() {
+        return content.length;
+    }
 }
