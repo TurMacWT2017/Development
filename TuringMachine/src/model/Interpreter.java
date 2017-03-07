@@ -104,6 +104,9 @@ public class Interpreter
         
     }
     
+    /** Pop-up dialog box for when the program file does not contain input or
+     *  the user clears the tape input
+     */
     public void popup() {
         
         // if no tape input initial string supplied...

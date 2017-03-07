@@ -162,11 +162,19 @@ public class MachineViewController implements Initializable {
     @FXML
     private void openFileMenuItemClicked(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        //File initialDirectory = new File("../TestFiles");
+        File initialDirectory;
+        // This if-else determines if the program was ran through the .jar file or
+        // through NetBeans, and then directs the file chooser to the correct
+        // path of the TestFiles directory
+        if (System.getProperty("user.dir").contains("dist"))
+            initialDirectory = new File("../../TestFiles");
+        else
+            initialDirectory = new File("../TestFiles");
+        //System.out.println("PWD: " + System.getProperty("user.dir"));
         fileChooser.setTitle("Open Machine File");
         fileChooser.getExtensionFilters().addAll(
                 new ExtensionFilter("Machine Files", "*.tm"));
-        //fileChooser.setInitialDirectory(initialDirectory);
+        fileChooser.setInitialDirectory(initialDirectory);
         File selectedFile = fileChooser.showOpenDialog(tapeOne.getScene().getWindow());
         if (selectedFile != null) {
             //note that a file was loaded

@@ -10,3 +10,9 @@ and open the template in the editor.
 .tab-pane .tab-header-area .tab-header-background {
     -fx-background-color: transparent;
 }
+
+#pane{
+   -fx-background-image: url('images/buffalo.jpg');
+   -fx-background-repeat: stretch;   
+   -fx-background-position: center center;
+}
