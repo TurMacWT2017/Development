@@ -44,6 +44,7 @@
             <Menu mnemonicParsing="false" text="Code Options">
               <items>
                 <MenuItem fx:id="showCodeWindow" mnemonicParsing="false" onAction="#launchCodeWindow" text="Show Code in a new window" />
+                  <MenuItem fx:id="fontOptions" mnemonicParsing="false" onAction="#showFontChooser" text="Font Options" />
               </items>
             </Menu>
         <Menu mnemonicParsing="false" text="Help">

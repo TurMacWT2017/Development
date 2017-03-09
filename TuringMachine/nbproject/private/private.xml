@@ -6,6 +6,8 @@
             <file>file:/home/student/Documents/turingMachine/TuringMachine/src/controller/MachineViewController.java</file>
             <file>file:/home/student/Documents/turingMachine/TuringMachine/src/model/Interpreter.java</file>
             <file>file:/home/student/Documents/turingMachine/TuringMachine/src/controller/Tape.java</file>
+            <file>file:/home/student/Documents/turingMachine/TuringMachine/src/controller/FontControl.java</file>
+            <file>file:/home/student/Documents/turingMachine/TuringMachine/src/view/font_control.fxml</file>
         </group>
     </open-files>
 </project-private>
