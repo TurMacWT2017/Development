@@ -176,9 +176,9 @@ public class MachineViewController implements Initializable {
         // through NetBeans, and then directs the file chooser to the correct
         // path of the TestFiles directory
         if (System.getProperty("user.dir").contains("dist"))
-            initialDirectory = new File("../../TestFiles");
+            initialDirectory = new File(".." + File.separator + ".." + File.separator + "TestFiles");
         else
-            initialDirectory = new File("../TestFiles");
+            initialDirectory = new File(".." + File.separator + "TestFiles");
         //System.out.println("PWD: " + System.getProperty("user.dir"));
         fileChooser.setTitle("Open Machine File");
         fileChooser.getExtensionFilters().addAll(
