@@ -53,6 +53,9 @@ import javafx.scene.text.Text;
 
 import javafx.scene.text.TextFlow;
 import model.StateTransition;
+import controller.FontControl;
+import javafx.scene.text.FontPosture;
+import javafx.stage.Modality;
 
 /**
  *
@@ -61,8 +64,13 @@ import model.StateTransition;
 public class MachineViewController implements Initializable {
     
     //used for text formatting in tape, changing text here will change tape text for the program
-    private final String family = "Helvetica";
-    private final int size = 16;
+    //the custom control FontControl will modify these while running, if the user chooses
+    //to modify them in the font control and accepts the changes. The values set here are only defaults
+    private String family = "Helvetica";
+    private int size = 16;
+    private boolean isBold = false;
+    private boolean isItalic = false;
+    private Color RWHeadFillColor = Color.RED;
     
     //UI Buttons
     @FXML private Button runButton;
@@ -87,6 +95,7 @@ public class MachineViewController implements Initializable {
     @FXML private MenuItem menuQuitButton;
     @FXML private MenuItem recentFilesMenu;
     @FXML private MenuItem showCodeWindow;
+    @FXML private MenuItem fontOptions;
     @FXML private AnchorPane diagramDisplay;
     @FXML private TextFlow codeViewTab;
     //Code Window 
@@ -285,6 +294,38 @@ public class MachineViewController implements Initializable {
     }
     
     @FXML
+    public void showFontChooser(ActionEvent event) {
+            FontControl fontControl = new FontControl();
+            //initialize the font chooser
+            fontControl.initialize(family, size, isBold, isItalic, RWHeadFillColor);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(fontControl));
+            stage.setWidth(300);
+            stage.setHeight(300);
+            stage.setTitle("Font Chooser");
+            stage.initOwner(tapeOne.getScene().getWindow());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+            //get and apply changes that were made if there were any
+            size = fontControl.getFontSize();
+            family = fontControl.getFontFamily();
+            isBold = fontControl.getIsBold();
+            isItalic = fontControl.getIsItalic();
+            RWHeadFillColor = fontControl.getRWHeadFillColor();
+            if (fileLoaded) {
+                if (interp.errorFound()) {
+                    updateCodeTabContent(interp.getErrorReport());
+                }
+                else {
+                    updateCodeTabContent(interp.getMachineCode());
+                }
+                updateTapeContent(interp.getTapeContent());
+            }
+            System.out.println(fontControl.getFontSize());
+    }
+    
+    @FXML
     public void setStartState() {
         runButton.setDisable(false);
         stopButton.setDisable(false);
@@ -326,9 +367,9 @@ public class MachineViewController implements Initializable {
     public void setInitialTapeContent(String content) {
         Text input = new Text(content.substring(1));
         Text underHead = new Text(Character.toString(content.charAt(0)));
-        input.setFont((Font.font(family, size)));
-        underHead.setFill(Color.RED);
-        underHead.setFont((Font.font(family, FontWeight.BOLD, size)));
+        underHead.setFill(RWHeadFillColor);
+        underHead.setFont(Font.font(family, FontWeight.BOLD, size));
+        input.setFont(getCurrentFontSettings());
         tapeOne.getChildren().addAll(underHead, input);
     }
     
@@ -353,13 +394,13 @@ public class MachineViewController implements Initializable {
         //get the content under head
         Text tapeContentHead = new Text(Character.toString(content.charAt(headLocation)));
         //style it
-        tapeContentHead.setFill(Color.RED);
+        tapeContentHead.setFill(RWHeadFillColor);
         tapeContentHead.setFont((Font.font(family, FontWeight.BOLD, size)));
         
         //build depending on where head was at
         if (headAtLeft) {
             Text tapeContentRight = new Text(content.substring(headLocation + 1));
-            tapeContentRight.setFont((Font.font(family, size)));
+            tapeContentRight.setFont(getCurrentFontSettings());
             Platform.runLater(() -> {
                   tapeOne.getChildren().clear();
                   tapeOne.getChildren().addAll(tapeContentHead, tapeContentRight);
@@ -367,7 +408,7 @@ public class MachineViewController implements Initializable {
         }
         else if (headAtRight) {
             Text tapeContentLeft = new Text(content.substring(0, headLocation));
-            tapeContentLeft.setFont((Font.font(family, size)));
+            tapeContentLeft.setFont(getCurrentFontSettings());
             Platform.runLater(() -> {
                   tapeOne.getChildren().clear();
                   tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead);
@@ -375,9 +416,9 @@ public class MachineViewController implements Initializable {
         }
         else {
             Text tapeContentLeft = new Text(content.substring(0, headLocation));
-            tapeContentLeft.setFont((Font.font(family, size)));
+            tapeContentLeft.setFont(getCurrentFontSettings());
             Text tapeContentRight = new Text(content.substring(headLocation + 1));
-            tapeContentRight.setFont((Font.font(family, size)));
+            tapeContentRight.setFont(getCurrentFontSettings());
             Platform.runLater(() -> {
                   tapeOne.getChildren().clear();
                   tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
@@ -393,7 +434,8 @@ public class MachineViewController implements Initializable {
      */
     private void updateCodeTabContent(String content) {
         Text newContent = new Text(content);
-        newContent.setFont((Font.font(family, size)));        
+        codeViewTab.getChildren().clear();
+        newContent.setFont(getCurrentFontSettings());        
         codeViewTab.getChildren().add(newContent);
     }
     
@@ -531,6 +573,25 @@ public class MachineViewController implements Initializable {
                 + "\nThis most likely means that there is an error in your program logic causing an infinite loop."
                 + "\nIf you keep seeing this error, please check your program and its logic for errors");
         alert.showAndWait();
+    }
+
+    /**
+    * Returns the current Font settings to allow easy text formatting
+    * @return Font current font
+    */
+    private Font getCurrentFontSettings() {
+        if (isBold && isItalic) {
+            return Font.font(family, FontWeight.BOLD, FontPosture.ITALIC, size);
+        }
+        else if (isBold) {
+            return Font.font(family, FontWeight.BOLD, size);
+        }
+        else if (isItalic) {
+            return Font.font(family, FontPosture.ITALIC, size);
+        }
+        else {
+            return Font.font(family, size);
+        }   
     }
     
     private class ChangeListenerImpl implements ChangeListener {

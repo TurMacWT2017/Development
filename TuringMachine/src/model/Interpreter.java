@@ -415,6 +415,14 @@ public class Interpreter
     }
     
     /**
+     * Returns the content of this interpreter's tape
+     * @return String content
+     */
+    public String getTapeContent() {
+        return currentTape.getContent();
+    }
+    
+    /**
      * Performs the provided state transition
      * @param transition the state transition to be performed
      */
