@@ -273,7 +273,7 @@ public class MachineViewController implements Initializable {
             }
             Text content = new Text(code);
             //style the content and add it
-            content.setFont((Font.font(family, size)));
+            content.setFont(getCurrentFontSettings());
             codeDisplay.getChildren().add(content);
             //set the scene and its owner
             stage.setScene(new Scene(layout, 450, 450));
@@ -322,7 +322,6 @@ public class MachineViewController implements Initializable {
                 }
                 updateTapeContent(interp.getTapeContent());
             }
-            System.out.println(fontControl.getFontSize());
     }
     
     @FXML
@@ -465,10 +464,6 @@ public class MachineViewController implements Initializable {
         
     }    
 
-    public void updateHighlight() {
-        //update the highlight
-    }
-    
     public int getSpeed(){
         return (int)speedSlider.getValue();
     }
