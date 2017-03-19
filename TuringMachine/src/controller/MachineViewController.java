@@ -9,6 +9,8 @@ import java.io.File;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,9 +55,17 @@ import javafx.scene.text.Text;
 
 import javafx.scene.text.TextFlow;
 import model.StateTransition;
-import controller.FontControl;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.text.FontPosture;
 import javafx.stage.Modality;
+import javafx.stage.StageStyle;
+import javafx.util.Callback;
 
 /**
  *
@@ -72,16 +82,30 @@ public class MachineViewController implements Initializable {
     private boolean isItalic = false;
     private Color RWHeadFillColor = Color.RED;
     
+    //used to keep track of how many tapes the user is working with and is given
+    //to the interpreter upon its creation so it knows how many tapes it has
+    //default is one tape
+    private int tapes = 1;
+    
+    //Keeps track of the currently selected tape (in this case, its TextFlow, since
+    //that's what is edited in the view)
+    @FXML private TextFlow selectedTape;
+    
     //UI Buttons
     @FXML private Button runButton;
     @FXML private Button stepButton;
     @FXML private Button stopButton;
     @FXML private Button resetButton;
     @FXML private Button tapeOneClearButton;
+    @FXML private Button tapeTwoClearButton;
+    @FXML private Button tapeThreeClearButton;
     //Displays
     @FXML private TextField currentState;
     @FXML private TextField currentSteps;
+    //Text flows for each tape
     @FXML private TextFlow tapeOne;
+    @FXML private TextFlow tapeTwo;
+    @FXML private TextFlow tapeThree;
     //Canvas
     @FXML private Canvas canvas;
     private static int XCOORD = 10;
@@ -98,6 +122,10 @@ public class MachineViewController implements Initializable {
     @FXML private MenuItem fontOptions;
     @FXML private AnchorPane diagramDisplay;
     @FXML private TextFlow codeViewTab;
+    //Titled panes for the tape views
+    @FXML private TitledPane tapeOnePane;
+    @FXML private TitledPane tapeTwoPane;
+    @FXML private TitledPane tapeThreePane;
     //Code Window 
     //@FXML private TextArea codeDisplay;
     
@@ -188,11 +216,14 @@ public class MachineViewController implements Initializable {
         if (selectedFile != null) {
             //note that a file was loaded
             fileLoaded = true;
+            //clear the tapes of any old content
             tapeOne.getChildren().clear();
+            tapeTwo.getChildren().clear();
+            tapeThree.getChildren().clear();
             codeViewTab.getChildren().clear();
             String input = controller.openFile(selectedFile);
             //when initializing interpreter, give it both an input and a view controller (this) to work with
-            interp = new Interpreter(input, this);
+            interp = new Interpreter(input, this, tapes);
 //            recentFiles.add(selectedFile);
             //Show code or error report
             if (interp.errorFound()) {
@@ -242,10 +273,108 @@ public class MachineViewController implements Initializable {
     private void tapeOneClearButtonClicked(ActionEvent event) {
         if (fileLoaded) {
             tapeOne.getChildren().clear();
-            interp.popup();
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Tape Input Dialog");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Tape One: ");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(input -> interp.setInitialContent(result.get(), 1));
             interp.reset();
         }
     }
+    
+    @FXML
+    private void tapeTwoClearButtonClicked(ActionEvent event) {
+        if (fileLoaded) {
+            tapeTwo.getChildren().clear();
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Tape Input Dialog");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Tape Two: ");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(input -> interp.setInitialContent(result.get(), 2));
+            interp.reset();
+        }
+    }
+    
+    @FXML
+    private void tapeThreeClearButtonClicked(ActionEvent event) {
+        if (fileLoaded) {
+            tapeThree.getChildren().clear();
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Tape Input Dialog");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Tape Three: ");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(input -> interp.setInitialContent(result.get(), 3));            
+            interp.reset();
+        }
+    }
+    
+    /** The below methods handle toggling the view to either 1, 2, or 3 tape mode **/
+    
+    @FXML
+    private void setOneTapeMode(ActionEvent event) {
+        tapeTwoPane.setExpanded(false);
+        tapeTwoPane.setVisible(false);
+        tapeThreePane.setExpanded(false);
+        tapeThreePane.setVisible(false);
+        tapes = 1;
+        if (fileLoaded) {
+            interp.setNumberOfTapes(1);
+            //reboot the interpreter
+            interp.stop();
+            tapeOne.getChildren().clear();
+            String input = interp.getMachineCode();
+            interp = null;
+            //reboot the interpreter in the new mode
+            interp = new Interpreter(input, this, tapes);
+        }
+    }
+    
+    @FXML
+    private void setTwoTapeMode(ActionEvent event) {
+        tapeTwoPane.setExpanded(true);
+        tapeTwoPane.setVisible(true);
+        tapeThreePane.setExpanded(false);
+        tapeThreePane.setVisible(false);
+        tapes = 2;
+        if (fileLoaded) {
+            interp.setNumberOfTapes(2);
+            //reboot the interpreter
+            interp.stop();
+            tapeOne.getChildren().clear();
+            tapeTwo.getChildren().clear();
+            String input = interp.getMachineCode();
+            interp = null;
+            //reboot the interpreter in the new mode
+            interp = new Interpreter(input, this, tapes);
+        }
+    }
+    
+    @FXML
+    private void setThreeTapeMode(ActionEvent event) {
+        tapeTwoPane.setExpanded(true);
+        tapeTwoPane.setVisible(true);
+        tapeThreePane.setExpanded(true);
+        tapeThreePane.setVisible(true);
+        tapes = 3;
+        if (fileLoaded) {
+            interp.setNumberOfTapes(3);
+            //reboot the interpreter
+            interp.stop();
+            tapeOne.getChildren().clear();
+            tapeTwo.getChildren().clear();
+            tapeThree.getChildren().clear();
+            String input = interp.getMachineCode();
+            interp = null;
+            //reboot the interpreter in the new mode
+            interp = new Interpreter(input, this, tapes);
+        }
+
+    }
+    
+    /**********************************************************/
     
     @FXML
     private void launchCodeWindow(ActionEvent event) {
@@ -298,7 +427,7 @@ public class MachineViewController implements Initializable {
             FontControl fontControl = new FontControl();
             //initialize the font chooser
             fontControl.initialize(family, size, isBold, isItalic, RWHeadFillColor);
-            Stage stage = new Stage();
+            Stage stage = new Stage(StageStyle.UNDECORATED);
             stage.setScene(new Scene(fontControl));
             stage.setWidth(300);
             stage.setHeight(300);
@@ -320,7 +449,10 @@ public class MachineViewController implements Initializable {
                 else {
                     updateCodeTabContent(interp.getMachineCode());
                 }
-                updateTapeContent(interp.getTapeContent());
+                //update content across all three tapes
+                updateTapeContent(interp.getTapeContent(1), 1);
+                updateTapeContent(interp.getTapeContent(2), 2);
+                updateTapeContent(interp.getTapeContent(3), 3);
             }
     }
     
@@ -359,24 +491,46 @@ public class MachineViewController implements Initializable {
     }
     
     @FXML
-    public String getTapeInput() {
-        return tapeOne.getChildren().toString();
+    public String getTapeInput(int tape) {
+        switch (tape) {
+            case 1:
+                return tapeOne.getChildren().toString();
+            case 2:
+                return tapeTwo.getChildren().toString();
+            case 3:
+                return tapeThree.getChildren().toString();
+            default:
+                return tapeOne.getChildren().toString();
+        }
     }
+    
     @FXML
-    public void setInitialTapeContent(String content) {
+    public void setInitialTapeContent(String content, int tapeNumber) {
         Text input = new Text(content.substring(1));
         Text underHead = new Text(Character.toString(content.charAt(0)));
         underHead.setFill(RWHeadFillColor);
         underHead.setFont(Font.font(family, FontWeight.BOLD, size));
         input.setFont(getCurrentFontSettings());
-        tapeOne.getChildren().addAll(underHead, input);
+        switch (tapeNumber) {
+            case 1:
+                tapeOne.getChildren().addAll(underHead, input);
+                break;
+            case 2:
+                tapeTwo.getChildren().addAll(underHead, input);
+                break;
+            case 3:
+                tapeThree.getChildren().addAll(underHead, input);
+                break;
+            default:
+                break;
+        }
     }
     
     @FXML
-    public void updateTapeContent(String content) {
-       
-        int headLocation = interp.getRWHead();
-        System.out.println(headLocation);
+    public void updateTapeContent(String content, int tape) {
+        int headLocation = interp.getRWHead(tape);
+        System.out.println("The requested tape was " + tape);
+
 
         //compensates for possibility of head being at left or right
         boolean headAtRight = false;
@@ -386,7 +540,7 @@ public class MachineViewController implements Initializable {
         if (headLocation == 0) {
             headAtLeft = true;            
         }
-        else if (headLocation == interp.getTapeLength() - 1) {
+        else if (headLocation == interp.getTapeLength(tape) - 1) {
             headAtRight = true;            
         }
         
@@ -401,16 +555,44 @@ public class MachineViewController implements Initializable {
             Text tapeContentRight = new Text(content.substring(headLocation + 1));
             tapeContentRight.setFont(getCurrentFontSettings());
             Platform.runLater(() -> {
-                  tapeOne.getChildren().clear();
-                  tapeOne.getChildren().addAll(tapeContentHead, tapeContentRight);
+                switch (tape) {
+                    case 1:
+                        tapeOne.getChildren().clear();
+                        tapeOne.getChildren().addAll(tapeContentHead, tapeContentRight);
+                        break;
+                    case 2:
+                        tapeTwo.getChildren().clear();
+                        tapeTwo.getChildren().addAll(tapeContentHead, tapeContentRight);
+                        break;
+                    case 3:
+                        tapeThree.getChildren().clear();
+                        tapeThree.getChildren().addAll(tapeContentHead, tapeContentRight);
+                        break;
+                    default:
+                        break;                        
+                }                  
             });            
         }
         else if (headAtRight) {
             Text tapeContentLeft = new Text(content.substring(0, headLocation));
             tapeContentLeft.setFont(getCurrentFontSettings());
             Platform.runLater(() -> {
-                  tapeOne.getChildren().clear();
-                  tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead);
+                switch (tape) {
+                    case 1:
+                        tapeOne.getChildren().clear();
+                        tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead);
+                        break;
+                    case 2:
+                        tapeTwo.getChildren().clear();
+                        tapeTwo.getChildren().addAll(tapeContentLeft, tapeContentHead);
+                        break;
+                    case 3:
+                        tapeThree.getChildren().clear();
+                        tapeThree.getChildren().addAll(tapeContentLeft, tapeContentHead);
+                        break;
+                    default:
+                        break;                        
+                }
             });
         }
         else {
@@ -419,8 +601,22 @@ public class MachineViewController implements Initializable {
             Text tapeContentRight = new Text(content.substring(headLocation + 1));
             tapeContentRight.setFont(getCurrentFontSettings());
             Platform.runLater(() -> {
-                  tapeOne.getChildren().clear();
-                  tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
+                switch (tape) {
+                    case 1:
+                        tapeOne.getChildren().clear();
+                        tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
+                        break;
+                    case 2:
+                        tapeTwo.getChildren().clear();
+                        tapeTwo.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
+                        break;
+                    case 3:
+                        tapeThree.getChildren().clear();
+                        tapeThree.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
+                        break;
+                    default:
+                        break;                        
+                }
             });
         }
             
@@ -587,6 +783,131 @@ public class MachineViewController implements Initializable {
         else {
             return Font.font(family, size);
         }   
+    }
+
+    public String[] showInputDialog(int numTapes) {
+        String[] input = {"____", "_____", "_____"};
+        //build and show the appropriate dialog
+        switch (numTapes) {
+            case 2:
+            {
+                Dialog<String []> dialog = new Dialog<>();
+                dialog.setTitle("Tape Input");
+                dialog.setHeaderText("Initial Tape Input");
+                dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
+                
+                Label label1 = new Label("Tape One: ");
+                Label label2 = new Label("Tape Two: ");
+                TextField text1 = new TextField();
+                TextField text2 = new TextField();
+                
+                GridPane grid = new GridPane();
+                grid.add(label1, 1, 1);
+                grid.add(text1, 2, 1);
+                grid.add(label2, 1, 2);
+                grid.add(text2, 2, 2);
+                dialog.getDialogPane().setContent(grid);
+                
+                ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+                
+                dialog.setResultConverter((ButtonType b) -> {
+                    if (b == buttonTypeOk) {
+                        String [] result = new String[2];
+                        result[0] = text1.getText();
+                        result[1] = text2.getText();
+                        return result;
+                    }
+                    return null;
+                });
+                
+                Optional<String []> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    input = result.get();
+                }
+                break;
+            }
+            case 3:
+            {
+                Dialog<String []> dialog = new Dialog<>();
+                dialog.setTitle("Tape Input");
+                dialog.setHeaderText("Initial Tape Input");
+                dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
+                
+                Label label1 = new Label("Tape One: ");
+                Label label2 = new Label("Tape Two: ");
+                Label label3 = new Label("Tape Three: ");
+                TextField text1 = new TextField();
+                TextField text2 = new TextField();
+                TextField text3 = new TextField();
+                
+                GridPane grid = new GridPane();
+                grid.add(label1, 1, 1);
+                grid.add(text1, 2, 1);
+                grid.add(label2, 1, 2);
+                grid.add(text2, 2, 2);
+                grid.add(label3, 1, 3);
+                grid.add(text3, 2, 3);
+                dialog.getDialogPane().setContent(grid);
+                
+                ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+                
+                dialog.setResultConverter((ButtonType b) -> {
+                    if (b == buttonTypeOk) {
+                        String [] result = new String[3];
+                        result[0] = text1.getText();
+                        result[1] = text2.getText();
+                        result[2] = text3.getText();
+                        return result;
+                    }
+                    return null;
+                });
+                
+                Optional<String []> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    input = result.get();
+                }
+                break;
+                
+            }
+            default:
+            {
+                Dialog<String []> dialog = new Dialog<>();
+                dialog.setTitle("Tape Input");
+                dialog.setHeaderText("Initial Tape Input");
+                dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
+                
+                Label label1 = new Label("Tape One: ");
+                TextField text1 = new TextField();
+                
+                GridPane grid = new GridPane();
+                grid.add(label1, 1, 1);
+                grid.add(text1, 2, 1);
+                dialog.getDialogPane().setContent(grid);
+                
+                ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+                
+                dialog.setResultConverter((ButtonType b) -> {
+                    if (b == buttonTypeOk) {
+                        String [] result = new String[1];
+                        result[0] = text1.getText();
+                        return result;
+                    }
+                    return null;
+                });
+                
+                Optional<String []> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    input = result.get();
+                }
+                break;
+            }
+            
+        }
+        System.out.println(Arrays.toString(input));
+        return input;
     }
     
     private class ChangeListenerImpl implements ChangeListener {

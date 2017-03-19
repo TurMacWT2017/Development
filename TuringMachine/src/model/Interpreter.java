@@ -2,13 +2,10 @@ package model;
 
 import controller.MachineViewController;
 import controller.Tape;
-import controller.TuringMachineJFXMLPrototype;
 import java.util.*;
-import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.scene.control.TextInputDialog;
 
 /**
  *
@@ -19,7 +16,10 @@ public class Interpreter
 {
     private String[] tokens;
     private ArrayList<String> tokenList;
-    private String initialInput = "";
+    //Initial input for tapes
+    private String initialInput = "_____";
+    private String initialInput2 = "_____";
+    private String initialInput3 = "_____";
     private String inputCode;
     private final String delim = ",|;";
     private final StringBuilder errorReport = new StringBuilder();
@@ -38,9 +38,14 @@ public class Interpreter
     private static boolean notInterrupted = true;
     private boolean turnedOff = false;
     private boolean reset = false;
+    //interpreter thread andd thread monitor
     private InterpreterThread interpThread;
     private final Object monitor = new Object();
-    private Tape currentTape;
+    //tape related variables
+    private Tape tapeOne;
+    private Tape tapeTwo;
+    private Tape tapeThree;
+    private int numTapes = 1;
     
     /** Default interpreter constructor
     * 
@@ -48,18 +53,44 @@ public class Interpreter
     * <pre> Post condition: New Interpreter created </pre> 
      * @param input the String representation of the *.tm program file
      * @param view an instance of the view controller this interpreter will use
+     * @param tapes number of tapes
     */
-    public Interpreter(String input, MachineViewController view) 
+    public Interpreter(String input, MachineViewController view, int tapes) 
     {
         this.view = view;
+        numTapes = tapes;
         tokenize(input);
         if (errorsPresent == false) 
         {
             par = new Parser(this);
             transitions = par.compile();
-            currentTape = new Tape(initialInput);
+            System.out.println("Fuckeronis" + initialInput2);
+            //build the required tapes
+            switch (numTapes) {
+                case 1:
+                    tapeOne = new Tape(initialInput);
+                    view.setInitialTapeContent(initialInput, 1);
+                    break;
+                case 2:
+                    tapeOne = new Tape(initialInput);
+                    view.setInitialTapeContent(initialInput, 1);
+                    tapeTwo = new Tape(initialInput2);
+                    view.setInitialTapeContent(initialInput2, 2);
+                    break;
+                case 3:
+                    tapeOne = new Tape(initialInput);
+                    view.setInitialTapeContent(initialInput, 1);
+                    tapeTwo = new Tape(initialInput2);
+                    view.setInitialTapeContent(initialInput2, 2);
+                    tapeThree = new Tape(initialInput3);
+                    view.setInitialTapeContent(initialInput3, 3);
+                    break;
+                default:
+                    tapeOne = new Tape(initialInput);
+                    view.setInitialTapeContent(initialInput, 1);
+                    break;
+            }
             view.drawStates(transitions);
-            view.setInitialTapeContent(initialInput);
             
             // Set interpreter state to be the start state of the program
             interpState = transitions.get(0).getInitialState().trim();
@@ -78,14 +109,13 @@ public class Interpreter
     }
     
     
-    /* To highlight text in a JavaFX textField (for R/W Head location) */
-    /*public void handle(ActionEvent t) {
-            textField.requestFocus(); // get focus first
-            textField.positionCaret(0);
-            textField.selectNextWord();
-
-            System.out.println(textField.getSelectedText());
-    }*/
+    /**
+     * Used for changing the number of tapes the interpreter is working with
+     * @param tapes number of tapes
+     */
+    public void setNumberOfTapes(int tapes) {
+        numTapes = tapes;
+    }
     
     /** Starts up the interpreter 
      * <pre> Pre-condition: Interpreter not started</pre>
@@ -108,18 +138,14 @@ public class Interpreter
      *  the user clears the tape input
      */
     public void popup() {
-        
-        // if no tape input initial string supplied...
-        TextInputDialog dialog = new TextInputDialog("Tape String");
-        dialog.setTitle("Initial Tape Input a");
-        dialog.setHeaderText("Initial Tape Input");
-        dialog.setContentText("Enter initial Tape input:");
-
-        // User input acceptance, for tape input string
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()){
-            System.out.println("Tape Input: " + result.get());
-            initialInput = result.get();
+        String[] input = view.showInputDialog(numTapes);
+        initialInput = input[0];
+        if (numTapes == 2) {
+            initialInput2 = input[1];
+        }
+        if (numTapes == 3) {
+            initialInput2 = input[1];
+            initialInput3 = input[2];
         }
     }
     
@@ -320,11 +346,26 @@ public class Interpreter
         controlPointer = 0;
         stepCount = 0;
         //reset rwhead
-        currentTape.resetHead();
+        tapeOne.resetHead();
+        tapeTwo.resetHead();
+        tapeThree.resetHead();
         //update the tape
-        currentTape.setContent(initialInput);
-        //update the view
-        view.updateTapeContent(initialInput);
+        tapeOne.setContent(initialInput);
+        if (numTapes == 2) {
+            tapeTwo.setContent(initialInput2);
+            //update tape 2 in the view
+            view.updateTapeContent(initialInput2, 2);
+        }
+        if (numTapes == 3) {
+            tapeTwo.setContent(initialInput2);
+            //update tape 2 in the view
+            view.updateTapeContent(initialInput2, 2);
+            tapeThree.setContent(initialInput3);
+            //update tape 3 in the view
+            view.updateTapeContent(initialInput3, 3);
+        }
+        //update the view everywhere else
+        view.updateTapeContent(initialInput, 1);
         view.updateState(transitions.get(0).getInitialState().trim());
         view.updateStepCount(0);
         view.setStartState();
@@ -373,18 +414,38 @@ public class Interpreter
     
     /**
      * Retrieves the current rwHead location
+     * @param tape which tape (1, 2, or 3)
      * @return rwhead location
      */
-    public int getRWHead() {
-        return currentTape.getHead();
+    public int getRWHead(int tape) {
+        switch (tape) {
+            case 1:
+                return tapeOne.getHead();
+            case 2:
+                return tapeTwo.getHead();
+            case 3:
+                return tapeThree.getHead();
+            default:
+                return tapeOne.getHead();
+        }
     }
     
     /**
      * Retrieves the current length of this interpreter's tape
+     * @param tape which tape (1, 2 or 3)
      * @return int length
      */
-    public int getTapeLength() {
-        return currentTape.getLength();
+    public int getTapeLength(int tape) {
+        switch (tape) {
+            case 1:
+                return tapeOne.getLength();
+            case 2:
+                return tapeTwo.getLength();
+            case 3:
+                return tapeThree.getLength();
+            default:
+                return tapeOne.getLength();
+        }
     }
        
     /**
@@ -414,12 +475,31 @@ public class Interpreter
         return interpState;
     }
     
+        /**
+     * Returns the current run state of the machine
+     * @return current state of this interpreter
+     */
+    public String getRunState() 
+    {
+        return interpRunState;
+    }
+    
     /**
-     * Returns the content of this interpreter's tape
+     * Returns the content of the specified tape
+     * @param tape which tape to get from
      * @return String content
      */
-    public String getTapeContent() {
-        return currentTape.getContent();
+    public String getTapeContent(int tape) {
+        switch (tape) {
+            case 1:
+                return tapeOne.getContent();
+            case 2:
+                return tapeTwo.getContent();
+            case 3:
+                return tapeThree.getContent();
+            default:
+                return tapeOne.getContent();
+        }
     }
     
     /**
@@ -444,24 +524,24 @@ public class Interpreter
         interpState = initialState;
         //if current token matches or is wildcard
         //if (interpState.equalsIgnoreCase(initialState) ) {
-            if ((currentTape.read() == readToken.charAt(0)) || (readToken.equals("*"))) {
+            if ((tapeOne.read() == readToken.charAt(0)) || (readToken.equals("*"))) {
             //if no change requested, write no new token, otherwise write
                 if (!writeToken.equals("*")) {
                     //System.out.println("New token");
-                    currentTape.write(writeToken.charAt(0));
+                    tapeOne.write(writeToken.charAt(0));
                 }
                 //move left or right as needed
                 if (direction.equals("LEFT")) {
-                    currentTape.moveHeadLeft();
-                    view.updateTapeContent(currentTape.getContent());
+                    tapeOne.moveHeadLeft();
+                    view.updateTapeContent(tapeOne.getContent(), 1);
                 }
                 else if (direction.equals("RIGHT")) {
-                    currentTape.moveHeadRight();
-                    view.updateTapeContent(currentTape.getContent());
+                    tapeOne.moveHeadRight();
+                    view.updateTapeContent(tapeOne.getContent(), 1);
                 }
-                view.updateTapeContent(currentTape.getContent());
+                view.updateTapeContent(tapeOne.getContent(), 1);
                 //go to new state
-                System.out.println(currentTape.getContent());
+                System.out.println(tapeOne.getContent());
                 interpState = endState;
                 view.updateState(interpState);
                 //check if a halt state has been reached, if so, HALT
@@ -479,7 +559,7 @@ public class Interpreter
         //}
         view.updateStepCount(stepCount);
         
-        System.out.println(currentTape.getContent());
+        System.out.println(tapeOne.getContent());
         
         System.out.printf("Tape\t%s\nInitial state\t%s\nRead Token\t%s\nWrite Token\t%s\nMove\t%s\nEnd State\t%s\nSpeed\t%d\n\n", tape, initialState, readToken, writeToken, direction, endState, view.getSpeed());
         
@@ -489,6 +569,29 @@ public class Interpreter
      */
     public static void haltSimulation() {
         notInterrupted = false;
+    }
+
+    /**
+     * Updates the initial content of a given tape, used when the user wants to change the starting
+     * content of a particular tape
+     * @param input the content to set
+     * @param tape the tape desired
+     */
+    public void setInitialContent(String input, int tape) {
+        switch (tape) {
+            case 1:
+                initialInput = input;
+                break;
+            case 2:
+                initialInput2 = input;
+                break;
+            case 3:
+                initialInput3 = input;
+                break;
+            default:
+                initialInput = input;
+                break;
+        }                
     }
     
     private class InterpreterThread extends Thread {
