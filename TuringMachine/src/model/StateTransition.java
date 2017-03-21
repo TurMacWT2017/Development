@@ -11,6 +11,7 @@ package model;
  *  properties: The tape on which to act, the initial state, the read token,
  *              the write token, the direction to move the tape, and the state
  *              to transition to
+ * @author Nick Ahring
  */
 public class StateTransition {
     private final String tape;
@@ -18,14 +19,16 @@ public class StateTransition {
     private final String readToken;
     private final String writeToken;
     private final String direction;
+    private final String writeTape;
     private final String endState;
     
-    public StateTransition(String t, String iS, String read, String write, String dir, String eS) {
+    public StateTransition(String t, String iS, String read, String write, String dir, String wT, String eS) {
         this.tape = t;
         this.initialState = iS;
         this.readToken = read;
         this.writeToken = write;
         this.direction = dir;
+        this.writeTape = wT;
         this.endState = eS;
     }
     
@@ -47,6 +50,10 @@ public class StateTransition {
     
     public String getDirection() {
         return direction;
+    }
+    
+    public String getWriteTape() {
+        return writeTape;
     }
     
     public String getEndState() {

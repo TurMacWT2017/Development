@@ -273,7 +273,8 @@ public class MachineViewController implements Initializable {
     
     @FXML
     private void tapeOneClearButtonClicked(ActionEvent event) {
-        if (fileLoaded) {
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
             tapeOne.getChildren().clear();
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Tape Input Dialog");
@@ -287,7 +288,8 @@ public class MachineViewController implements Initializable {
     
     @FXML
     private void tapeTwoClearButtonClicked(ActionEvent event) {
-        if (fileLoaded) {
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
             tapeTwo.getChildren().clear();
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Tape Input Dialog");
@@ -301,7 +303,8 @@ public class MachineViewController implements Initializable {
     
     @FXML
     private void tapeThreeClearButtonClicked(ActionEvent event) {
-        if (fileLoaded) {
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
             tapeThree.getChildren().clear();
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Tape Input Dialog");
