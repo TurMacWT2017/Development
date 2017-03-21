@@ -484,6 +484,11 @@ public class MachineViewController implements Initializable {
         stepButton.setDisable(true);
         
     }
+    
+    @FXML
+    public void resetView() {
+        runButton.setText("Run");
+    }
 
     @FXML
     public void updateStepCount(int stepCount) {
@@ -794,6 +799,39 @@ public class MachineViewController implements Initializable {
         String[] input = {"____", "_____", "_____"};
         //build and show the appropriate dialog
         switch (numTapes) {
+            case 1:
+            {
+                Dialog<String []> dialog = new Dialog<>();
+                dialog.setTitle("Tape Input");
+                dialog.setHeaderText("Initial Tape Input");
+                dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
+                
+                Label label1 = new Label("Tape One: ");
+                TextField text1 = new TextField();
+                
+                GridPane grid = new GridPane();
+                grid.add(label1, 1, 1);
+                grid.add(text1, 2, 1);
+                dialog.getDialogPane().setContent(grid);
+                
+                ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+                
+                dialog.setResultConverter((ButtonType b) -> {
+                    if (b == buttonTypeOk) {
+                        String [] result = new String[1];
+                        result[0] = text1.getText();
+                        return result;
+                    }
+                    return null;
+                });
+                
+                Optional<String []> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    input = result.get();
+                }
+                break;
+            }
             case 2:
             {
                 Dialog<String []> dialog = new Dialog<>();
@@ -878,35 +916,7 @@ public class MachineViewController implements Initializable {
             }
             default:
             {
-                Dialog<String []> dialog = new Dialog<>();
-                dialog.setTitle("Tape Input");
-                dialog.setHeaderText("Initial Tape Input");
-                dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
-                
-                Label label1 = new Label("Tape One: ");
-                TextField text1 = new TextField();
-                
-                GridPane grid = new GridPane();
-                grid.add(label1, 1, 1);
-                grid.add(text1, 2, 1);
-                dialog.getDialogPane().setContent(grid);
-                
-                ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
-                dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
-                
-                dialog.setResultConverter((ButtonType b) -> {
-                    if (b == buttonTypeOk) {
-                        String [] result = new String[1];
-                        result[0] = text1.getText();
-                        return result;
-                    }
-                    return null;
-                });
-                
-                Optional<String []> result = dialog.showAndWait();
-                if (result.isPresent()) {
-                    input = result.get();
-                }
+                System.out.println("Unexpected tape Number");
                 break;
             }
             
