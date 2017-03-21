@@ -59,9 +59,11 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.FontPosture;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
@@ -234,21 +236,21 @@ public class MachineViewController implements Initializable {
                 alert.setHeaderText("The program you have loaded contains syntax errors");
                 alert.setContentText("Please correct them or load a different program"
                         + "\nA complete error report can be found in the code tab");
-//                Label label = new Label("Errors found:");
-//
-//                TextArea textArea = new TextArea(interp.getErrorReport());
-//                textArea.setEditable(false);
-//                textArea.setWrapText(true);
-//                textArea.setMaxWidth(Double.MAX_VALUE);
-//                textArea.setMaxHeight(Double.MAX_VALUE);
-//                GridPane expContent = new GridPane();
-//                expContent.add(label, 0, 0);
-//                expContent.add(textArea, 0, 1);
-//                GridPane.setVgrow(textArea, Priority.ALWAYS);
-//                GridPane.setHgrow(textArea, Priority.ALWAYS);
-//                expContent.setMaxWidth(Double.MAX_VALUE);
+                Label label = new Label("Errors found:");
+
+                TextArea textArea = new TextArea(interp.getErrorReport());
+                textArea.setEditable(false);
+                textArea.setWrapText(true);
+                textArea.setMaxWidth(Double.MAX_VALUE);
+                textArea.setMaxHeight(Double.MAX_VALUE);
+                GridPane expContent = new GridPane();
+                expContent.add(label, 0, 0);
+                expContent.add(textArea, 0, 1);
+                GridPane.setVgrow(textArea, Priority.ALWAYS);
+                GridPane.setHgrow(textArea, Priority.ALWAYS);
+                expContent.setMaxWidth(Double.MAX_VALUE);
                 // Set expandable Exception into the dialog pane.
-                //alert.getDialogPane().setExpandableContent(expContent);
+                alert.getDialogPane().setExpandableContent(expContent);
                 alert.showAndWait();
             }
             else {

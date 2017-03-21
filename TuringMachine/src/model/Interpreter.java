@@ -347,16 +347,17 @@ public class Interpreter
         stepCount = 0;
         //reset rwhead
         tapeOne.resetHead();
-        tapeTwo.resetHead();
-        tapeThree.resetHead();
         //update the tape
         tapeOne.setContent(initialInput);
         if (numTapes == 2) {
             tapeTwo.setContent(initialInput2);
             //update tape 2 in the view
             view.updateTapeContent(initialInput2, 2);
+            tapeTwo.resetHead();
         }
         if (numTapes == 3) {
+            tapeTwo.resetHead();
+            tapeThree.resetHead();
             tapeTwo.setContent(initialInput2);
             //update tape 2 in the view
             view.updateTapeContent(initialInput2, 2);
