@@ -23,7 +23,6 @@
         <Menu mnemonicParsing="false" text="File">
           <items>
             <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openFileMenuItemClicked" text="Open…" />
-            <Menu fx:id="recentFilesMenu" mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Close" />
             <MenuItem fx:id="menuQuitButton" mnemonicParsing="false" onAction="#menuQuitButtonClicked" text="Quit" />
@@ -49,8 +48,8 @@
             </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
-            <MenuItem mnemonicParsing="false" text="Language Reference" />
-                  <MenuItem mnemonicParsing="false" text="About" />
+            <MenuItem fx:id="langref" mnemonicParsing="false" text="Language Reference" onAction="#languageReference"/>
+                  <MenuItem fx:id="about" mnemonicParsing="false" text="About" onAction="#aboutMenu"/>
           </items>
         </Menu>
       </menus>

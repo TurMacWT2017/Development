@@ -54,7 +54,10 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.StateTransition;
 import controller.FontControl;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.FontPosture;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 
 /**
@@ -98,6 +101,8 @@ public class MachineViewController implements Initializable {
     @FXML private MenuItem fontOptions;
     @FXML private AnchorPane diagramDisplay;
     @FXML private TextFlow codeViewTab;
+    @FXML private MenuItem about;
+    @FXML private MenuItem langref;
     //Code Window 
     //@FXML private TextArea codeDisplay;
     
@@ -172,13 +177,23 @@ public class MachineViewController implements Initializable {
     private void openFileMenuItemClicked(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         File initialDirectory;
+        File referenceFile = new File("Palindrome.tm");
+        String filePath = "~";
         // This if-else determines if the program was ran through the .jar file or
         // through NetBeans, and then directs the file chooser to the correct
         // path of the TestFiles directory
-        if (System.getProperty("user.dir").contains("dist"))
+        if (System.getProperty("user.dir").contains("dist")) {
+            /*try {
+                filePath = referenceFile.getCanonicalPath();
+            } catch(Exception e) {
+                System.out.println(e);
+            }     
+            initialDirectory = new File(filePath);*/
             initialDirectory = new File(".." + File.separator + ".." + File.separator + "TestFiles");
-        else
+        }
+        else {
             initialDirectory = new File(".." + File.separator + "TestFiles");
+        }
         //System.out.println("PWD: " + System.getProperty("user.dir"));
         fileChooser.setTitle("Open Machine File");
         fileChooser.getExtensionFilters().addAll(
@@ -322,6 +337,49 @@ public class MachineViewController implements Initializable {
                 }
                 updateTapeContent(interp.getTapeContent());
             }
+    }
+    
+    @FXML
+    public void aboutMenu(ActionEvent event) {
+        // stuff
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+        URL url = MachineViewController.class.getResource(File.separator + "view" + File.separator + "about.html");
+        String content = url.toExternalForm();
+        webEngine.load(content);
+        
+        Stage stage = new Stage();
+        StackPane root = new StackPane();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("About");
+        stage.setWidth(625);
+        stage.setHeight(400);
+        stage.show();
+        
+        root.getChildren().add(webView);
+    }
+    
+    @FXML
+    public void languageReference(ActionEvent event) {
+        // stuff
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+        URL url = MachineViewController.class.getResource(File.separator + "view" + File.separator + "languageReference.html");
+        String content = url.toExternalForm();
+        webEngine.load(content);
+        
+        
+        Stage stage = new Stage();
+        StackPane root = new StackPane();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Language Reference");
+        stage.setWidth(1000);
+        stage.setHeight(800);
+        stage.show();
+        
+        root.getChildren().add(webView);
     }
     
     @FXML
