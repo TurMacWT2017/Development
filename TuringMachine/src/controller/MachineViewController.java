@@ -123,8 +123,8 @@ public class MachineViewController implements Initializable {
     @FXML private TextFlow tapeThree;
     //Canvas
     @FXML private Canvas canvas;
-    private static int XCOORD = 10;
-    private static int YCOORD = 10;
+    private static int XCOORD = 100;
+    private static int YCOORD = 50;
     private static final double RADIUS = 30.0;
     //Slider
     @FXML private Slider speedSlider;
@@ -873,7 +873,7 @@ public void launchStateWindow(){
             }
             else
             {
-                XCOORD = 30;
+                XCOORD = 100;
                 YCOORD += 150;
             }                  
             pane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
