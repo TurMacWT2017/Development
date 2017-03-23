@@ -860,6 +860,8 @@ public void launchStateWindow(){
     }
     
     public void drawStates(ArrayList<StateTransition> states) {
+        currentStates = states;
+        
         StateDiagram diagram = new StateDiagram();
         Stage stage = new Stage();
         Pane pane = new Pane();
@@ -972,16 +974,43 @@ public void launchStateWindow(){
         for(int i=0; i<numUniqueStates; i++){
             for(int j=0; j<numAllStates; j++){
                 Circle stateNode = stateNodes[j];
+                
                 if(!allInitStates[j].equals(initialUniqueStates[i])){
                 } else {
-                    //stateNode.layoutXProperty().bind(uniqueNodes[i].centerXProperty());
-                    //stateNode.layoutYProperty().bind(uniqueNodes[i].centerYProperty());
+                    stateNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
+                    stateNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
                     
-                    stateNodes[j].setCenterX(uniqueNodes[i].getCenterX());
-                    stateNodes[j].setCenterY(uniqueNodes[i].getCenterY());
                 }
+                
             }
         }
+        
+        for(int i=0; i<numUniqueStates; i++){
+            for(int j=0; j<numAllStates; j++){
+                Circle endNode = endNodes[j];
+                
+                if(!endStates[j].equals(initialUniqueStates[i])){
+                } else {
+                    endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
+                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
+                    
+                }
+                /*
+                if(!endStates[j].equalsIgnoreCase("AcceptHalt")){
+                    endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
+                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
+                }
+                
+                if(!endStates[j].equalsIgnoreCase("RejectHalt")){
+                    endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
+                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
+                }
+                */
+            }
+               
+        }
+        
+        
         
         connectStates(startNode, stateNodes[0]);
         ObjectProperty<Node> lastUnconnectedNode = new SimpleObjectProperty<>();
@@ -1040,9 +1069,9 @@ public void launchStateWindow(){
     }
 
     private void redraw() {
-        if (currentStates != null) {
-            drawStates(currentStates);
-        }
+        //if (states != null) {
+           // drawStates(states);
+        //}
         
     }
     
