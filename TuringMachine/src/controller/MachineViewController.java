@@ -123,8 +123,8 @@ public class MachineViewController implements Initializable {
     @FXML private TextFlow tapeThree;
     //Canvas
     @FXML private Canvas canvas;
-    private static int XCOORD = 100;
-    private static int YCOORD = 50;
+    private static int XCOORD = 72;
+    private static int YCOORD = 72;
     private static final double RADIUS = 30.0;
     //Slider
     @FXML private Slider speedSlider;
@@ -820,11 +820,11 @@ public void launchStateWindow(){
         }     
         
         Set<String> uniqueStateSet = new HashSet<>(Arrays.asList(allInitStates));
-        //String[] initialStates = new String[uniqueStateSet.size()];
+        String[] initialUniqueStates = new String[uniqueStateSet.size()];
         String[] initialStates = allInitStates;//new String[allInitStates.length];
         String[] endStates = allEndStates;//new String[allEndStates.length];
-        //uniqueStateSet.toArray(initialStates);
-        int numUniqueStates = initialStates.length;
+        uniqueStateSet.toArray(initialUniqueStates);
+        int numUniqueStates = initialUniqueStates.length;
         int numAllStates = allInitStates.length;
             //System.out.println("allInit len = " + allInitStates.length);
             //System.out.println("allTran len = " + allTransitions.length);
@@ -832,8 +832,10 @@ public void launchStateWindow(){
             //System.out.println("noDupes len = " + numUniqueStates);
         
         Circle[] stateNodes = new Circle[numAllStates]; //numUniqueStates
+        Circle[] uniqueNodes = new Circle[numUniqueStates];
         Circle[] endNodes = new Circle[numAllStates];
         Label[] stateLabels = new Label[numAllStates];
+        Label[] uniqueLabels = new Label[numUniqueStates];
         Label[] endLabels = new Label[numAllStates];
         Circle startNode = createDraggingCircle(XCOORD-50, YCOORD, 5, pane, Color.GRAY);
         
@@ -844,13 +846,35 @@ public void launchStateWindow(){
         pane.getChildren().addAll(startNode,startLabel);
             //System.out.println("stateNodes len = " + stateNodes.length);
             //System.out.println("stateLabel len = " + stateLabels.length);
-        int connected = 0;        
+        int connected = 0;  
+        
+        // DEBUG FOR-LOOP
+        for (int j=0; j< numUniqueStates; j++){
+            Label uniqueLabel = new Label(initialUniqueStates[j]);
+            
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 10, pane, Color.BLUE);
+            uniqueNodes[j].setOpacity(.5);
+            uniqueLabels[j] = new Label(initialUniqueStates[j]);
+            uniqueLabel.layoutXProperty().bind(uniqueNodes[j].centerXProperty());
+            uniqueLabel.layoutYProperty().bind(uniqueNodes[j].centerYProperty());
+              
+            if (XCOORD + 150 < canvas.getWidth())
+            {
+                XCOORD += 115;
+            }
+            else
+            {
+                XCOORD = 72;
+                YCOORD += 150;
+            }     
+        }
+        
         for (int j = 0; j < numAllStates; j++){
             Label stateLabel = new Label(initialStates[j]);
             Label endLabel = new Label(endStates[j]);
             
             stateNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, pane, Color.GRAY);
-            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+150, 15, pane, Color.GREEN);
+            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+50, 15, pane, Color.GREEN);
             
             stateNodes[j].setOpacity(.5);
             endNodes[j].setOpacity(.5);
@@ -860,13 +884,14 @@ public void launchStateWindow(){
             endLabel.layoutXProperty().bind(endNodes[j].centerXProperty());
             endLabel.layoutYProperty().bind(endNodes[j].centerYProperty());   
             
-            stateLabel.setMnemonicParsing(true);
+            //stateLabel.setMnemonicParsing(true);
             stateLabel.setLabelFor(stateNodes[j]);
-            endLabel.setMnemonicParsing(true);
+            //endLabel.setMnemonicParsing(true);
             endLabel.setLabelFor(endNodes[j]);
                 //System.out.println("getLabelFor = " + stateLabel.getLabelFor());
             stateLabels[j] = stateLabel;
             endLabels[j] = endLabel;
+            
             if (XCOORD + 150 < canvas.getWidth())
             {
                 XCOORD += 115;
@@ -878,10 +903,32 @@ public void launchStateWindow(){
             }                  
             pane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
         }   
+        for(int i=0; i<numUniqueStates; i++){
+            pane.getChildren().add(uniqueNodes[i]);
+        }
+        
+        System.out.println("numUnique = " + numUniqueStates);
+        System.out.println("numAll = " + numAllStates);
+        
+        for(int i=0; i<numUniqueStates; i++){
+            for(int j=0; j<numAllStates; j++){
+                Circle stateNode = stateNodes[j];
+                if(!allInitStates[j].equals(initialUniqueStates[i])){
+                } else {
+                    //stateNode.layoutXProperty().bind(uniqueNodes[i].centerXProperty());
+                    //stateNode.layoutYProperty().bind(uniqueNodes[i].centerYProperty());
+                    
+                    stateNodes[j].setCenterX(uniqueNodes[i].getCenterX());
+                    stateNodes[j].setCenterY(uniqueNodes[i].getCenterY());
+                }
+            }
+        }
+        
         connectStates(startNode, stateNodes[0]);
         ObjectProperty<Node> lastUnconnectedNode = new SimpleObjectProperty<>();
-        Circle prevNode;
-        for (int j = 0; j< numUniqueStates; j++){
+        Circle prevNode = new Circle();
+        Label prevLabel = new Label();
+        for (int j = 0; j< numAllStates; j++){
             
             // connect stateNodes[j]=initNode to prevNode=endNode
             if (lastUnconnectedNode.get() == null) {                
@@ -892,9 +939,9 @@ public void launchStateWindow(){
                 connected++;
                 //line = connectStates(prevNode, stateNodes[j]);
                 //lastUnconnectedNode.set(null);
-            }   
-            prevNode = stateNodes[j];
+            }             
         }
+        
         
             //System.out.println("numEdges = " + connected);
         Scene scene = new Scene(pane, 600, 600);
