@@ -10,18 +10,27 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -62,8 +71,12 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.text.FontPosture;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
@@ -669,54 +682,211 @@ public class MachineViewController implements Initializable {
         return (int)speedSlider.getValue();
     }
     
-    public void drawStates(ArrayList<StateTransition> states) {
-        // Draw circles representing State Diagrams
-        // keep the states in case we have to redraw because of a resize
-        currentStates = states;
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        // Reset the canvas from any previous drawings
-        XCOORD = 10;
-        YCOORD = 10;
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(2);
-        //get the number of states
-        int nodeCount = states.size();
+public void launchStateWindow(){
+        StateDiagram diagram = new StateDiagram();
         
-        //draw all the states
-        for (int i = 0; i< nodeCount; i++) {
-                String stateName = states.get(i).getInitialState();
-                String rToken = states.get(i).getReadToken();
-                String wToken = states.get(i).getWriteToken();
-                String direction = states.get(i).getDirection();
-                gc.setFill(Color.WHITE);
-                // fillOval is a filled in circle, strokeOval is an outline
-                gc.fillOval(XCOORD, YCOORD, RADIUS, RADIUS);
-                gc.strokeOval(XCOORD, YCOORD, RADIUS, RADIUS);
-                
-                // connect the "states" with a line from center to center
-                // unless it's the last state, then it won't need a line.
-                if (i < nodeCount - 1) 
-                    gc.strokeLine(XCOORD+30, YCOORD+15, XCOORD+130, YCOORD+15);
-                
-                //draw label
-                //change font color to black
-                gc.setFill(Color.BLACK);
-                gc.fillText(stateName, XCOORD + RADIUS, YCOORD + RADIUS);
-                //draw transition info
-                gc.fillText(rToken + ", " + wToken + ", " + direction, XCOORD + 35, YCOORD+10);
+        if (fileLoaded) {
+            Stage stage;
+            System.out.println("Making code window");
+            stage = new Stage();
+            ScrollPane layout = new ScrollPane();
+           
+            layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
+            layout.setFitToHeight(true);
 
-                if (XCOORD + 150 < canvas.getWidth())
-                {
-                    XCOORD += 115;
-                }
-                else
-                {
-                    XCOORD = 10;
-                    YCOORD += 50;
-                }
+            //build the content
+            String code;
+            if (interp.errorFound()) {
+                code = interp.getErrorReport();
+            }
+            else {
+                code = interp.getMachineCode();
+            }
+            Text content = new Text(code);
+            //style the content and add it
+            content.setFont(getCurrentFontSettings());
+            //set the scene and its owner
+            stage.setScene(new Scene(layout, 450, 450));
+            stage.setTitle("State Diagram Window");
+            stage.initOwner(diagramDisplay.getScene().getWindow());
+            Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
+            stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
+            stage.show();
+            diagram.start(stage);           
+      
+            System.out.println("Making state diagram window");
+            }
+        else {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText(null);
+            alert.setContentText("Please load a program first");
+            alert.showAndWait();
+        }       
+    }
+    
+    private Line connectStates(Node n1, Node n2) {
+        if (n1.getParent() != n2.getParent()) {
+            throw new IllegalArgumentException("Nodes are in different containers");
         }
+        Pane parent = (Pane) n1.getParent();
+        Line line = new Line();
+        line.startXProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n1.getBoundsInParent();
+            return b.getMinX() + b.getWidth() / 2 ;
+        }, n1.boundsInParentProperty()));
+        line.startYProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n1.getBoundsInParent();
+            return b.getMinY() + b.getHeight() / 2 ;
+        }, n1.boundsInParentProperty()));
+        line.endXProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n2.getBoundsInParent();
+            return b.getMinX() + b.getWidth() / 2 ;
+        }, n2.boundsInParentProperty()));
+        line.endYProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n2.getBoundsInParent();
+            return b.getMinY() + b.getHeight() / 2 ;
+        }, n2.boundsInParentProperty()));
+        
+        //double centerY = ((endY - startY) / 2) + startY;        
+        
+        parent.getChildren().add(line);
+        return line;
+    }
+    
+    public void drawStates(ArrayList<StateTransition> states) {
+        StateDiagram diagram = new StateDiagram();
+        Stage stage = new Stage();
+        Pane pane = new Pane();
+        Line line = new Line();
+        final int numStates=states.size();
+        String[] allInitStates = new String[numStates];
+        String[] allTransitions = new String[numStates];
+        String[] allEndStates = new String[numStates];
+        
+        for(int i =0; i< numStates;i++){
+            allInitStates[i] = states.get(i).getInitialState();
+            allTransitions[i] = states.get(i).getReadToken() + ", " +
+                            states.get(i).getWriteToken() + ", " +
+                            states.get(i).getDirection();
+            allEndStates[i] = states.get(i).getEndState();
+            //System.out.println(allInitStates[i] + " " + allTransitions[i] + " " + allEndStates[i]);
+        }     
+        
+        Set<String> uniqueStateSet = new HashSet<>(Arrays.asList(allInitStates));
+        //String[] initialStates = new String[uniqueStateSet.size()];
+        String[] initialStates = allInitStates;//new String[allInitStates.length];
+        String[] endStates = allEndStates;//new String[allEndStates.length];
+        //uniqueStateSet.toArray(initialStates);
+        int numUniqueStates = initialStates.length;
+        int numAllStates = allInitStates.length;
+            //System.out.println("allInit len = " + allInitStates.length);
+            //System.out.println("allTran len = " + allTransitions.length);
+            //System.out.println("allEnds len = " + allEndStates.length);
+            //System.out.println("noDupes len = " + numUniqueStates);
+        
+        Circle[] stateNodes = new Circle[numAllStates]; //numUniqueStates
+        Circle[] endNodes = new Circle[numAllStates];
+        Label[] stateLabels = new Label[numAllStates];
+        Label[] endLabels = new Label[numAllStates];
+        Circle startNode = createDraggingCircle(XCOORD-50, YCOORD, 5, pane, Color.GRAY);
+        
+        Label startLabel = new Label();       
+        startLabel.setText("start");
+        startLabel.layoutXProperty().bind(startNode.centerXProperty());
+        startLabel.layoutYProperty().bind(startNode.centerYProperty());
+        pane.getChildren().addAll(startNode,startLabel);
+            //System.out.println("stateNodes len = " + stateNodes.length);
+            //System.out.println("stateLabel len = " + stateLabels.length);
+        int connected = 0;        
+        for (int j = 0; j < numAllStates; j++){
+            Label stateLabel = new Label(initialStates[j]);
+            Label endLabel = new Label(endStates[j]);
             
+            stateNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, pane, Color.GRAY);
+            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+150, 15, pane, Color.GREEN);
+            
+            stateNodes[j].setOpacity(.5);
+            endNodes[j].setOpacity(.5);
+            
+            stateLabel.layoutXProperty().bind(stateNodes[j].centerXProperty());
+            stateLabel.layoutYProperty().bind(stateNodes[j].centerYProperty());
+            endLabel.layoutXProperty().bind(endNodes[j].centerXProperty());
+            endLabel.layoutYProperty().bind(endNodes[j].centerYProperty());   
+            
+            stateLabel.setMnemonicParsing(true);
+            stateLabel.setLabelFor(stateNodes[j]);
+            endLabel.setMnemonicParsing(true);
+            endLabel.setLabelFor(endNodes[j]);
+                //System.out.println("getLabelFor = " + stateLabel.getLabelFor());
+            stateLabels[j] = stateLabel;
+            endLabels[j] = endLabel;
+            if (XCOORD + 150 < canvas.getWidth())
+            {
+                XCOORD += 115;
+            }
+            else
+            {
+                XCOORD = 30;
+                YCOORD += 150;
+            }                  
+            pane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
+        }   
+        connectStates(startNode, stateNodes[0]);
+        ObjectProperty<Node> lastUnconnectedNode = new SimpleObjectProperty<>();
+        Circle prevNode;
+        for (int j = 0; j< numUniqueStates; j++){
+            
+            // connect stateNodes[j]=initNode to prevNode=endNode
+            if (lastUnconnectedNode.get() == null) {                
+                lastUnconnectedNode.set(stateNodes[j]);
+            } else {
+                //connectStates(lastUnconnectedNode.get(), stateLabels[j].getLabelFor());
+                connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
+                connected++;
+                //line = connectStates(prevNode, stateNodes[j]);
+                //lastUnconnectedNode.set(null);
+            }   
+            prevNode = stateNodes[j];
+        }
+        
+            //System.out.println("numEdges = " + connected);
+        Scene scene = new Scene(pane, 600, 600);
+        ScrollPane layout = new ScrollPane();
+           
+        layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
+        layout.setFitToHeight(true);
+        stage.setScene(new Scene(layout, 450, 450));
+        stage.setTitle("State Diagram Window");
+        stage.initOwner(diagramDisplay.getScene().getWindow());
+        
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
+        stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
+        diagram.start(stage);
+        stage.setScene(scene);
+        stage.show();  
+    }
+    
+    private Circle createDraggingCircle(double radius, double x, double y, Pane parent, Color fill) {
+        Circle c = new Circle(radius, x, y, fill);
+        
+        ObjectProperty<Point2D> mouseLoc = new SimpleObjectProperty<>();
+        c.setOnMousePressed(e -> mouseLoc.set(new Point2D(e.getX(), e.getY())));
+        
+        c.setOnMouseDragged(e -> {
+            double deltaX = e.getX() - mouseLoc.get().getX();
+            double deltaY = e.getY() - mouseLoc.get().getY();
+            c.setCenterX(c.getCenterX() + deltaX);
+            c.setCenterY(c.getCenterY() + deltaY);
+            mouseLoc.set(new Point2D(e.getX(), e.getY()));
+        });
+        c.addEventFilter(MouseEvent.MOUSE_CLICKED, Event::consume);
+        //parent.getChildren().add(c);
+        return c ;
     }
 
     private void redraw() {
