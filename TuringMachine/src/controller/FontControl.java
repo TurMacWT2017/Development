@@ -20,6 +20,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
@@ -59,9 +60,13 @@ public class FontControl extends TabPane {
         @FXML private CheckBox italicCheckBox;
         @FXML private ComboBox sizeChooserBox;
         @FXML private ComboBox fontChooserBox;
+        @FXML private Button acceptButton;
+        @FXML private Button cancelButton;
         //RWHead Tab
         @FXML private TextFlow RWPreviewBar;
         @FXML private ColorPicker RWColorPicker;
+        @FXML private Button RWacceptButton;
+        @FXML private Button RWcancelButton;
         
     public FontControl() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/font_control.fxml"));

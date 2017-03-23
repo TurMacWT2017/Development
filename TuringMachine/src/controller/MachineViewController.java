@@ -9,17 +9,28 @@ import java.io.File;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -53,12 +64,30 @@ import javafx.scene.text.Text;
 
 import javafx.scene.text.TextFlow;
 import model.StateTransition;
+<<<<<<< HEAD
 import controller.FontControl;
 import javafx.scene.layout.StackPane;
+=======
+import javafx.scene.control.Accordion;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+>>>>>>> 086ba9b244090f5563a3977a298784be7aebe097
 import javafx.scene.text.FontPosture;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
+import javafx.stage.StageStyle;
+import javafx.util.Callback;
 
 /**
  *
@@ -75,20 +104,34 @@ public class MachineViewController implements Initializable {
     private boolean isItalic = false;
     private Color RWHeadFillColor = Color.RED;
     
+    //used to keep track of how many tapes the user is working with and is given
+    //to the interpreter upon its creation so it knows how many tapes it has
+    //default is one tape
+    private int tapes = 1;
+    
+    //Keeps track of the currently selected tape (in this case, its TextFlow, since
+    //that's what is edited in the view)
+    @FXML private TextFlow selectedTape;
+    
     //UI Buttons
     @FXML private Button runButton;
     @FXML private Button stepButton;
     @FXML private Button stopButton;
     @FXML private Button resetButton;
     @FXML private Button tapeOneClearButton;
+    @FXML private Button tapeTwoClearButton;
+    @FXML private Button tapeThreeClearButton;
     //Displays
     @FXML private TextField currentState;
     @FXML private TextField currentSteps;
+    //Text flows for each tape
     @FXML private TextFlow tapeOne;
+    @FXML private TextFlow tapeTwo;
+    @FXML private TextFlow tapeThree;
     //Canvas
     @FXML private Canvas canvas;
-    private static int XCOORD = 10;
-    private static int YCOORD = 10;
+    private static int XCOORD = 72;
+    private static int YCOORD = 72;
     private static final double RADIUS = 30.0;
     //Slider
     @FXML private Slider speedSlider;
@@ -101,8 +144,15 @@ public class MachineViewController implements Initializable {
     @FXML private MenuItem fontOptions;
     @FXML private AnchorPane diagramDisplay;
     @FXML private TextFlow codeViewTab;
+<<<<<<< HEAD
     @FXML private MenuItem about;
     @FXML private MenuItem langref;
+=======
+    //Titled panes for the tape views
+    @FXML private TitledPane tapeOnePane;
+    @FXML private TitledPane tapeTwoPane;
+    @FXML private TitledPane tapeThreePane;
+>>>>>>> 086ba9b244090f5563a3977a298784be7aebe097
     //Code Window 
     //@FXML private TextArea codeDisplay;
     
@@ -168,12 +218,6 @@ public class MachineViewController implements Initializable {
     }
     
     @FXML
-    private void clearButtonClicked(ActionEvent event) {
-        System.out.println("Clear Tape 1");
- //       tm.clearTape();
-    }
-    
-    @FXML
     private void openFileMenuItemClicked(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         File initialDirectory;
@@ -203,11 +247,15 @@ public class MachineViewController implements Initializable {
         if (selectedFile != null) {
             //note that a file was loaded
             fileLoaded = true;
+            //clear the tapes of any old content
             tapeOne.getChildren().clear();
+            tapeTwo.getChildren().clear();
+            tapeThree.getChildren().clear();
             codeViewTab.getChildren().clear();
             String input = controller.openFile(selectedFile);
             //when initializing interpreter, give it both an input and a view controller (this) to work with
-            interp = new Interpreter(input, this);
+            System.out.println("Number of tapes was" + tapes);
+            interp = new Interpreter(input, this, tapes);
 //            recentFiles.add(selectedFile);
             //Show code or error report
             if (interp.errorFound()) {
@@ -218,21 +266,21 @@ public class MachineViewController implements Initializable {
                 alert.setHeaderText("The program you have loaded contains syntax errors");
                 alert.setContentText("Please correct them or load a different program"
                         + "\nA complete error report can be found in the code tab");
-//                Label label = new Label("Errors found:");
-//
-//                TextArea textArea = new TextArea(interp.getErrorReport());
-//                textArea.setEditable(false);
-//                textArea.setWrapText(true);
-//                textArea.setMaxWidth(Double.MAX_VALUE);
-//                textArea.setMaxHeight(Double.MAX_VALUE);
-//                GridPane expContent = new GridPane();
-//                expContent.add(label, 0, 0);
-//                expContent.add(textArea, 0, 1);
-//                GridPane.setVgrow(textArea, Priority.ALWAYS);
-//                GridPane.setHgrow(textArea, Priority.ALWAYS);
-//                expContent.setMaxWidth(Double.MAX_VALUE);
+                Label label = new Label("Errors found:");
+
+                TextArea textArea = new TextArea(interp.getErrorReport());
+                textArea.setEditable(false);
+                textArea.setWrapText(true);
+                textArea.setMaxWidth(Double.MAX_VALUE);
+                textArea.setMaxHeight(Double.MAX_VALUE);
+                GridPane expContent = new GridPane();
+                expContent.add(label, 0, 0);
+                expContent.add(textArea, 0, 1);
+                GridPane.setVgrow(textArea, Priority.ALWAYS);
+                GridPane.setHgrow(textArea, Priority.ALWAYS);
+                expContent.setMaxWidth(Double.MAX_VALUE);
                 // Set expandable Exception into the dialog pane.
-                //alert.getDialogPane().setExpandableContent(expContent);
+                alert.getDialogPane().setExpandableContent(expContent);
                 alert.showAndWait();
             }
             else {
@@ -255,11 +303,156 @@ public class MachineViewController implements Initializable {
     
     @FXML
     private void tapeOneClearButtonClicked(ActionEvent event) {
-        if (fileLoaded) {
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
             tapeOne.getChildren().clear();
-            interp.popup();
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Tape Input Dialog");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Tape One: ");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(input -> interp.setInitialContent(result.get(), 1));
             interp.reset();
         }
+    }
+    
+    @FXML
+    private void tapeTwoClearButtonClicked(ActionEvent event) {
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
+            tapeTwo.getChildren().clear();
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Tape Input Dialog");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Tape Two: ");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(input -> interp.setInitialContent(result.get(), 2));
+            interp.reset();
+        }
+    }
+    
+    @FXML
+    private void tapeThreeClearButtonClicked(ActionEvent event) {
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
+            tapeThree.getChildren().clear();
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Tape Input Dialog");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Tape Three: ");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(input -> interp.setInitialContent(result.get(), 3));            
+            interp.reset();
+        }
+    }
+    
+    /** The below methods handle toggling the view to either 1, 2, or 3 tape mode **/
+    
+    @FXML
+    private void setOneTapeMode(ActionEvent event) {
+        tapeTwoPane.setExpanded(false);
+        tapeTwoPane.setVisible(false);
+        tapeThreePane.setExpanded(false);
+        tapeThreePane.setVisible(false);
+        tapes = 1;
+        boolean isReady = checkProgramStatus();
+        if (fileLoaded && isReady) {
+            interp.setNumberOfTapes(1);
+            //reboot the interpreter
+            interp.stop();
+            tapeOne.getChildren().clear();
+            String input = interp.getMachineCode();
+            interp = null;
+            //reboot the interpreter in the new mode
+            interp = new Interpreter(input, this, tapes);
+            try {
+                interp.start();
+            } catch (InterpreterException ex) {
+                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            setStartState();
+        }
+    }
+    
+    @FXML
+    private void setTwoTapeMode(ActionEvent event) {
+        tapeTwoPane.setExpanded(true);
+        tapeTwoPane.setVisible(true);
+        tapeThreePane.setExpanded(false);
+        tapeThreePane.setVisible(false);
+        tapes = 2;
+        boolean isReady = checkProgramStatus();
+        if (fileLoaded && isReady) {
+            interp.setNumberOfTapes(2);
+            //reboot the interpreter
+            interp.stop();
+            tapeOne.getChildren().clear();
+            tapeTwo.getChildren().clear();
+            String input = interp.getMachineCode();
+            //reboot the interpreter in the new mode
+            interp = new Interpreter(input, this, tapes);
+            try {
+                interp.start();
+            } catch (InterpreterException ex) {
+                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            setStartState();
+        }
+    }
+    
+    @FXML
+    private void setThreeTapeMode(ActionEvent event) {
+        tapeTwoPane.setExpanded(true);
+        tapeTwoPane.setVisible(true);
+        tapeThreePane.setExpanded(true);
+        tapeThreePane.setVisible(true);
+        tapes = 3;
+        boolean isReady = checkProgramStatus();
+        if (fileLoaded && isReady) {
+            interp.setNumberOfTapes(3);
+            //reboot the interpreter
+            interp.stop();
+            tapeOne.getChildren().clear();
+            tapeTwo.getChildren().clear();
+            tapeThree.getChildren().clear();
+            String input = interp.getMachineCode();
+            //reboot the interpreter in the new mode
+            interp = new Interpreter(input, this, tapes);
+            try {
+                interp.start();
+            } catch (InterpreterException ex) {
+                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            setStartState();
+        }
+
+    }
+    /*** These methods are used by the interpreter if a tape needs to be activated that isn't ****/
+    @FXML
+    public void activateTapeTwo() {
+        tapeTwo.getChildren().clear();
+        tapeTwoPane.setExpanded(true);
+        tapeTwoPane.setVisible(true);
+        tapes = 2;
+    }
+    
+    @FXML
+    public void activateTapeThree() {
+        tapeThree.getChildren().clear();
+        tapeThreePane.setExpanded(true);
+        tapeThreePane.setVisible(true);
+        tapes = 3;
+    }
+    
+    /**********************************************************/
+    
+    /** Returns the current number of active tapes (or tape mode)
+     * 
+     * @return int number of active tapes 
+     */
+    @FXML
+    public int getCurrentMode() {
+        return tapes;
     }
     
     @FXML
@@ -313,7 +506,7 @@ public class MachineViewController implements Initializable {
             FontControl fontControl = new FontControl();
             //initialize the font chooser
             fontControl.initialize(family, size, isBold, isItalic, RWHeadFillColor);
-            Stage stage = new Stage();
+            Stage stage = new Stage(StageStyle.UNDECORATED);
             stage.setScene(new Scene(fontControl));
             stage.setWidth(300);
             stage.setHeight(300);
@@ -335,7 +528,10 @@ public class MachineViewController implements Initializable {
                 else {
                     updateCodeTabContent(interp.getMachineCode());
                 }
-                updateTapeContent(interp.getTapeContent());
+                //update content across all three tapes
+                updateTapeContent(interp.getTapeContent(1), 1);
+                updateTapeContent(interp.getTapeContent(2), 2);
+                updateTapeContent(interp.getTapeContent(3), 3);
             }
     }
     
@@ -405,6 +601,11 @@ public class MachineViewController implements Initializable {
         stepButton.setDisable(true);
         
     }
+    
+    @FXML
+    public void resetView() {
+        runButton.setText("Run");
+    }
 
     @FXML
     public void updateStepCount(int stepCount) {
@@ -417,24 +618,46 @@ public class MachineViewController implements Initializable {
     }
     
     @FXML
-    public String getTapeInput() {
-        return tapeOne.getChildren().toString();
+    public String getTapeInput(int tape) {
+        switch (tape) {
+            case 1:
+                return tapeOne.getChildren().toString();
+            case 2:
+                return tapeTwo.getChildren().toString();
+            case 3:
+                return tapeThree.getChildren().toString();
+            default:
+                return tapeOne.getChildren().toString();
+        }
     }
+    
     @FXML
-    public void setInitialTapeContent(String content) {
+    public void setInitialTapeContent(String content, int tapeNumber) {
         Text input = new Text(content.substring(1));
         Text underHead = new Text(Character.toString(content.charAt(0)));
         underHead.setFill(RWHeadFillColor);
         underHead.setFont(Font.font(family, FontWeight.BOLD, size));
         input.setFont(getCurrentFontSettings());
-        tapeOne.getChildren().addAll(underHead, input);
+        switch (tapeNumber) {
+            case 1:
+                tapeOne.getChildren().addAll(underHead, input);
+                break;
+            case 2:
+                tapeTwo.getChildren().addAll(underHead, input);
+                break;
+            case 3:
+                tapeThree.getChildren().addAll(underHead, input);
+                break;
+            default:
+                break;
+        }
     }
     
     @FXML
-    public void updateTapeContent(String content) {
-       
-        int headLocation = interp.getRWHead();
-        System.out.println(headLocation);
+    public void updateTapeContent(String content, int tape) {
+        int headLocation = interp.getRWHead(tape);
+        System.out.println("The requested tape was " + tape);
+
 
         //compensates for possibility of head being at left or right
         boolean headAtRight = false;
@@ -444,7 +667,7 @@ public class MachineViewController implements Initializable {
         if (headLocation == 0) {
             headAtLeft = true;            
         }
-        else if (headLocation == interp.getTapeLength() - 1) {
+        else if (headLocation == interp.getTapeLength(tape) - 1) {
             headAtRight = true;            
         }
         
@@ -459,16 +682,44 @@ public class MachineViewController implements Initializable {
             Text tapeContentRight = new Text(content.substring(headLocation + 1));
             tapeContentRight.setFont(getCurrentFontSettings());
             Platform.runLater(() -> {
-                  tapeOne.getChildren().clear();
-                  tapeOne.getChildren().addAll(tapeContentHead, tapeContentRight);
+                switch (tape) {
+                    case 1:
+                        tapeOne.getChildren().clear();
+                        tapeOne.getChildren().addAll(tapeContentHead, tapeContentRight);
+                        break;
+                    case 2:
+                        tapeTwo.getChildren().clear();
+                        tapeTwo.getChildren().addAll(tapeContentHead, tapeContentRight);
+                        break;
+                    case 3:
+                        tapeThree.getChildren().clear();
+                        tapeThree.getChildren().addAll(tapeContentHead, tapeContentRight);
+                        break;
+                    default:
+                        break;                        
+                }                  
             });            
         }
         else if (headAtRight) {
             Text tapeContentLeft = new Text(content.substring(0, headLocation));
             tapeContentLeft.setFont(getCurrentFontSettings());
             Platform.runLater(() -> {
-                  tapeOne.getChildren().clear();
-                  tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead);
+                switch (tape) {
+                    case 1:
+                        tapeOne.getChildren().clear();
+                        tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead);
+                        break;
+                    case 2:
+                        tapeTwo.getChildren().clear();
+                        tapeTwo.getChildren().addAll(tapeContentLeft, tapeContentHead);
+                        break;
+                    case 3:
+                        tapeThree.getChildren().clear();
+                        tapeThree.getChildren().addAll(tapeContentLeft, tapeContentHead);
+                        break;
+                    default:
+                        break;                        
+                }
             });
         }
         else {
@@ -477,8 +728,22 @@ public class MachineViewController implements Initializable {
             Text tapeContentRight = new Text(content.substring(headLocation + 1));
             tapeContentRight.setFont(getCurrentFontSettings());
             Platform.runLater(() -> {
-                  tapeOne.getChildren().clear();
-                  tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
+                switch (tape) {
+                    case 1:
+                        tapeOne.getChildren().clear();
+                        tapeOne.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
+                        break;
+                    case 2:
+                        tapeTwo.getChildren().clear();
+                        tapeTwo.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
+                        break;
+                    case 3:
+                        tapeThree.getChildren().clear();
+                        tapeThree.getChildren().addAll(tapeContentLeft, tapeContentHead, tapeContentRight);
+                        break;
+                    default:
+                        break;                        
+                }
             });
         }
             
@@ -526,54 +791,258 @@ public class MachineViewController implements Initializable {
         return (int)speedSlider.getValue();
     }
     
-    public void drawStates(ArrayList<StateTransition> states) {
-        // Draw circles representing State Diagrams
-        // keep the states in case we have to redraw because of a resize
-        currentStates = states;
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        // Reset the canvas from any previous drawings
-        XCOORD = 10;
-        YCOORD = 10;
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(2);
-        //get the number of states
-        int nodeCount = states.size();
+public void launchStateWindow(){
+        StateDiagram diagram = new StateDiagram();
         
-        //draw all the states
-        for (int i = 0; i< nodeCount; i++) {
-                String stateName = states.get(i).getInitialState();
-                String rToken = states.get(i).getReadToken();
-                String wToken = states.get(i).getWriteToken();
-                String direction = states.get(i).getDirection();
-                gc.setFill(Color.WHITE);
-                // fillOval is a filled in circle, strokeOval is an outline
-                gc.fillOval(XCOORD, YCOORD, RADIUS, RADIUS);
-                gc.strokeOval(XCOORD, YCOORD, RADIUS, RADIUS);
-                
-                // connect the "states" with a line from center to center
-                // unless it's the last state, then it won't need a line.
-                if (i < nodeCount - 1) 
-                    gc.strokeLine(XCOORD+30, YCOORD+15, XCOORD+130, YCOORD+15);
-                
-                //draw label
-                //change font color to black
-                gc.setFill(Color.BLACK);
-                gc.fillText(stateName, XCOORD + RADIUS, YCOORD + RADIUS);
-                //draw transition info
-                gc.fillText(rToken + ", " + wToken + ", " + direction, XCOORD + 35, YCOORD+10);
+        if (fileLoaded) {
+            Stage stage;
+            System.out.println("Making code window");
+            stage = new Stage();
+            ScrollPane layout = new ScrollPane();
+           
+            layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
+            layout.setFitToHeight(true);
 
-                if (XCOORD + 150 < canvas.getWidth())
-                {
-                    XCOORD += 115;
-                }
-                else
-                {
-                    XCOORD = 10;
-                    YCOORD += 50;
-                }
+            //build the content
+            String code;
+            if (interp.errorFound()) {
+                code = interp.getErrorReport();
+            }
+            else {
+                code = interp.getMachineCode();
+            }
+            Text content = new Text(code);
+            //style the content and add it
+            content.setFont(getCurrentFontSettings());
+            //set the scene and its owner
+            stage.setScene(new Scene(layout, 450, 450));
+            stage.setTitle("State Diagram Window");
+            stage.initOwner(diagramDisplay.getScene().getWindow());
+            Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
+            stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
+            stage.show();
+            diagram.start(stage);           
+      
+            System.out.println("Making state diagram window");
+            }
+        else {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText(null);
+            alert.setContentText("Please load a program first");
+            alert.showAndWait();
+        }       
+    }
+    
+    private Line connectStates(Node n1, Node n2) {
+        if (n1.getParent() != n2.getParent()) {
+            throw new IllegalArgumentException("Nodes are in different containers");
         }
+        Pane parent = (Pane) n1.getParent();
+        Line line = new Line();
+        line.startXProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n1.getBoundsInParent();
+            return b.getMinX() + b.getWidth() / 2 ;
+        }, n1.boundsInParentProperty()));
+        line.startYProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n1.getBoundsInParent();
+            return b.getMinY() + b.getHeight() / 2 ;
+        }, n1.boundsInParentProperty()));
+        line.endXProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n2.getBoundsInParent();
+            return b.getMinX() + b.getWidth() / 2 ;
+        }, n2.boundsInParentProperty()));
+        line.endYProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n2.getBoundsInParent();
+            return b.getMinY() + b.getHeight() / 2 ;
+        }, n2.boundsInParentProperty()));
+        
+        //double centerY = ((endY - startY) / 2) + startY;        
+        
+        parent.getChildren().add(line);
+        return line;
+    }
+    
+    public void drawStates(ArrayList<StateTransition> states) {
+        StateDiagram diagram = new StateDiagram();
+        Stage stage = new Stage();
+        Pane pane = new Pane();
+        Line line = new Line();
+        final int numStates=states.size();
+        String[] allInitStates = new String[numStates];
+        String[] allTransitions = new String[numStates];
+        String[] allEndStates = new String[numStates];
+        
+        for(int i =0; i< numStates;i++){
+            allInitStates[i] = states.get(i).getInitialState();
+            allTransitions[i] = states.get(i).getReadToken() + ", " +
+                            states.get(i).getWriteToken() + ", " +
+                            states.get(i).getDirection();
+            allEndStates[i] = states.get(i).getEndState();
+            //System.out.println(allInitStates[i] + " " + allTransitions[i] + " " + allEndStates[i]);
+        }     
+        
+        Set<String> uniqueStateSet = new HashSet<>(Arrays.asList(allInitStates));
+        String[] initialUniqueStates = new String[uniqueStateSet.size()];
+        String[] initialStates = allInitStates;//new String[allInitStates.length];
+        String[] endStates = allEndStates;//new String[allEndStates.length];
+        uniqueStateSet.toArray(initialUniqueStates);
+        int numUniqueStates = initialUniqueStates.length;
+        int numAllStates = allInitStates.length;
+            //System.out.println("allInit len = " + allInitStates.length);
+            //System.out.println("allTran len = " + allTransitions.length);
+            //System.out.println("allEnds len = " + allEndStates.length);
+            //System.out.println("noDupes len = " + numUniqueStates);
+        
+        Circle[] stateNodes = new Circle[numAllStates]; //numUniqueStates
+        Circle[] uniqueNodes = new Circle[numUniqueStates];
+        Circle[] endNodes = new Circle[numAllStates];
+        Label[] stateLabels = new Label[numAllStates];
+        Label[] uniqueLabels = new Label[numUniqueStates];
+        Label[] endLabels = new Label[numAllStates];
+        Circle startNode = createDraggingCircle(XCOORD-50, YCOORD, 5, pane, Color.GRAY);
+        
+        Label startLabel = new Label();       
+        startLabel.setText("start");
+        startLabel.layoutXProperty().bind(startNode.centerXProperty());
+        startLabel.layoutYProperty().bind(startNode.centerYProperty());
+        pane.getChildren().addAll(startNode,startLabel);
+            //System.out.println("stateNodes len = " + stateNodes.length);
+            //System.out.println("stateLabel len = " + stateLabels.length);
+        int connected = 0;  
+        
+        // DEBUG FOR-LOOP
+        for (int j=0; j< numUniqueStates; j++){
+            Label uniqueLabel = new Label(initialUniqueStates[j]);
             
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 10, pane, Color.BLUE);
+            uniqueNodes[j].setOpacity(.5);
+            uniqueLabels[j] = new Label(initialUniqueStates[j]);
+            uniqueLabel.layoutXProperty().bind(uniqueNodes[j].centerXProperty());
+            uniqueLabel.layoutYProperty().bind(uniqueNodes[j].centerYProperty());
+              
+            if (XCOORD + 150 < canvas.getWidth())
+            {
+                XCOORD += 115;
+            }
+            else
+            {
+                XCOORD = 72;
+                YCOORD += 150;
+            }     
+        }
+        
+        for (int j = 0; j < numAllStates; j++){
+            Label stateLabel = new Label(initialStates[j]);
+            Label endLabel = new Label(endStates[j]);
+            
+            stateNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, pane, Color.GRAY);
+            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+50, 15, pane, Color.GREEN);
+            
+            stateNodes[j].setOpacity(.5);
+            endNodes[j].setOpacity(.5);
+            
+            stateLabel.layoutXProperty().bind(stateNodes[j].centerXProperty());
+            stateLabel.layoutYProperty().bind(stateNodes[j].centerYProperty());
+            endLabel.layoutXProperty().bind(endNodes[j].centerXProperty());
+            endLabel.layoutYProperty().bind(endNodes[j].centerYProperty());   
+            
+            //stateLabel.setMnemonicParsing(true);
+            stateLabel.setLabelFor(stateNodes[j]);
+            //endLabel.setMnemonicParsing(true);
+            endLabel.setLabelFor(endNodes[j]);
+                //System.out.println("getLabelFor = " + stateLabel.getLabelFor());
+            stateLabels[j] = stateLabel;
+            endLabels[j] = endLabel;
+            
+            if (XCOORD + 150 < canvas.getWidth())
+            {
+                XCOORD += 115;
+            }
+            else
+            {
+                XCOORD = 100;
+                YCOORD += 150;
+            }                  
+            pane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
+        }   
+        for(int i=0; i<numUniqueStates; i++){
+            pane.getChildren().add(uniqueNodes[i]);
+        }
+        
+        System.out.println("numUnique = " + numUniqueStates);
+        System.out.println("numAll = " + numAllStates);
+        
+        for(int i=0; i<numUniqueStates; i++){
+            for(int j=0; j<numAllStates; j++){
+                Circle stateNode = stateNodes[j];
+                if(!allInitStates[j].equals(initialUniqueStates[i])){
+                } else {
+                    //stateNode.layoutXProperty().bind(uniqueNodes[i].centerXProperty());
+                    //stateNode.layoutYProperty().bind(uniqueNodes[i].centerYProperty());
+                    
+                    stateNodes[j].setCenterX(uniqueNodes[i].getCenterX());
+                    stateNodes[j].setCenterY(uniqueNodes[i].getCenterY());
+                }
+            }
+        }
+        
+        connectStates(startNode, stateNodes[0]);
+        ObjectProperty<Node> lastUnconnectedNode = new SimpleObjectProperty<>();
+        Circle prevNode = new Circle();
+        Label prevLabel = new Label();
+        for (int j = 0; j< numAllStates; j++){
+            
+            // connect stateNodes[j]=initNode to prevNode=endNode
+            if (lastUnconnectedNode.get() == null) {                
+                lastUnconnectedNode.set(stateNodes[j]);
+            } else {
+                //connectStates(lastUnconnectedNode.get(), stateLabels[j].getLabelFor());
+                connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
+                connected++;
+                //line = connectStates(prevNode, stateNodes[j]);
+                //lastUnconnectedNode.set(null);
+            }             
+        }
+        
+        
+            //System.out.println("numEdges = " + connected);
+        Scene scene = new Scene(pane, 600, 600);
+        ScrollPane layout = new ScrollPane();
+           
+        layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
+        layout.setFitToHeight(true);
+        stage.setScene(new Scene(layout, 450, 450));
+        stage.setTitle("State Diagram Window");
+        stage.initOwner(diagramDisplay.getScene().getWindow());
+        
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
+        stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
+        diagram.start(stage);
+        stage.setScene(scene);
+        stage.show();  
+    }
+    
+    private Circle createDraggingCircle(double radius, double x, double y, Pane parent, Color fill) {
+        Circle c = new Circle(radius, x, y, fill);
+        
+        ObjectProperty<Point2D> mouseLoc = new SimpleObjectProperty<>();
+        c.setOnMousePressed(e -> mouseLoc.set(new Point2D(e.getX(), e.getY())));
+        
+        c.setOnMouseDragged(e -> {
+            double deltaX = e.getX() - mouseLoc.get().getX();
+            double deltaY = e.getY() - mouseLoc.get().getY();
+            c.setCenterX(c.getCenterX() + deltaX);
+            c.setCenterY(c.getCenterY() + deltaY);
+            mouseLoc.set(new Point2D(e.getX(), e.getY()));
+        });
+        c.addEventFilter(MouseEvent.MOUSE_CLICKED, Event::consume);
+        //parent.getChildren().add(c);
+        return c ;
     }
 
     private void redraw() {
@@ -616,18 +1085,8 @@ public class MachineViewController implements Initializable {
         
         return machineReady;
     }
-
-    public void showAutoStopDialog(String lookingForState) {
-        Alert alert = new Alert(AlertType.WARNING);
-        alert.setTitle("Warning");
-        alert.setHeaderText("Your program might be getting stuck in an infinite loop looking for state " + lookingForState);
-        alert.setContentText("The machine has gone through your file four times, but still hasn't found the next state to go to."
-                + "\nWe've stopped your program for now, but you can run again if you really want to"
-                + "\nThis most likely means that there is an error in your program logic causing an infinite loop."
-                + "\nIf you keep seeing this error, please check your program and its logic for errors");
-        alert.showAndWait();
-    }
-
+    
+    
     /**
     * Returns the current Font settings to allow easy text formatting
     * @return Font current font
@@ -646,6 +1105,161 @@ public class MachineViewController implements Initializable {
             return Font.font(family, size);
         }   
     }
+    
+    /*** Methods for displaying various dialogs are in this area ********/
+
+    public void showAutoStopDialog(String lookingForState) {
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText("Your program might be getting stuck in an infinite loop looking for state " + lookingForState);
+        alert.setContentText("The machine has gone through your file four times, but still hasn't found the next state to go to."
+                + "\nWe've stopped your program for now, but you can run again if you really want to"
+                + "\nThis most likely means that there is an error in your program logic causing an infinite loop."
+                + "\nIf you keep seeing this error, please check your program and its logic for errors");
+        alert.showAndWait();
+    }
+
+    public String[] showInputDialog(int numTapes) {
+        String[] input = {"____", "_____", "_____"};
+        //build and show the appropriate dialog
+        switch (numTapes) {
+            case 1:
+            {
+                Dialog<String []> dialog = new Dialog<>();
+                dialog.setTitle("Tape Input");
+                dialog.setHeaderText("Initial Tape Input");
+                dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
+                
+                Label label1 = new Label("Tape One: ");
+                TextField text1 = new TextField();
+                
+                GridPane grid = new GridPane();
+                grid.add(label1, 1, 1);
+                grid.add(text1, 2, 1);
+                dialog.getDialogPane().setContent(grid);
+                
+                ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+                
+                dialog.setResultConverter((ButtonType b) -> {
+                    if (b == buttonTypeOk) {
+                        String [] result = new String[1];
+                        result[0] = text1.getText();
+                        return result;
+                    }
+                    return null;
+                });
+                
+                Optional<String []> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    input = result.get();
+                }
+                break;
+            }
+            case 2:
+            {
+                Dialog<String []> dialog = new Dialog<>();
+                dialog.setTitle("Tape Input");
+                dialog.setHeaderText("Initial Tape Input");
+                dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
+                
+                Label label1 = new Label("Tape One: ");
+                Label label2 = new Label("Tape Two: ");
+                TextField text1 = new TextField();
+                TextField text2 = new TextField();
+                
+                GridPane grid = new GridPane();
+                grid.add(label1, 1, 1);
+                grid.add(text1, 2, 1);
+                grid.add(label2, 1, 2);
+                grid.add(text2, 2, 2);
+                dialog.getDialogPane().setContent(grid);
+                
+                ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+                
+                dialog.setResultConverter((ButtonType b) -> {
+                    if (b == buttonTypeOk) {
+                        String [] result = new String[2];
+                        result[0] = text1.getText();
+                        result[1] = text2.getText();
+                        return result;
+                    }
+                    return null;
+                });
+                
+                Optional<String []> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    input = result.get();
+                }
+                break;
+            }
+            case 3:
+            {
+                Dialog<String []> dialog = new Dialog<>();
+                dialog.setTitle("Tape Input");
+                dialog.setHeaderText("Initial Tape Input");
+                dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
+                
+                Label label1 = new Label("Tape One: ");
+                Label label2 = new Label("Tape Two: ");
+                Label label3 = new Label("Tape Three: ");
+                TextField text1 = new TextField();
+                TextField text2 = new TextField();
+                TextField text3 = new TextField();
+                
+                GridPane grid = new GridPane();
+                grid.add(label1, 1, 1);
+                grid.add(text1, 2, 1);
+                grid.add(label2, 1, 2);
+                grid.add(text2, 2, 2);
+                grid.add(label3, 1, 3);
+                grid.add(text3, 2, 3);
+                dialog.getDialogPane().setContent(grid);
+                
+                ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+                
+                dialog.setResultConverter((ButtonType b) -> {
+                    if (b == buttonTypeOk) {
+                        String [] result = new String[3];
+                        result[0] = text1.getText();
+                        result[1] = text2.getText();
+                        result[2] = text3.getText();
+                        return result;
+                    }
+                    return null;
+                });
+                
+                Optional<String []> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    input = result.get();
+                }
+                break;
+                
+            }
+            default:
+            {
+                System.out.println("Unexpected tape Number");
+                break;
+            }
+            
+        }
+        System.out.println(Arrays.toString(input));
+        return input;
+    }
+
+    public void showModeChangeWarning() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("The Machine Mode has been changed");
+        alert.getDialogPane().setContent( new Label("The Machine detected a reference in your program to a currently non-active tape."
+                + "\n The requested tape(s) has/have been activated for you automatically. \nTo change their content, simply click the clear button of the tape"
+                + "\n If you feel this was a mistake, please check your input file."));
+        alert.showAndWait();
+    }
+    
+    /*** End dialogs section **/
     
     private class ChangeListenerImpl implements ChangeListener {
 

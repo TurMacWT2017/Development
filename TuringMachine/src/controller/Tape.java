@@ -37,9 +37,13 @@ public class Tape {
         rwHead--;
         if (rwHead < 0) {
             StringBuilder sb = new StringBuilder();
+            String oldContent = new String(content);
             sb.append("_");
-            sb.append(content);
+            sb.append(oldContent);
             setContent(sb.toString());
+            System.out.println(sb.toString());
+            //reset to the new zero, negative indexes are not valid
+            rwHead = 0;
         }
     }
     
@@ -51,10 +55,7 @@ public class Tape {
             sb.append(oldContent);
             sb.append("_");
             setContent(sb.toString());
-            System.out.println(sb.toString());
         }
-        System.out.println(rwHead);
-        System.out.println(content.length);
     }
     
     public void resetHead() {
