@@ -29,7 +29,7 @@ public class Interpreter
     HALT, RUN, PAUSE, STEP */
     private String interpRunState = "HALT";
     private String interpState;
-    private ArrayList<StateTransition> transitions;
+    public ArrayList<StateTransition> transitions;
     private Parser par;
     private int controlPointer = 0;
     private final int speed = 1000;
@@ -103,7 +103,7 @@ public class Interpreter
                     break;
             }
             view.drawStates(transitions);
-            
+            MachineViewController.currentStates = transitions;            
             // Set interpreter state to be the start state of the program
             interpState = transitions.get(0).getInitialState().trim();
             view.updateState(interpState);

@@ -4,8 +4,8 @@
  * and open the template in the editor.
  */
 package controller;
-
 import java.io.File;
+
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -51,7 +51,6 @@ import model.InterpreterException;
 
 import javafx.scene.canvas.Canvas;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
@@ -156,7 +155,7 @@ public class MachineViewController implements Initializable {
     private Interpreter interp;
     private ArrayList<File> recentFiles;
     //list of states, used in drawing
-    ArrayList<StateTransition> currentStates;
+    public static ArrayList<StateTransition> currentStates;
     //keeps track of file status
     boolean fileLoaded = false;
     
@@ -772,19 +771,16 @@ public class MachineViewController implements Initializable {
     
     
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        
+    public void initialize(URL url, ResourceBundle rb) {        
         speedSlider.valueProperty().addListener(new ChangeListenerImpl());
-
         //these lines allow the canvas to dynamically resize when the program does
-        canvas.widthProperty().addListener(observable -> redraw());
-        canvas.heightProperty().addListener(observable -> redraw());
+        canvas.widthProperty().addListener(observable -> redraw(currentStates));
+        canvas.heightProperty().addListener(observable -> redraw(currentStates));
         
         canvas.widthProperty().bind(
                        diagramDisplay.widthProperty());
         canvas.heightProperty().bind(
-                       diagramDisplay.heightProperty());
-        
+                       diagramDisplay.heightProperty());        
     }    
 
     public int getSpeed(){
@@ -823,8 +819,7 @@ public void launchStateWindow(){
             stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
             stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
             stage.show();
-            diagram.start(stage);           
-      
+            diagram.start(stage);                 
             System.out.println("Making state diagram window");
             }
         else {
@@ -858,16 +853,12 @@ public void launchStateWindow(){
             Bounds b = n2.getBoundsInParent();
             return b.getMinY() + b.getHeight() / 2 ;
         }, n2.boundsInParentProperty()));
-        
-        //double centerY = ((endY - startY) / 2) + startY;        
-        
         parent.getChildren().add(line);
         return line;
     }
     
     public void drawStates(ArrayList<StateTransition> states) {
-        currentStates = states;
-        
+        currentStates = states;        
         StateDiagram diagram = new StateDiagram();
         Stage stage = new Stage();
         Pane pane = new Pane();
@@ -877,6 +868,7 @@ public void launchStateWindow(){
         String[] allTransitions = new String[numStates];
         String[] allEndStates = new String[numStates];
         
+        // LOAD the initial state, end state, and transition arrays
         for(int i =0; i< numStates;i++){
             allInitStates[i] = states.get(i).getInitialState();
             allTransitions[i] = states.get(i).getReadToken() + ", " +
@@ -886,6 +878,7 @@ public void launchStateWindow(){
             //System.out.println(allInitStates[i] + " " + allTransitions[i] + " " + allEndStates[i]);
         }     
         
+        // Collapse duplicate-containing initialState array into non-duplicated array
         Set<String> uniqueStateSet = new HashSet<>(Arrays.asList(allInitStates));
         String[] initialUniqueStates = new String[uniqueStateSet.size()];
         String[] initialStates = allInitStates;//new String[allInitStates.length];
@@ -906,6 +899,7 @@ public void launchStateWindow(){
         Label[] endLabels = new Label[numAllStates];
         Circle startNode = createDraggingCircle(XCOORD-50, YCOORD, 5, pane, Color.GRAY);
         
+        // starting node (pre-first-state)
         Label startLabel = new Label();       
         startLabel.setText("start");
         startLabel.layoutXProperty().bind(startNode.centerXProperty());
@@ -913,12 +907,10 @@ public void launchStateWindow(){
         pane.getChildren().addAll(startNode,startLabel);
             //System.out.println("stateNodes len = " + stateNodes.length);
             //System.out.println("stateLabel len = " + stateLabels.length);
-        int connected = 0;  
-        
-        // DEBUG FOR-LOOP
+                
+        // Non-duplicate initialStates generated into the initial Nodes
         for (int j=0; j< numUniqueStates; j++){
-            Label uniqueLabel = new Label(initialUniqueStates[j]);
-            
+            Label uniqueLabel = new Label(initialUniqueStates[j]);            
             uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 10, pane, Color.BLUE);
             uniqueNodes[j].setOpacity(.5);
             uniqueLabels[j] = new Label(initialUniqueStates[j]);
@@ -936,26 +928,24 @@ public void launchStateWindow(){
             }     
         }
         
+        // BIND all Labels to their corresponding stateNodes
         for (int j = 0; j < numAllStates; j++){
             Label stateLabel = new Label(initialStates[j]);
             Label endLabel = new Label(endStates[j]);
             
             stateNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, pane, Color.GRAY);
-            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+50, 15, pane, Color.GREEN);
-            
+            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+50, 15, pane, Color.GREEN);            
             stateNodes[j].setOpacity(.5);
-            endNodes[j].setOpacity(.5);
-            
+            endNodes[j].setOpacity(.5);            
             stateLabel.layoutXProperty().bind(stateNodes[j].centerXProperty());
             stateLabel.layoutYProperty().bind(stateNodes[j].centerYProperty());
             endLabel.layoutXProperty().bind(endNodes[j].centerXProperty());
-            endLabel.layoutYProperty().bind(endNodes[j].centerYProperty());   
-            
+            endLabel.layoutYProperty().bind(endNodes[j].centerYProperty());               
             //stateLabel.setMnemonicParsing(true);
             stateLabel.setLabelFor(stateNodes[j]);
             //endLabel.setMnemonicParsing(true);
             endLabel.setLabelFor(endNodes[j]);
-                //System.out.println("getLabelFor = " + stateLabel.getLabelFor());
+            //System.out.println("getLabelFor = " + stateLabel.getLabelFor());
             stateLabels[j] = stateLabel;
             endLabels[j] = endLabel;
             
@@ -969,82 +959,50 @@ public void launchStateWindow(){
                 YCOORD += 150;
             }                  
             pane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
-        }   
+        }          
+        //System.out.println("numUnique = " + numUniqueStates);
+        //System.out.println("numAll = " + numAllStates);     
+        
+        // BIND all matching initial and end states into junctions
         for(int i=0; i<numUniqueStates; i++){
             pane.getChildren().add(uniqueNodes[i]);
-        }
-        
-        System.out.println("numUnique = " + numUniqueStates);
-        System.out.println("numAll = " + numAllStates);
-        
-        for(int i=0; i<numUniqueStates; i++){
             for(int j=0; j<numAllStates; j++){
                 Circle stateNode = stateNodes[j];
-                
-                if(!allInitStates[j].equals(initialUniqueStates[i])){
+                Circle endNode = endNodes[j];
+                if(!allInitStates[j].equalsIgnoreCase(initialUniqueStates[i])){
                 } else {
                     stateNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
-                    stateNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
-                    
+                    stateNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());                    
                 }
-                
-            }
-        }
-        
-        for(int i=0; i<numUniqueStates; i++){
-            for(int j=0; j<numAllStates; j++){
-                Circle endNode = endNodes[j];
-                
-                if(!endStates[j].equals(initialUniqueStates[i])){
+                if(!endStates[j].equalsIgnoreCase(initialUniqueStates[i])){
                 } else {
                     endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
-                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
-                    
-                }
-                /*
-                if(!endStates[j].equalsIgnoreCase("AcceptHalt")){
-                    endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
-                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
-                }
-                
-                if(!endStates[j].equalsIgnoreCase("RejectHalt")){
-                    endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
-                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
-                }
-                */
+                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());                    
+                }                
             }
-               
-        }
+        }   
         
-        
-        
+        // DRAW EDGES from state to state per code
+        //  Labels are bound to Nodes, Nodes are connected by Labels
         connectStates(startNode, stateNodes[0]);
         ObjectProperty<Node> lastUnconnectedNode = new SimpleObjectProperty<>();
         Circle prevNode = new Circle();
         Label prevLabel = new Label();
+        int connected = 0;  
         for (int j = 0; j< numAllStates; j++){
-            
-            // connect stateNodes[j]=initNode to prevNode=endNode
-            if (lastUnconnectedNode.get() == null) {                
-                lastUnconnectedNode.set(stateNodes[j]);
-            } else {
-                //connectStates(lastUnconnectedNode.get(), stateLabels[j].getLabelFor());
                 connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
-                connected++;
-                //line = connectStates(prevNode, stateNodes[j]);
-                //lastUnconnectedNode.set(null);
-            }             
-        }
-        
-        
+                connected++;          
+        }       
             //System.out.println("numEdges = " + connected);
+            
+        // CREATE and DISPLAY the state diagram window loaded with source file load
         Scene scene = new Scene(pane, 600, 600);
         ScrollPane layout = new ScrollPane();
            
         layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
         layout.setFitToHeight(true);
-        stage.setScene(new Scene(layout, 450, 450));
+
         stage.setTitle("State Diagram Window");
         stage.initOwner(diagramDisplay.getScene().getWindow());
         
@@ -1056,12 +1014,11 @@ public void launchStateWindow(){
         stage.show();  
     }
     
+    // Instantiates a Circle that is draggable by mouse
     private Circle createDraggingCircle(double radius, double x, double y, Pane parent, Color fill) {
-        Circle c = new Circle(radius, x, y, fill);
-        
+        Circle c = new Circle(radius, x, y, fill);        
         ObjectProperty<Point2D> mouseLoc = new SimpleObjectProperty<>();
-        c.setOnMousePressed(e -> mouseLoc.set(new Point2D(e.getX(), e.getY())));
-        
+        c.setOnMousePressed(e -> mouseLoc.set(new Point2D(e.getX(), e.getY())));        
         c.setOnMouseDragged(e -> {
             double deltaX = e.getX() - mouseLoc.get().getX();
             double deltaY = e.getY() - mouseLoc.get().getY();
@@ -1074,11 +1031,10 @@ public void launchStateWindow(){
         return c ;
     }
 
-    private void redraw() {
-        //if (states != null) {
-           // drawStates(states);
-        //}
-        
+    private void redraw(ArrayList<StateTransition> states) {
+        if (states != null) {
+           drawStates(states);
+        }        
     }
     
     /**
