@@ -60,11 +60,23 @@ public class Interpreter
         this.view = view;
         numTapes = tapes;
         tokenize(input);
+        
         if (errorsPresent == false) 
         {
+            //if the program referenced selected a tape the user forgot to activate
+            //this will take care of that, tokenize will have changed the numTapes to be correct already
+            if (numTapes != tapes) {
+                if (numTapes == 2) {
+                    view.activateTapeTwo();
+                }
+                else if (numTapes == 3) {
+                    view.activateTapeTwo();
+                    view.activateTapeThree();
+                }
+                view.showModeChangeWarning();
+            }
             par = new Parser(this);
             transitions = par.compile();
-            System.out.println("Fuckeronis" + initialInput2);
             //build the required tapes
             switch (numTapes) {
                 case 1:
@@ -210,11 +222,18 @@ public class Interpreter
                 else if (tokens[i].equalsIgnoreCase("t2"))
                 {
                     tokens[i] = "t2";
+                    if ((view.getCurrentMode() != 2) && (view.getCurrentMode() != 3)) {
+                        System.out.println("Tapes was changed to 2");
+                        numTapes = 2;
+                    }
                     //System.out.println("\nTape 2 token: " + tokens[i] + " on line " + lineNum);
                 }
                 else if (tokens[i].equalsIgnoreCase("t3"))
                 {
                     tokens[i] = "t3";
+                    if (view.getCurrentMode() != 3) {
+                        numTapes = 3;
+                    }
                     //System.out.println("\nTape 3 token: " + tokens[i] + " on line " + lineNum);
                 }
                 else 
@@ -291,8 +310,22 @@ public class Interpreter
                     errorsPresent = true;
                 }
                 else {
+                    //check to make sure we are in the right mode, and user didn't forget to switch the mode
+                    //if they did, after tokenize it will be switched for them.
+                    if (token.equalsIgnoreCase("t2")) {
+                        if ((view.getCurrentMode() != 2) && (view.getCurrentMode() != 3)) {
+                            System.out.println(view.getCurrentMode());
+                            numTapes = 2;
+                        }
+                    }
+                    else if (token.equalsIgnoreCase("t3")) {
+                        if (view.getCurrentMode() != 3) {
+                            numTapes = 3;
+                        }
+                    }
                     tokens[i] = token;
                 }
+                
                 //System.out.println("End state token: " + tokens[i] + " on line " + lineNum + "\n");
             }
             //get the end state taken
@@ -301,7 +334,6 @@ public class Interpreter
                 tokens[i] = tokens[i].trim();
             }
         }
-            
         //System.out.println("Number of lines: " + numberOfLines);
         System.out.println("Initial input provided: " + initialInput);
     }

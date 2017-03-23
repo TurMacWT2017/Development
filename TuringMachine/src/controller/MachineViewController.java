@@ -193,12 +193,6 @@ public class MachineViewController implements Initializable {
     }
     
     @FXML
-    private void clearButtonClicked(ActionEvent event) {
-        System.out.println("Clear Tape 1");
- //       tm.clearTape();
-    }
-    
-    @FXML
     private void openFileMenuItemClicked(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         File initialDirectory;
@@ -225,6 +219,7 @@ public class MachineViewController implements Initializable {
             codeViewTab.getChildren().clear();
             String input = controller.openFile(selectedFile);
             //when initializing interpreter, give it both an input and a view controller (this) to work with
+            System.out.println("Number of tapes was" + tapes);
             interp = new Interpreter(input, this, tapes);
 //            recentFiles.add(selectedFile);
             //Show code or error report
@@ -325,7 +320,8 @@ public class MachineViewController implements Initializable {
         tapeThreePane.setExpanded(false);
         tapeThreePane.setVisible(false);
         tapes = 1;
-        if (fileLoaded) {
+        boolean isReady = checkProgramStatus();
+        if (fileLoaded && isReady) {
             interp.setNumberOfTapes(1);
             //reboot the interpreter
             interp.stop();
@@ -334,6 +330,12 @@ public class MachineViewController implements Initializable {
             interp = null;
             //reboot the interpreter in the new mode
             interp = new Interpreter(input, this, tapes);
+            try {
+                interp.start();
+            } catch (InterpreterException ex) {
+                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            setStartState();
         }
     }
     
@@ -344,16 +346,22 @@ public class MachineViewController implements Initializable {
         tapeThreePane.setExpanded(false);
         tapeThreePane.setVisible(false);
         tapes = 2;
-        if (fileLoaded) {
+        boolean isReady = checkProgramStatus();
+        if (fileLoaded && isReady) {
             interp.setNumberOfTapes(2);
             //reboot the interpreter
             interp.stop();
             tapeOne.getChildren().clear();
             tapeTwo.getChildren().clear();
             String input = interp.getMachineCode();
-            interp = null;
             //reboot the interpreter in the new mode
             interp = new Interpreter(input, this, tapes);
+            try {
+                interp.start();
+            } catch (InterpreterException ex) {
+                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            setStartState();
         }
     }
     
@@ -364,7 +372,8 @@ public class MachineViewController implements Initializable {
         tapeThreePane.setExpanded(true);
         tapeThreePane.setVisible(true);
         tapes = 3;
-        if (fileLoaded) {
+        boolean isReady = checkProgramStatus();
+        if (fileLoaded && isReady) {
             interp.setNumberOfTapes(3);
             //reboot the interpreter
             interp.stop();
@@ -372,14 +381,44 @@ public class MachineViewController implements Initializable {
             tapeTwo.getChildren().clear();
             tapeThree.getChildren().clear();
             String input = interp.getMachineCode();
-            interp = null;
             //reboot the interpreter in the new mode
             interp = new Interpreter(input, this, tapes);
+            try {
+                interp.start();
+            } catch (InterpreterException ex) {
+                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            setStartState();
         }
 
     }
+    /*** These methods are used by the interpreter if a tape needs to be activated that isn't ****/
+    @FXML
+    public void activateTapeTwo() {
+        tapeTwo.getChildren().clear();
+        tapeTwoPane.setExpanded(true);
+        tapeTwoPane.setVisible(true);
+        tapes = 2;
+    }
+    
+    @FXML
+    public void activateTapeThree() {
+        tapeThree.getChildren().clear();
+        tapeThreePane.setExpanded(true);
+        tapeThreePane.setVisible(true);
+        tapes = 3;
+    }
     
     /**********************************************************/
+    
+    /** Returns the current number of active tapes (or tape mode)
+     * 
+     * @return int number of active tapes 
+     */
+    @FXML
+    public int getCurrentMode() {
+        return tapes;
+    }
     
     @FXML
     private void launchCodeWindow(ActionEvent event) {
@@ -764,18 +803,8 @@ public class MachineViewController implements Initializable {
         
         return machineReady;
     }
-
-    public void showAutoStopDialog(String lookingForState) {
-        Alert alert = new Alert(AlertType.WARNING);
-        alert.setTitle("Warning");
-        alert.setHeaderText("Your program might be getting stuck in an infinite loop looking for state " + lookingForState);
-        alert.setContentText("The machine has gone through your file four times, but still hasn't found the next state to go to."
-                + "\nWe've stopped your program for now, but you can run again if you really want to"
-                + "\nThis most likely means that there is an error in your program logic causing an infinite loop."
-                + "\nIf you keep seeing this error, please check your program and its logic for errors");
-        alert.showAndWait();
-    }
-
+    
+    
     /**
     * Returns the current Font settings to allow easy text formatting
     * @return Font current font
@@ -793,6 +822,19 @@ public class MachineViewController implements Initializable {
         else {
             return Font.font(family, size);
         }   
+    }
+    
+    /*** Methods for displaying various dialogs are in this area ********/
+
+    public void showAutoStopDialog(String lookingForState) {
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText("Your program might be getting stuck in an infinite loop looking for state " + lookingForState);
+        alert.setContentText("The machine has gone through your file four times, but still hasn't found the next state to go to."
+                + "\nWe've stopped your program for now, but you can run again if you really want to"
+                + "\nThis most likely means that there is an error in your program logic causing an infinite loop."
+                + "\nIf you keep seeing this error, please check your program and its logic for errors");
+        alert.showAndWait();
     }
 
     public String[] showInputDialog(int numTapes) {
@@ -924,6 +966,18 @@ public class MachineViewController implements Initializable {
         System.out.println(Arrays.toString(input));
         return input;
     }
+
+    public void showModeChangeWarning() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("The Machine Mode has been changed");
+        alert.getDialogPane().setContent( new Label("The Machine detected a reference in your program to a currently non-active tape."
+                + "\n The requested tape(s) has/have been activated for you automatically. \nTo change their content, simply click the clear button of the tape"
+                + "\n If you feel this was a mistake, please check your input file."));
+        alert.showAndWait();
+    }
+    
+    /*** End dialogs section **/
     
     private class ChangeListenerImpl implements ChangeListener {
 

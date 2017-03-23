@@ -11,6 +11,7 @@
             <file>file:/home/student/Documents/turingMachine/TuringMachine/src/view/font_control.fxml</file>
             <file>file:/home/student/Documents/turingMachine/TuringMachine/src/model/StateTransition.java</file>
             <file>file:/home/student/Documents/turingMachine/TuringMachine/src/model/Parser.java</file>
+            <file>file:/home/student/Documents/turingMachine/TuringMachine/src/model/InterpreterException.java</file>
         </group>
     </open-files>
 </project-private>
