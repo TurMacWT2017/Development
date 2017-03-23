@@ -17,9 +17,9 @@ public class Interpreter
     private String[] tokens;
     private ArrayList<String> tokenList;
     //Initial input for tapes
-    private String initialInput = "_____";
-    private String initialInput2 = "_____";
-    private String initialInput3 = "_____";
+    private String initialInput = "______";
+    private String initialInput2 = "______";
+    private String initialInput3 = "______";
     private String inputCode;
     private final String delim = ",|;";
     private final StringBuilder errorReport = new StringBuilder();
@@ -60,11 +60,23 @@ public class Interpreter
         this.view = view;
         numTapes = tapes;
         tokenize(input);
+        
         if (errorsPresent == false) 
         {
+            //if the program referenced selected a tape the user forgot to activate
+            //this will take care of that, tokenize will have changed the numTapes to be correct already
+            if (numTapes != tapes) {
+                if (numTapes == 2) {
+                    view.activateTapeTwo();
+                }
+                else if (numTapes == 3) {
+                    view.activateTapeTwo();
+                    view.activateTapeThree();
+                }
+                view.showModeChangeWarning();
+            }
             par = new Parser(this);
             transitions = par.compile();
-            System.out.println("Fuckeronis" + initialInput2);
             //build the required tapes
             switch (numTapes) {
                 case 1:
@@ -139,13 +151,21 @@ public class Interpreter
      */
     public void popup() {
         String[] input = view.showInputDialog(numTapes);
-        initialInput = input[0];
+        if (!input[0].equals("")) {
+            initialInput = input[0];
+        }
         if (numTapes == 2) {
-            initialInput2 = input[1];
+            if (!input[1].equals("")) {                
+                initialInput2 = input[1];
+            }
         }
         if (numTapes == 3) {
-            initialInput2 = input[1];
-            initialInput3 = input[2];
+            if (!input[1].equals("")) {
+               initialInput2 = input[1];
+            }
+            if (!input[2].equals("")) {
+               initialInput3 = input[2];
+            }
         }
     }
     
@@ -202,11 +222,18 @@ public class Interpreter
                 else if (tokens[i].equalsIgnoreCase("t2"))
                 {
                     tokens[i] = "t2";
+                    if ((view.getCurrentMode() != 2) && (view.getCurrentMode() != 3)) {
+                        System.out.println("Tapes was changed to 2");
+                        numTapes = 2;
+                    }
                     //System.out.println("\nTape 2 token: " + tokens[i] + " on line " + lineNum);
                 }
                 else if (tokens[i].equalsIgnoreCase("t3"))
                 {
                     tokens[i] = "t3";
+                    if (view.getCurrentMode() != 3) {
+                        numTapes = 3;
+                    }
                     //System.out.println("\nTape 3 token: " + tokens[i] + " on line " + lineNum);
                 }
                 else 
@@ -283,8 +310,22 @@ public class Interpreter
                     errorsPresent = true;
                 }
                 else {
+                    //check to make sure we are in the right mode, and user didn't forget to switch the mode
+                    //if they did, after tokenize it will be switched for them.
+                    if (token.equalsIgnoreCase("t2")) {
+                        if ((view.getCurrentMode() != 2) && (view.getCurrentMode() != 3)) {
+                            System.out.println(view.getCurrentMode());
+                            numTapes = 2;
+                        }
+                    }
+                    else if (token.equalsIgnoreCase("t3")) {
+                        if (view.getCurrentMode() != 3) {
+                            numTapes = 3;
+                        }
+                    }
                     tokens[i] = token;
                 }
+                
                 //System.out.println("End state token: " + tokens[i] + " on line " + lineNum + "\n");
             }
             //get the end state taken
@@ -293,7 +334,6 @@ public class Interpreter
                 tokens[i] = tokens[i].trim();
             }
         }
-            
         //System.out.println("Number of lines: " + numberOfLines);
         System.out.println("Initial input provided: " + initialInput);
     }
@@ -382,6 +422,7 @@ public class Interpreter
         view.updateTapeContent(initialInput, 1);
         view.updateState(transitions.get(0).getInitialState().trim());
         view.updateStepCount(0);
+        view.resetView();
         view.setStartState();
         //set this interpreter state back to the starting state
         interpState = transitions.get(0).getInitialState().trim();
@@ -520,7 +561,7 @@ public class Interpreter
      * Performs the provided state transition
      * @param transition the state transition to be performed
      */
-    private void performTransition(StateTransition transition) 
+    private void performTransition(StateTransition transition)
     {
         String tape = transition.getTape();
         //System.out.println(tape);
@@ -536,54 +577,88 @@ public class Interpreter
         String endState = transition.getEndState();
         //System.out.println(endState);
         //defaults to tape 1
-        Tape readFrom = tapeOne;
-        Tape writeTo = tapeOne;
+        char token = tapeOne.read();
+        boolean tapeOneUpdated = false;
+        boolean tapeTwoUpdated = false;
+        boolean tapeThreeUpdated = false;
         //select the appropriate tape
         if (tape.equalsIgnoreCase("t1")) {
-            readFrom = tapeOne;
+            token = tapeOne.read();
         }
         else if (tape.equalsIgnoreCase("t2")) {
-            readFrom = tapeTwo;
+            token = tapeTwo.read();
         }
         else if (tape.equalsIgnoreCase("t3")) {
-            readFrom = tapeThree;
+            token = tapeThree.read();
         }
-        if (tape.equalsIgnoreCase("t1")) {
-            writeTo = tapeOne;
-        }
-        else if (tape.equalsIgnoreCase("t2")) {
-            writeTo = tapeTwo;
-        }
-        else if (tape.equalsIgnoreCase("t3")) {
-            writeTo = tapeThree;
-        }
-        //asterisk means write to the read tape already being used
-        else if (tape.equalsIgnoreCase("*")) {
-            writeTo = readFrom;
-        }
-        
+       
         
         interpState = initialState;
         //if current token matches or is wildcard
         //if (interpState.equalsIgnoreCase(initialState) ) {
-            if ((readFrom.read() == readToken.charAt(0)) || (readToken.equals("*"))) {
+            if ((token == readToken.charAt(0)) || (readToken.equals("*"))) {
             //if no change requested, write no new token, otherwise write
                 if (!writeToken.equals("*")) {
                     //System.out.println("New token");
-                    writeTo.write(writeToken.charAt(0));
+                    if (writeTape.equalsIgnoreCase("t1")) {
+                        tapeOne.write(writeToken.charAt(0));
+                        tapeOneUpdated = true;
+                    }
+                    else if (writeTape.equalsIgnoreCase("t2")) {
+                        tapeTwo.write(writeToken.charAt(0));
+                        tapeTwoUpdated = true;
+                    }
+                    else if (writeTape.equalsIgnoreCase("t3")) {
+                        tapeThree.write(writeToken.charAt(0));
+                        tapeThreeUpdated = true;
+                    }
                 }
                 //move left or right as needed
-                if (direction.equals("LEFT")) {
-                    readFrom.moveHeadLeft();
-                    view.updateTapeContent(readFrom.getContent(), 1);
+                switch (direction) {
+                    case "LEFT":
+                        if (writeTape.equalsIgnoreCase("t1")) {
+                            tapeOne.moveHeadLeft();
+                            tapeOneUpdated = true;
+                        }
+                        else if (writeTape.equalsIgnoreCase("t2")) {
+                            tapeTwo.moveHeadLeft();
+                            tapeTwoUpdated = true;
+                        }
+                        else if (writeTape.equalsIgnoreCase("t3")) {
+                            tapeThree.moveHeadLeft();
+                            tapeThreeUpdated = true;
+                        }
+                        break;
+                    case "RIGHT":
+                        if (writeTape.equalsIgnoreCase("t1")) {
+                            tapeOne.moveHeadRight();
+                            tapeOneUpdated = true;
+                        }
+                        else if (writeTape.equalsIgnoreCase("t2")) {
+                            tapeTwo.moveHeadRight();
+                            tapeTwoUpdated = true;
+                        }
+                        else if (writeTape.equalsIgnoreCase("t3")) {
+                            tapeThree.moveHeadRight();
+                            tapeThreeUpdated = true;
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                else if (direction.equals("RIGHT")) {
-                    readFrom.moveHeadRight();
-                    view.updateTapeContent(readFrom.getContent(), 1);
+                //update the tapes
+                if (tapeOneUpdated) {
+                    view.updateTapeContent(tapeOne.getContent(), 1);
                 }
-                view.updateTapeContent(readFrom.getContent(), 1);
+                if (tapeTwoUpdated) {
+                    view.updateTapeContent(tapeTwo.getContent(), 2);
+                }
+                if (tapeThreeUpdated) {
+                    view.updateTapeContent(tapeThree.getContent(), 3);
+                }
+
+                
                 //go to new state
-                System.out.println(readFrom.getContent());
                 interpState = endState;
                 view.updateState(interpState);
                 //check if a halt state has been reached, if so, HALT
@@ -600,8 +675,6 @@ public class Interpreter
             }
         //}
         view.updateStepCount(stepCount);
-        
-        System.out.println(readFrom.getContent());
         
         System.out.printf("Tape\t%s\nInitial state\t%s\nRead Token\t%s\nWrite Token\t%s\nMove\t%s\nWrite Tape\t%s\nEnd State\t%s\nSpeed\t%d\n\n", tape, initialState, readToken, writeToken, direction, writeTape, endState, view.getSpeed());
         
