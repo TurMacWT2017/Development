@@ -349,22 +349,24 @@ public class MachineViewController implements Initializable {
         tapeThreePane.setExpanded(false);
         tapeThreePane.setVisible(false);
         tapes = 1;
-        boolean isReady = checkProgramStatus();
-        if (fileLoaded && isReady) {
-            interp.setNumberOfTapes(1);
-            //reboot the interpreter
-            interp.stop();
-            tapeOne.getChildren().clear();
-            String input = interp.getMachineCode();
-            interp = null;
-            //reboot the interpreter in the new mode
-            interp = new Interpreter(input, this, tapes);
-            try {
-                interp.start();
-            } catch (InterpreterException ex) {
-                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+        if (fileLoaded) {
+            boolean isReady = checkProgramStatus();
+            if (isReady) {
+                interp.setNumberOfTapes(1);
+                //reboot the interpreter
+                interp.stop();
+                tapeOne.getChildren().clear();
+                String input = interp.getMachineCode();
+                interp = null;
+                //reboot the interpreter in the new mode
+                interp = new Interpreter(input, this, tapes);
+                try {
+                    interp.start();
+                } catch (InterpreterException ex) {
+                    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                setStartState();
             }
-            setStartState();
         }
     }
     
@@ -375,22 +377,24 @@ public class MachineViewController implements Initializable {
         tapeThreePane.setExpanded(false);
         tapeThreePane.setVisible(false);
         tapes = 2;
-        boolean isReady = checkProgramStatus();
-        if (fileLoaded && isReady) {
-            interp.setNumberOfTapes(2);
-            //reboot the interpreter
-            interp.stop();
-            tapeOne.getChildren().clear();
-            tapeTwo.getChildren().clear();
-            String input = interp.getMachineCode();
-            //reboot the interpreter in the new mode
-            interp = new Interpreter(input, this, tapes);
-            try {
-                interp.start();
-            } catch (InterpreterException ex) {
-                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+        if (fileLoaded) {
+            boolean isReady = checkProgramStatus();
+            if (isReady) {
+                interp.setNumberOfTapes(2);
+                //reboot the interpreter
+                interp.stop();
+                tapeOne.getChildren().clear();
+                tapeTwo.getChildren().clear();
+                String input = interp.getMachineCode();
+                //reboot the interpreter in the new mode
+                interp = new Interpreter(input, this, tapes);
+                try {
+                    interp.start();
+                } catch (InterpreterException ex) {
+                    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                setStartState();
             }
-            setStartState();
         }
     }
     
@@ -401,23 +405,25 @@ public class MachineViewController implements Initializable {
         tapeThreePane.setExpanded(true);
         tapeThreePane.setVisible(true);
         tapes = 3;
-        boolean isReady = checkProgramStatus();
-        if (fileLoaded && isReady) {
-            interp.setNumberOfTapes(3);
-            //reboot the interpreter
-            interp.stop();
-            tapeOne.getChildren().clear();
-            tapeTwo.getChildren().clear();
-            tapeThree.getChildren().clear();
-            String input = interp.getMachineCode();
-            //reboot the interpreter in the new mode
-            interp = new Interpreter(input, this, tapes);
-            try {
-                interp.start();
-            } catch (InterpreterException ex) {
-                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+        if (fileLoaded) {
+            boolean isReady = checkProgramStatus();
+            if (isReady) {
+                interp.setNumberOfTapes(3);
+                //reboot the interpreter
+                interp.stop();
+                tapeOne.getChildren().clear();
+                tapeTwo.getChildren().clear();
+                tapeThree.getChildren().clear();
+                String input = interp.getMachineCode();
+                //reboot the interpreter in the new mode
+                interp = new Interpreter(input, this, tapes);
+                try {
+                    interp.start();
+                } catch (InterpreterException ex) {
+                    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                setStartState();
             }
-            setStartState();
         }
 
     }
@@ -860,6 +866,8 @@ public void launchStateWindow(){
     }
     
     public void drawStates(ArrayList<StateTransition> states) {
+        currentStates = states;
+        
         StateDiagram diagram = new StateDiagram();
         Stage stage = new Stage();
         Pane pane = new Pane();
@@ -972,16 +980,43 @@ public void launchStateWindow(){
         for(int i=0; i<numUniqueStates; i++){
             for(int j=0; j<numAllStates; j++){
                 Circle stateNode = stateNodes[j];
+                
                 if(!allInitStates[j].equals(initialUniqueStates[i])){
                 } else {
-                    //stateNode.layoutXProperty().bind(uniqueNodes[i].centerXProperty());
-                    //stateNode.layoutYProperty().bind(uniqueNodes[i].centerYProperty());
+                    stateNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
+                    stateNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
                     
-                    stateNodes[j].setCenterX(uniqueNodes[i].getCenterX());
-                    stateNodes[j].setCenterY(uniqueNodes[i].getCenterY());
                 }
+                
             }
         }
+        
+        for(int i=0; i<numUniqueStates; i++){
+            for(int j=0; j<numAllStates; j++){
+                Circle endNode = endNodes[j];
+                
+                if(!endStates[j].equals(initialUniqueStates[i])){
+                } else {
+                    endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
+                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
+                    
+                }
+                /*
+                if(!endStates[j].equalsIgnoreCase("AcceptHalt")){
+                    endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
+                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
+                }
+                
+                if(!endStates[j].equalsIgnoreCase("RejectHalt")){
+                    endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
+                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());
+                }
+                */
+            }
+               
+        }
+        
+        
         
         connectStates(startNode, stateNodes[0]);
         ObjectProperty<Node> lastUnconnectedNode = new SimpleObjectProperty<>();
@@ -1040,9 +1075,9 @@ public void launchStateWindow(){
     }
 
     private void redraw() {
-        if (currentStates != null) {
-            drawStates(currentStates);
-        }
+        //if (states != null) {
+           // drawStates(states);
+        //}
         
     }
     
