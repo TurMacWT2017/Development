@@ -349,22 +349,24 @@ public class MachineViewController implements Initializable {
         tapeThreePane.setExpanded(false);
         tapeThreePane.setVisible(false);
         tapes = 1;
-        boolean isReady = checkProgramStatus();
-        if (fileLoaded && isReady) {
-            interp.setNumberOfTapes(1);
-            //reboot the interpreter
-            interp.stop();
-            tapeOne.getChildren().clear();
-            String input = interp.getMachineCode();
-            interp = null;
-            //reboot the interpreter in the new mode
-            interp = new Interpreter(input, this, tapes);
-            try {
-                interp.start();
-            } catch (InterpreterException ex) {
-                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+        if (fileLoaded) {
+            boolean isReady = checkProgramStatus();
+            if (isReady) {
+                interp.setNumberOfTapes(1);
+                //reboot the interpreter
+                interp.stop();
+                tapeOne.getChildren().clear();
+                String input = interp.getMachineCode();
+                interp = null;
+                //reboot the interpreter in the new mode
+                interp = new Interpreter(input, this, tapes);
+                try {
+                    interp.start();
+                } catch (InterpreterException ex) {
+                    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                setStartState();
             }
-            setStartState();
         }
     }
     
@@ -375,22 +377,24 @@ public class MachineViewController implements Initializable {
         tapeThreePane.setExpanded(false);
         tapeThreePane.setVisible(false);
         tapes = 2;
-        boolean isReady = checkProgramStatus();
-        if (fileLoaded && isReady) {
-            interp.setNumberOfTapes(2);
-            //reboot the interpreter
-            interp.stop();
-            tapeOne.getChildren().clear();
-            tapeTwo.getChildren().clear();
-            String input = interp.getMachineCode();
-            //reboot the interpreter in the new mode
-            interp = new Interpreter(input, this, tapes);
-            try {
-                interp.start();
-            } catch (InterpreterException ex) {
-                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+        if (fileLoaded) {
+            boolean isReady = checkProgramStatus();
+            if (isReady) {
+                interp.setNumberOfTapes(2);
+                //reboot the interpreter
+                interp.stop();
+                tapeOne.getChildren().clear();
+                tapeTwo.getChildren().clear();
+                String input = interp.getMachineCode();
+                //reboot the interpreter in the new mode
+                interp = new Interpreter(input, this, tapes);
+                try {
+                    interp.start();
+                } catch (InterpreterException ex) {
+                    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                setStartState();
             }
-            setStartState();
         }
     }
     
@@ -401,23 +405,25 @@ public class MachineViewController implements Initializable {
         tapeThreePane.setExpanded(true);
         tapeThreePane.setVisible(true);
         tapes = 3;
-        boolean isReady = checkProgramStatus();
-        if (fileLoaded && isReady) {
-            interp.setNumberOfTapes(3);
-            //reboot the interpreter
-            interp.stop();
-            tapeOne.getChildren().clear();
-            tapeTwo.getChildren().clear();
-            tapeThree.getChildren().clear();
-            String input = interp.getMachineCode();
-            //reboot the interpreter in the new mode
-            interp = new Interpreter(input, this, tapes);
-            try {
-                interp.start();
-            } catch (InterpreterException ex) {
-                Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+        if (fileLoaded) {
+            boolean isReady = checkProgramStatus();
+            if (isReady) {
+                interp.setNumberOfTapes(3);
+                //reboot the interpreter
+                interp.stop();
+                tapeOne.getChildren().clear();
+                tapeTwo.getChildren().clear();
+                tapeThree.getChildren().clear();
+                String input = interp.getMachineCode();
+                //reboot the interpreter in the new mode
+                interp = new Interpreter(input, this, tapes);
+                try {
+                    interp.start();
+                } catch (InterpreterException ex) {
+                    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                setStartState();
             }
-            setStartState();
         }
 
     }
