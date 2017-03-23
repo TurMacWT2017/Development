@@ -64,10 +64,8 @@ import javafx.scene.text.Text;
 
 import javafx.scene.text.TextFlow;
 import model.StateTransition;
-<<<<<<< HEAD
 import controller.FontControl;
 import javafx.scene.layout.StackPane;
-=======
 import javafx.scene.control.Accordion;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -81,7 +79,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
->>>>>>> 086ba9b244090f5563a3977a298784be7aebe097
 import javafx.scene.text.FontPosture;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -144,15 +141,12 @@ public class MachineViewController implements Initializable {
     @FXML private MenuItem fontOptions;
     @FXML private AnchorPane diagramDisplay;
     @FXML private TextFlow codeViewTab;
-<<<<<<< HEAD
     @FXML private MenuItem about;
     @FXML private MenuItem langref;
-=======
     //Titled panes for the tape views
     @FXML private TitledPane tapeOnePane;
     @FXML private TitledPane tapeTwoPane;
     @FXML private TitledPane tapeThreePane;
->>>>>>> 086ba9b244090f5563a3977a298784be7aebe097
     //Code Window 
     //@FXML private TextArea codeDisplay;
     
