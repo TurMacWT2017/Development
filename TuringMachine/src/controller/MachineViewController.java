@@ -76,6 +76,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.FontPosture;
@@ -837,6 +839,8 @@ public void launchStateWindow(){
         }
         Pane parent = (Pane) n1.getParent();
         Line line = new Line();
+        line.setFill(Color.BLUE);
+        line.setOpacity(.5);
         line.startXProperty().bind(Bindings.createDoubleBinding(() -> {
             Bounds b = n1.getBoundsInParent();
             return b.getMinX() + b.getWidth() / 2 ;
@@ -853,6 +857,7 @@ public void launchStateWindow(){
             Bounds b = n2.getBoundsInParent();
             return b.getMinY() + b.getHeight() / 2 ;
         }, n2.boundsInParentProperty()));
+        
         parent.getChildren().add(line);
         return line;
     }
@@ -911,29 +916,35 @@ public void launchStateWindow(){
         // Non-duplicate initialStates generated into the initial Nodes
         for (int j=0; j< numUniqueStates; j++){       
             uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, pane, Color.GRAY);
-            uniqueNodes[j].setOpacity(.2);              
+            uniqueNodes[j].setOpacity(.2);   
+            uniqueNodes[j].setStroke(Color.BLACK);
+            uniqueNodes[j].setSmooth(true);
             if (XCOORD + 150 < canvas.getWidth())
             {
                 XCOORD += 115;
             }
             else
             {
-                XCOORD = 90;
+                XCOORD = 120;
                 YCOORD += 150;
             }        
         }
         
         // DRAW acceptHalt and rejectHalt nodes to bind to
-        Circle acceptNode = createDraggingCircle(200,400, 18, pane, Color.GREEN);
-        Circle rejectNode = createDraggingCircle(300,400, 18, pane, Color.RED);
+        Circle acceptNode = createDraggingCircle(150,500, 18, pane, Color.GREEN);
+        Circle rejectNode = createDraggingCircle(450,500, 18, pane, Color.RED);
         acceptNode.setOpacity(.5);
         rejectNode.setOpacity(.5);
+        acceptNode.setStroke(Color.BLACK);
+        rejectNode.setStroke(Color.BLACK);
+        acceptNode.setSmooth(true);
+        rejectNode.setSmooth(true);
         pane.getChildren().addAll(acceptNode, rejectNode);
         
         // BIND all Labels to their corresponding stateNodes
         for (int j = 0; j < numAllStates; j++){
             Label stateLabel = new Label(initialStates[j]);
-            Label endLabel = new Label(endStates[j]);
+            Label endLabel = new Label(endStates[j]);            
             
             stateNodes[j] = createDraggingCircle(0,0, 4, pane, Color.BLUE);
             endNodes[j] = createDraggingCircle(XCOORD, YCOORD+72, 15, pane, Color.GRAY);            
@@ -959,9 +970,23 @@ public void launchStateWindow(){
             {
                 XCOORD = 150;
                 YCOORD += 50;
-            }                  
+            }       
+            stateNodes[j].setStroke(Color.BLACK);
+            endNodes[j].setStroke(Color.BLACK);
+            stateNodes[j].setSmooth(true);
+            endNodes[j].setSmooth(true);
             pane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
-        }          
+        }         
+        
+        Arc arc = new Arc();
+arc.setCenterX(450.0f);
+arc.setCenterY(700.0f);
+arc.setRadiusX(25.0f);
+arc.setRadiusY(25.0f);
+arc.setStartAngle(45.0f);
+arc.setLength(270.0f);
+arc.setType(ArcType.CHORD);
+pane.getChildren().add(arc);
         //System.out.println("numUnique = " + numUniqueStates);
         //System.out.println("numAll = " + numAllStates);     
         
