@@ -77,9 +77,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.FontPosture;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -867,7 +872,7 @@ public void launchStateWindow(){
         StateDiagram diagram = new StateDiagram();
         Stage stage = new Stage();
         Pane pane = new Pane();
-        Line line = new Line();
+        
         final int numStates=states.size();
         String[] allInitStates = new String[numStates];
         String[] allTransitions = new String[numStates];
@@ -930,7 +935,7 @@ public void launchStateWindow(){
             }        
         }
         
-        // DRAW acceptHalt and rejectHalt nodes to bind to
+        // DRAW acceptHalt and rejectHalt nodes for which to bind to
         Circle acceptNode = createDraggingCircle(150,500, 18, pane, Color.GREEN);
         Circle rejectNode = createDraggingCircle(450,500, 18, pane, Color.RED);
         acceptNode.setOpacity(.5);
@@ -978,15 +983,7 @@ public void launchStateWindow(){
             pane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
         }         
         
-        Arc arc = new Arc();
-arc.setCenterX(450.0f);
-arc.setCenterY(700.0f);
-arc.setRadiusX(25.0f);
-arc.setRadiusY(25.0f);
-arc.setStartAngle(45.0f);
-arc.setLength(270.0f);
-arc.setType(ArcType.CHORD);
-pane.getChildren().add(arc);
+
         //System.out.println("numUnique = " + numUniqueStates);
         //System.out.println("numAll = " + numAllStates);     
         
@@ -996,16 +993,20 @@ pane.getChildren().add(arc);
             for(int j=0; j<numAllStates; j++){
                 Circle stateNode = stateNodes[j];
                 Circle endNode = endNodes[j];
+                
+                    
                 if(!allInitStates[j].equalsIgnoreCase(initialUniqueStates[i])){
                 } else {
                     stateNode.centerXProperty().bindBidirectional(uniqueNodes[i].centerXProperty());
                     stateNode.centerYProperty().bindBidirectional(uniqueNodes[i].centerYProperty());                    
                 }
+                
                 if(!endStates[j].equalsIgnoreCase(initialUniqueStates[i])){
                 } else {
                     endNode.centerXProperty().bindBidirectional(uniqueNodes[i].centerXProperty());
                     endNode.centerYProperty().bindBidirectional(uniqueNodes[i].centerYProperty());                    
-                }            
+                }  
+                
                 
                 if(endStates[j].equalsIgnoreCase("acceptHalt")){                 
                     endNode.centerXProperty().bindBidirectional(acceptNode.centerXProperty());
@@ -1019,10 +1020,38 @@ pane.getChildren().add(arc);
                     endNode.setFill(Color.RED);
                     endNode.setRadius(1);
                 }                   
-            // HERE  WHERE THE ACCEPT HALT HAS TO BE BOUND TO EACH OTHER             
+            // HERE  WHERE THE ACCEPT HALT HAS TO BE BOUND TO EACH OTHER  
+                //stateNode.toFront();
+                //endNode.toFront();
+                
 
             }
+            
         }   
+
+            for(int j=0; j<numAllStates; j++){
+                //Label endLabel=endLabels[j];
+                if(endStates[j].equalsIgnoreCase(initialStates[j])){  
+                    //ArcTo arcBack = new ArcTo(30, 15, 45.0, stateNodes[j].getCenterX(), stateNodes[j].getCenterY(), true, false);
+
+                    Ellipse anchor1 = new Ellipse(stateNodes[j].getCenterX(),stateNodes[j].getCenterY()-10,3,24);
+                    anchor1.setFill(Color.BEIGE);
+                    anchor1.setStroke(Color.BLACK);
+                    anchor1.setStrokeType(StrokeType.OUTSIDE);
+                    anchor1.setRotate(45.0);
+                    //anchor2.setFill(Color.BEIGE);
+                    anchor1.centerXProperty().bind(stateNodes[j].centerXProperty());
+                    anchor1.centerYProperty().bind(stateNodes[j].centerYProperty());
+                    //endLabel.layoutXProperty().bind(anchor1.centerXProperty());
+                    //endLabel.layoutYProperty().bind(anchor1.centerYProperty());
+                    //anchor2.centerXProperty().bind(stateNodes[j].centerXProperty());
+                    //anchor2.centerYProperty().bind(stateNodes[j].centerYProperty());
+                    pane.getChildren().add(anchor1);//, anchor2);
+                    //connectStates(anchor1,anchor2);
+
+                }
+            }
+       
         
         // DRAW EDGES from state to state per code
         //  Labels are bound to Nodes, Nodes are connected by Labels
