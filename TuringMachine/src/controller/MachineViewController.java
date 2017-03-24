@@ -909,34 +909,36 @@ public void launchStateWindow(){
             //System.out.println("stateLabel len = " + stateLabels.length);
                 
         // Non-duplicate initialStates generated into the initial Nodes
-        for (int j=0; j< numUniqueStates; j++){
-            Label uniqueLabel = new Label(initialUniqueStates[j]);            
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 10, pane, Color.BLUE);
-            uniqueNodes[j].setOpacity(.5);
-            uniqueLabels[j] = new Label(initialUniqueStates[j]);
-            uniqueLabel.layoutXProperty().bind(uniqueNodes[j].centerXProperty());
-            uniqueLabel.layoutYProperty().bind(uniqueNodes[j].centerYProperty());
-              
+        for (int j=0; j< numUniqueStates; j++){       
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, pane, Color.GRAY);
+            uniqueNodes[j].setOpacity(.2);              
             if (XCOORD + 150 < canvas.getWidth())
             {
                 XCOORD += 115;
             }
             else
             {
-                XCOORD = 72;
+                XCOORD = 90;
                 YCOORD += 150;
-            }     
+            }        
         }
+        
+        // DRAW acceptHalt and rejectHalt nodes to bind to
+        Circle acceptNode = createDraggingCircle(200,400, 18, pane, Color.GREEN);
+        Circle rejectNode = createDraggingCircle(300,400, 18, pane, Color.RED);
+        acceptNode.setOpacity(.5);
+        rejectNode.setOpacity(.5);
+        pane.getChildren().addAll(acceptNode, rejectNode);
         
         // BIND all Labels to their corresponding stateNodes
         for (int j = 0; j < numAllStates; j++){
             Label stateLabel = new Label(initialStates[j]);
             Label endLabel = new Label(endStates[j]);
             
-            stateNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, pane, Color.GRAY);
-            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+50, 15, pane, Color.GREEN);            
+            stateNodes[j] = createDraggingCircle(0,0, 4, pane, Color.BLUE);
+            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+72, 15, pane, Color.GRAY);            
             stateNodes[j].setOpacity(.5);
-            endNodes[j].setOpacity(.5);            
+            endNodes[j].setOpacity(.2);            
             stateLabel.layoutXProperty().bind(stateNodes[j].centerXProperty());
             stateLabel.layoutYProperty().bind(stateNodes[j].centerYProperty());
             endLabel.layoutXProperty().bind(endNodes[j].centerXProperty());
@@ -955,8 +957,8 @@ public void launchStateWindow(){
             }
             else
             {
-                XCOORD = 100;
-                YCOORD += 150;
+                XCOORD = 150;
+                YCOORD += 50;
             }                  
             pane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
         }          
@@ -978,7 +980,22 @@ public void launchStateWindow(){
                 } else {
                     endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
                     endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());                    
-                }                
+                }            
+                
+                if(endStates[j].equalsIgnoreCase("acceptHalt")){                 
+                    endNode.centerXProperty().bind(acceptNode.centerXProperty());
+                    endNode.centerYProperty().bind(acceptNode.centerYProperty()); 
+                    endNode.setFill(Color.GREEN);
+                    endNode.setRadius(1);
+                }
+                if(endStates[j].equalsIgnoreCase("rejectHalt")){                 
+                    endNode.centerXProperty().bind(rejectNode.centerXProperty());
+                    endNode.centerYProperty().bind(rejectNode.centerYProperty()); 
+                    endNode.setFill(Color.RED);
+                    endNode.setRadius(1);
+                }                   
+            // HERE  WHERE THE ACCEPT HALT HAS TO BE BOUND TO EACH OTHER             
+
             }
         }   
         
