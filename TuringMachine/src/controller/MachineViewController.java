@@ -902,8 +902,8 @@ public void launchStateWindow(){
         // starting node (pre-first-state)
         Label startLabel = new Label();       
         startLabel.setText("start");
-        startLabel.layoutXProperty().bind(startNode.centerXProperty());
-        startLabel.layoutYProperty().bind(startNode.centerYProperty());
+        startLabel.layoutXProperty().bindBidirectional(startNode.centerXProperty());
+        startLabel.layoutYProperty().bindBidirectional(startNode.centerYProperty());
         pane.getChildren().addAll(startNode,startLabel);
             //System.out.println("stateNodes len = " + stateNodes.length);
             //System.out.println("stateLabel len = " + stateLabels.length);
@@ -939,10 +939,10 @@ public void launchStateWindow(){
             endNodes[j] = createDraggingCircle(XCOORD, YCOORD+72, 15, pane, Color.GRAY);            
             stateNodes[j].setOpacity(.5);
             endNodes[j].setOpacity(.2);            
-            stateLabel.layoutXProperty().bind(stateNodes[j].centerXProperty());
-            stateLabel.layoutYProperty().bind(stateNodes[j].centerYProperty());
-            endLabel.layoutXProperty().bind(endNodes[j].centerXProperty());
-            endLabel.layoutYProperty().bind(endNodes[j].centerYProperty());               
+            stateLabel.layoutXProperty().bindBidirectional(stateNodes[j].centerXProperty());
+            stateLabel.layoutYProperty().bindBidirectional(stateNodes[j].centerYProperty());
+            endLabel.layoutXProperty().bindBidirectional(endNodes[j].centerXProperty());
+            endLabel.layoutYProperty().bindBidirectional(endNodes[j].centerYProperty());               
             //stateLabel.setMnemonicParsing(true);
             stateLabel.setLabelFor(stateNodes[j]);
             //endLabel.setMnemonicParsing(true);
@@ -973,24 +973,24 @@ public void launchStateWindow(){
                 Circle endNode = endNodes[j];
                 if(!allInitStates[j].equalsIgnoreCase(initialUniqueStates[i])){
                 } else {
-                    stateNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
-                    stateNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());                    
+                    stateNode.centerXProperty().bindBidirectional(uniqueNodes[i].centerXProperty());
+                    stateNode.centerYProperty().bindBidirectional(uniqueNodes[i].centerYProperty());                    
                 }
                 if(!endStates[j].equalsIgnoreCase(initialUniqueStates[i])){
                 } else {
-                    endNode.centerXProperty().bind(uniqueNodes[i].centerXProperty());
-                    endNode.centerYProperty().bind(uniqueNodes[i].centerYProperty());                    
+                    endNode.centerXProperty().bindBidirectional(uniqueNodes[i].centerXProperty());
+                    endNode.centerYProperty().bindBidirectional(uniqueNodes[i].centerYProperty());                    
                 }            
                 
                 if(endStates[j].equalsIgnoreCase("acceptHalt")){                 
-                    endNode.centerXProperty().bind(acceptNode.centerXProperty());
-                    endNode.centerYProperty().bind(acceptNode.centerYProperty()); 
+                    endNode.centerXProperty().bindBidirectional(acceptNode.centerXProperty());
+                    endNode.centerYProperty().bindBidirectional(acceptNode.centerYProperty()); 
                     endNode.setFill(Color.GREEN);
                     endNode.setRadius(1);
                 }
                 if(endStates[j].equalsIgnoreCase("rejectHalt")){                 
-                    endNode.centerXProperty().bind(rejectNode.centerXProperty());
-                    endNode.centerYProperty().bind(rejectNode.centerYProperty()); 
+                    endNode.centerXProperty().bindBidirectional(rejectNode.centerXProperty());
+                    endNode.centerYProperty().bindBidirectional(rejectNode.centerYProperty()); 
                     endNode.setFill(Color.RED);
                     endNode.setRadius(1);
                 }                   
