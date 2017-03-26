@@ -64,9 +64,7 @@ import javafx.scene.text.Text;
 
 import javafx.scene.text.TextFlow;
 import model.StateTransition;
-import controller.FontControl;
 import javafx.scene.layout.StackPane;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -84,7 +82,6 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
-import javafx.util.Callback;
 
 /**
  *
@@ -1166,6 +1163,7 @@ public void launchStateWindow(){
                 grid.add(label1, 1, 1);
                 grid.add(text1, 2, 1);
                 dialog.getDialogPane().setContent(grid);
+                Platform.runLater(()->text1.requestFocus());
                 
                 ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
                 dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
@@ -1203,6 +1201,7 @@ public void launchStateWindow(){
                 grid.add(label2, 1, 2);
                 grid.add(text2, 2, 2);
                 dialog.getDialogPane().setContent(grid);
+                Platform.runLater(()->text1.requestFocus());
                 
                 ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
                 dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
@@ -1245,6 +1244,7 @@ public void launchStateWindow(){
                 grid.add(label3, 1, 3);
                 grid.add(text3, 2, 3);
                 dialog.getDialogPane().setContent(grid);
+                Platform.runLater(()->text1.requestFocus());
                 
                 ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
                 dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);

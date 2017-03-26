@@ -15,7 +15,7 @@ t1, 0, _, _, *, t1, acceptHalt;
 
 # State A, A2: find the rightmost symbol
 
-t1, A, _, _, left, t1, B;
+t1, A, _, _, <, t1, B;
 t1, A, *, *, >, t1, A;
 
 t1, A2, _, _, <, t1, B2;
