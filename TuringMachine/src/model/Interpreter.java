@@ -102,6 +102,7 @@ public class Interpreter
                     view.setInitialTapeContent(initialInput, 1);
                     break;
             }
+            //statePane.getChildren().add(drawStates(transitions));
             view.drawStates(transitions);
             MachineViewController.currentStates = transitions;            
             // Set interpreter state to be the start state of the program
