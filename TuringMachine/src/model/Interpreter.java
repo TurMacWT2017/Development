@@ -276,28 +276,79 @@ public class Interpreter
             if (i%7 == 4)
             {  
                 String token = tokens[i].trim();
+                StringBuilder dir = new StringBuilder();
                 System.out.println("Direction token: " + tokens[i] + " on line " + lineNum + "\n");
-                if (token.matches("(R|r|right|Right|>)"))
+                System.out.println("Token length was" + token.length());
+                if (token.matches("([R|r|\\>])(.*)"))
                 {
                     //moveRight();
-                    tokens[i] = "RIGHT";
+                    dir.append("R");
                 }
-                else if (token.matches("(L|l|<|left|Left)"))
+                else if (token.matches("([L|l|\\<])(.*)"))
                 {
                     //moveLeft();
-                    tokens[i] = "LEFT";
+                    dir.append("L");
                 }
-                else if (token.equalsIgnoreCase("*"))
+                else if (token.matches("\\*(.*)"))
                 {
                     //stay();
-                    tokens[i] = "STAY";
+                    dir.append("S");
                 }
                 else 
                 {
-                    errorString = "\nInvalid direction on line " + lineNum + ":  "+ tokens[i] + "\n";
+                    errorString = "\nInvalid direction on line " + lineNum + ":  "+ tokens[i] + " ,check your first specified direction";
                     errorReport.append(errorString);
                     errorsPresent = true;
                 }
+                //check for a 2nd direction
+                if (token.length() >= 2) {
+                    if (token.matches("(\\S{1})([R|r|\\>])(\\S{0,1})"))
+                    {
+                        //moveRight();
+                        dir.append("R");
+                    }
+                    else if (token.matches("(\\S{1})([L|l|\\<])(\\S{0,1})"))
+                    {
+                        //moveLeft();
+                        dir.append("L");
+                    }
+                    else if (token.matches("(\\S{1})(\\*)(\\S{0,1})"))
+                    {
+                        //stay();
+                        dir.append("S");
+                    }
+                    else 
+                    {
+                        errorString = "\nInvalid direction on line " + lineNum + ":  "+ tokens[i] + " ,check your 2nd specified direction";
+                        errorReport.append(errorString);
+                        errorsPresent = true;
+                    }
+                }
+                //check for a 3nd direction
+                if (token.length() == 3) {
+                    if (token.matches("(\\S)(\\S)([R|r|\\>])"))
+                    {
+                        //moveRight();
+                        dir.append("R");
+                    }
+                    else if (token.matches("(\\S)(\\S)([L|l|\\<])"))
+                    {
+                        //moveLeft();
+                        dir.append("L");
+                    }
+                    else if (token.matches("(\\S)(\\S)(\\*)"))
+                    {
+                        //stay();
+                        dir.append("S");
+                    }
+                    else 
+                    {
+                        errorString = "\nInvalid direction on line " + lineNum + ":  "+ tokens[i] + " ,check your third specified direction";
+                        errorReport.append(errorString);
+                        errorsPresent = true;
+                    }
+                }
+                tokens[i] = dir.toString();
             }
 
             // Get the write tape, or * if no write
@@ -614,38 +665,50 @@ public class Interpreter
                     }
                 }
                 //move left or right as needed
-                switch (direction) {
-                    case "LEFT":
-                        if (writeTape.equalsIgnoreCase("t1")) {
-                            tapeOne.moveHeadLeft();
-                            tapeOneUpdated = true;
-                        }
-                        else if (writeTape.equalsIgnoreCase("t2")) {
-                            tapeTwo.moveHeadLeft();
-                            tapeTwoUpdated = true;
-                        }
-                        else if (writeTape.equalsIgnoreCase("t3")) {
-                            tapeThree.moveHeadLeft();
-                            tapeThreeUpdated = true;
-                        }
+                //direction tuple will have up to three chars, indicating different movements
+                String dir = Character.toString(direction.charAt(0));
+                switch (dir) {
+                    case "L":                       
+                        tapeOne.moveHeadLeft();
+                        tapeOneUpdated = true;
                         break;
-                    case "RIGHT":
-                        if (writeTape.equalsIgnoreCase("t1")) {
-                            tapeOne.moveHeadRight();
-                            tapeOneUpdated = true;
-                        }
-                        else if (writeTape.equalsIgnoreCase("t2")) {
-                            tapeTwo.moveHeadRight();
-                            tapeTwoUpdated = true;
-                        }
-                        else if (writeTape.equalsIgnoreCase("t3")) {
-                            tapeThree.moveHeadRight();
-                            tapeThreeUpdated = true;
-                        }
-                        break;
+                    case "R":
+                        tapeOne.moveHeadRight();
+                        tapeOneUpdated = true;
                     default:
                         break;
                 }
+                //possible movement for tape 2
+                if (direction.length() >= 2) {
+                    dir = Character.toString(direction.charAt(1));
+                    switch (dir) {
+                    case "L":                       
+                        tapeTwo.moveHeadLeft();
+                        tapeTwoUpdated = true;
+                        break;
+                    case "R":
+                        tapeTwo.moveHeadRight();
+                        tapeTwoUpdated = true;
+                    default:
+                        break;
+                    }
+                }
+                //possible for tape 3
+                if (direction.length() == 3) {
+                    dir = Character.toString(direction.charAt(2));
+                    switch (dir) {
+                    case "L":                       
+                        tapeThree.moveHeadLeft();
+                        tapeThreeUpdated = true;
+                        break;
+                    case "R":
+                        tapeThree.moveHeadRight();
+                        tapeThreeUpdated = true;
+                    default:
+                        break;
+                    }
+                }
+                
                 //update the tapes
                 if (tapeOneUpdated) {
                     view.updateTapeContent(tapeOne.getContent(), 1);
