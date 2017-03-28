@@ -103,23 +103,25 @@
             
             <h4>Read Tape and Write Tape</h4>
             <p>The read and write tape share the same syntax.
-                <br><b>Symbols:</b>  t1, t2, t3</p>
+                <br><br><b>Symbols:</b>  t1, t2, t3</p>
             
             <h4>Initial State and End State</h4>
             <p>The initial state can be any string of alpha-numeric characters.
-                <br><b>Symbols:</b>  Any combination of a-z, A-Z, 0-9</p>
+                <br><br><b>Symbols:</b>  Any combination of a-z, A-Z, 0-9</p>
             
             <h4>Read and Write Tokens</h4>
             <p>The read and write tokens accepted depend on the program. Some programs allow
                 alpha-numeric characters while others may only accept numbers.
-                <br><b>Symbols:</b>  a-z, A-Z, 0-9</p>
+                <br><br><b>Symbols:</b>  a-z, A-Z, 0-9, _, *
+                <br><br>The '*' is a wildcard symbol that means "no matter what you read" in the read context,
+            and "write nothing" in the write context. The '_' symbol is used for reading and writing blanks.</p>
             
             <h4>Direction Tokens</h4>
             <p>The directional tokens are used to move the read-write head the specified direction.
                To stay and not move the read-write head, use the '*' symbol. 
-                <br><b>Symbols:</b>  &lt;, &gt;, *
-            <br>Note:  Multiple direction symbols can be used if there are multiple tapes. 
-            For example, &lt;*, would mean RW head of Tape 1 move left, RW of Tape 2 don't move.</p>
+                <br><br><b>Symbols:</b>  &lt;, &gt;, *
+                <br><br>Note:  Multiple direction symbols can be used if there are multiple tapes. 
+            For example, &lt;*, would mean RW head of Tape 1 move left, RW of Tape 2 stay.</p>
             
 
         <h2><br />An Example Program</h2>
