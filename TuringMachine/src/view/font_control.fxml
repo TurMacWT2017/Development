@@ -21,13 +21,14 @@
                         <Label layoutX="25.0" layoutY="136.0" text="Size" />
                         <TextFlow fx:id="previewBar" layoutX="1.0" layoutY="22.0" prefHeight="57.0" prefWidth="300.0" textAlignment="CENTER" />
                         <Label layoutX="25.0" layoutY="88.0" text="Font" />
-                        <CheckBox fx:id="italicCheckBox" layoutX="154.0" layoutY="177.0" mnemonicParsing="false" onAction="#italicCheckBoxClicked" text="Italic" />
-                        <CheckBox fx:id="boldCheckBox" layoutX="66.0" layoutY="178.0" mnemonicParsing="false" onAction="#boldCheckBoxClicked" text="Bold" />
+                        <CheckBox fx:id="italicCheckBox" layoutX="89.0" layoutY="178.0" mnemonicParsing="false" onAction="#italicCheckBoxClicked" text="Italic" />
+                        <CheckBox fx:id="boldCheckBox" layoutX="13.0" layoutY="178.0" mnemonicParsing="false" onAction="#boldCheckBoxClicked" text="Bold" />
                         <ComboBox fx:id="sizeChooserBox" layoutX="66.0" layoutY="130.0" prefHeight="26.0" prefWidth="92.0" />
                         <ComboBox fx:id="fontChooserBox" layoutX="67.0" layoutY="83.0" prefHeight="26.0" prefWidth="195.0" />
                         <Label layoutX="4.0" layoutY="3.0" text="Preview" />
                      <Button fx:id="acceptButton" layoutX="14.0" layoutY="228.0" mnemonicParsing="false" onAction="#acceptChanges" prefHeight="26.0" prefWidth="133.0" text="Accept Changes" />
                      <Button fx:id="cancelButton" layoutX="179.0" layoutY="228.0" mnemonicParsing="false" onAction="#cancelChanges" prefHeight="26.0" prefWidth="111.0" text="Cancel" />
+                     <CheckBox fx:id="fontDefaultToggle" layoutX="161.0" layoutY="178.0" mnemonicParsing="false" onAction="#makeFontDefault" text="Make Default" />
                   </children>
                </AnchorPane>
             </javafx.scene.layout.VBox>

@@ -103,6 +103,9 @@ public class MachineViewController implements Initializable {
     private boolean isBold = false;
     private boolean isItalic = false;
     private Color RWHeadFillColor = Color.RED;
+    private ResourceBundle bundle;
+    
+    //state diagram variables
     private Circle acceptNode;
     private Circle rejectNode;
     private Circle startNode;
@@ -545,6 +548,9 @@ public class MachineViewController implements Initializable {
             isBold = fontControl.getIsBold();
             isItalic = fontControl.getIsItalic();
             RWHeadFillColor = fontControl.getRWHeadFillColor();
+            if (fontControl.getIsDefaultFont()) {
+                TuringMachineJFXMLPrototype.setUserFontPreferences(family, size, isBold, isItalic);
+            }
             if (fileLoaded) {
                 if (interp.errorFound()) {
                     updateCodeTabContent(interp.getErrorReport());
@@ -554,8 +560,12 @@ public class MachineViewController implements Initializable {
                 }
                 //update content across all three tapes
                 updateTapeContent(interp.getTapeContent(1), 1);
-                updateTapeContent(interp.getTapeContent(2), 2);
-                updateTapeContent(interp.getTapeContent(3), 3);
+                if (tapes == 2) {
+                    updateTapeContent(interp.getTapeContent(2), 2);
+                }
+                if (tapes == 3) {
+                    updateTapeContent(interp.getTapeContent(3), 3);
+                }
             }
     }
     
@@ -798,6 +808,12 @@ public class MachineViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {        
         speedSlider.valueProperty().addListener(new ChangeListenerImpl());
+        //this portion pulls any current user defaults that have been set and applies them
+        Object[] settings = TuringMachineJFXMLPrototype.getUserFontPreferences();
+        family = (String) settings[0];
+        size = (int) settings[1];
+        isItalic = (boolean) settings[2];
+        isBold = (boolean) settings[3];
         //these lines allow the canvas to dynamically resize when the program does
         //statePane.widthProperty().addListener(observable -> redraw(currentStates));
         //statePane.heightProperty().addListener(observable -> redraw(currentStates));

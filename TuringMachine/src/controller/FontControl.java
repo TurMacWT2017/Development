@@ -44,6 +44,8 @@ public class FontControl extends TabPane {
         private int newSize;
         private boolean isBold;
         private boolean isItalic;
+        private boolean fontDefault;
+        private boolean rwDefault;
         private Color RWHeadFontColor;
         private Color newRWHeadFontColor;
         
@@ -54,6 +56,7 @@ public class FontControl extends TabPane {
         @FXML private TextFlow previewBar;
         @FXML private CheckBox boldCheckBox;
         @FXML private CheckBox italicCheckBox;
+        @FXML private CheckBox fontDefaultToggle;
         @FXML private ComboBox sizeChooserBox;
         @FXML private ComboBox fontChooserBox;
         @FXML private Button acceptButton;
@@ -141,6 +144,7 @@ public class FontControl extends TabPane {
         //color picker listener and setting of default value
         RWColorPicker.setValue(RWHeadFontColor);
         RWColorPicker.setOnAction(new EventHandler() {
+            @Override
             public void handle(Event t) {
                 newRWHeadFontColor = RWColorPicker.getValue();
                 updateRWHeadPreviewBar();
@@ -204,6 +208,19 @@ public class FontControl extends TabPane {
           
     }
     
+    @FXML
+    private void makeFontDefault(ActionEvent event) {
+        fontDefault = fontDefaultToggle.isSelected();
+    }
+    
+    public boolean getIsDefaultFont() {
+        return fontDefault;
+    }
+    
+    public boolean getIsDefaultRW() {
+        return rwDefault;
+    }
+       
     public int getFontSize() {
         return size;
     }
