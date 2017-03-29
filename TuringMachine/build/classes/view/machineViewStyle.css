@@ -5,14 +5,46 @@ and open the template in the editor.
 */
 /* 
     Created on : Feb 28, 2017, 12:08:18 AM
-    Author     : Nick Ahring
+    Author     : Nick Ahring and Landon Bressler
 */
 .tab-pane .tab-header-area .tab-header-background {
     -fx-background-color: transparent;
 }
 
-#pane{
-   -fx-background-image: url('images/buffalo.jpg');
-   -fx-background-repeat: stretch;   
-   -fx-background-position: center center;
+#background {
+    -fx-background-color: #d0d0d0;
+}
+
+.titled-pane {
+    -fx-text-fill: white;
+}
+
+.titled-pane > .title {
+    -fx-background-color: #000000, linear-gradient(#710022 0%, #8e2746 20%, #400215 100%),
+        linear-gradient(#67112b, #400215), radial-gradient(center 50% 0%, radius 100%, rgba(93,9,34,0.9), rgba(255,255,255,0));
+    -fx-background-radius: 5,4,3,5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
+}
+
+.titled-pane > .title > .arrow-button .arrow {
+    -fx-background-color: white;
+}
+
+#button{
+    -fx-background-color: #000000, linear-gradient(#710022 0%, #8e2746 20%, #400215 100%),
+        linear-gradient(#67112b, #400215), radial-gradient(center 50% 0%, radius 100%, rgba(93,9,34,0.9), rgba(255,255,255,0));
+    -fx-background-radius: 5,4,3,5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
+    -fx-font-family: "Arial";
+    -fx-text-fill: linear-gradient(white, #d0d0d0);
+    -fx-font-size: 12px;
+    -fx-font-padding: 10 20 10 20;
+}
+
+.slider .thumb {
+    -fx-background-color: #000000, linear-gradient(#710022 0%, #8e2746 20%, #400215 100%),
+        linear-gradient(#67112b, #400215), radial-gradient(center 50% 0%, radius 100%, rgba(93,9,34,0.9), rgba(255,255,255,0));
 }

@@ -90,194 +90,91 @@
             END_STATE&#09;&#09;<b>B</b>&#09;&nbsp;- Transition to State B
             </pre>
             
+            <br /><p>Comments are also a useful tool when writing a program, so the Turing Machine interpreter recognizes
+            those as well. Starting a line with <i><b>#</b></i> tells the TM interpreter to ignore
+            the rest of the line.</p>
+            <pre>
+                <comment># I am a comment</comment>
+            </pre>
+            
             <h3>Breakdown of Symbols</h3>
+            <p>Each comma-separated category of the tuple has its own set of instructions. In this section,
+            we will give a breakdown of syntactically correct symbols for each category.</p>
+            
+            <h4>Read Tape and Write Tape</h4>
+            <p>The read and write tape share the same syntax.
+                <br><br><b>Symbols:</b>  t1, t2, t3</p>
+            
+            <h4>Initial State and End State</h4>
+            <p>The initial state can be any string of alpha-numeric characters.
+                <br><br><b>Symbols:</b>  Any combination of a-z, A-Z, 0-9</p>
+            
+            <h4>Read and Write Tokens</h4>
+            <p>The read and write tokens accepted depend on the program. Some programs allow
+                alpha-numeric characters while others may only accept numbers.
+                <br><br><b>Symbols:</b>  a-z, A-Z, 0-9, _, *
+                <br><br>The '*' is a wildcard symbol that means "no matter what you read" in the read context,
+            and "write nothing" in the write context. The '_' symbol is used for reading and writing blanks.</p>
+            
+            <h4>Direction Tokens</h4>
+            <p>The directional tokens are used to move the read-write head the specified direction.
+               To stay and not move the read-write head, use the '*' symbol. 
+                <br><br><b>Symbols:</b>  &lt;, &gt;, *
+                <br><br>Note:  Multiple direction symbols can be used if there are multiple tapes. 
+            For example, &lt;*, would mean RW head of Tape 1 move left, RW of Tape 2 stay.</p>
             
 
-        <h2><br/>Block Structuring</h2>
-        <p>
-        Each Karel the Robot instruction must be on a separate line.  A sequence of 
-        one or more Karel the Robot instructions that are all indented the same
-        number of spaces compose a <strong>block</strong> of code.
-        <code>&lt;instruction&gt;</code> refers to any of the five primitive
-        instructions above, the conditional branching or iteration instructions below,
-        or a user defined instruction.
-        </p>
-        <pre>
-            &lt;instruction&gt;<br />
-            &lt;instruction&gt;<br />
-              ...<br />
-            &lt;instruction&gt;<br />
-        </pre>
-
-
-        <h2><br />Conditional Branching</h2>
-        <p>
-        <strong>Conditional branching</strong> refers to the ability of a program to
-        alter it's <strong>flow of execution</strong> based on the result of the
-        evaluation of a <strong>conditional</strong>.  The three types of conditional
-        branching instructions in Karel the Robot are <code>if</code> and
-        <code>if/else</code> and <code>if/elif/else</code>.
-        In the below examples, <code>&lt;test&gt;</code> refers to one of the eighteen conditionals
-        we discuss in the next section.
-        </p>
-
-        <pre>
-            if &lt;test&gt;:<br />
-                &lt;block&gt;<br />
-
-        </pre>
-
-        <pre>
-            if &lt;test&gt;:<br />
-                &lt;block&gt;<br />
-            else:<br />
-                &lt;block&gt;<br />
-
-        </pre>
-
-        <pre>
-            if &lt;test&gt;:<br />
-                &lt;block&gt;<br />
-            elif &lt;test&gt;:<br />
-                &lt;block&gt;<br />
-            ...<br />
-            elif &lt;test&gt;:<br />
-                &lt;block&gt;<br />
-            else:<br />
-                &lt;block&gt;<br />
-        </pre>
-
-
-        <h2><br />Conditionals</h2>
-        <p>
-        KtR has eighteen built-in tests that are divided into three groups: the 
-        first six are wall tests, the next four are beeper tests, and the last 
-        eight are compass tests:
-        </p>
-            <ol class="list">
-            <li>front_is_clear</li>
-            <li>front_is_blocked</li>
-            <li>left_is_clear</li>
-            <li>left_is_blocked</li>
-            <li>right_is_clear</li>
-            <li>right_is_blocked</li>
-            <br />
-            <li>next_to_a_beeper</li>
-            <li>not_next_to_a_beeper</li>
-            <li>any_beepers_in_beeper_bag</li>
-            <li>no_beepers_in_beeper_bag</li>
-            <br />
-            <li>facing_north</li>
-            <li>not_facing_north</li>
-            <li>facing_south</li>
-            <li>not_facing_south</li>
-            <li>facing_east</li>
-            <li>not_facing_east</li>
-            <li>facing_west</li>
-            <li>not_facing_west</li>
-            </ol>
-
-        <h2><br />Iteration</h2>
-        <p>
-        <strong>Iteration</strong> refers to the ability of a program to repeat an
-        instruction (or block of instructions) over and over until some condition is 
-        met. The two types of iteration instructions are the <code>do</code> and <code>while</code> instructions.
-        <code>&lt;positive_number&gt;</code> must be an integer greater than 0.
-        </p> 
-
-        <pre>
-            do &lt;positive_number&gt;:<br />
-                &lt;block&gt;<br />
-        <br />
-        </pre>
-
-        <pre>
-            while &lt;test&gt;:<br />
-                &lt;block&gt;<br />
-        </pre>
-
-
-        <h2><br />Defining a New Instruction:</h2>
-        <p>
-        New instructions can be created for Karel the Robot using the 
-        <code>def</code> or <code>define</code> statement. <code>&lt;new_name&gt;</code> can
-        be any sequence of letters or digits as long as it begins with a letter and is 
-        not already used as an instruction. <strong>Letters</strong> for Karel the
-        Robot are A..Z, a..z, and "<strong>_</strong>", the underscore character. Karel the Robot is
-         case sensitive, so TurnRight, turnright, and turnRight are all different names.
-        </p>
-        <pre>
-            def &lt;new_name&gt;:<br />
-                &lt;block&gt;<br />
-
-            <b>OR</b><br/>
-            define &lt;new_name&gt;:<br/>
-                   &lt;block&gt;<br/>
-        </pre>
-        <br /><p>Comments are also a useful tool when writing a program, so Karel recognizes
-            those as well. Starting a line with <i><b>#</b></i> tells the Karel interpreter to ignore
-            the rest of the line.</p>
-        <pre>
-            <comment># I am a comment</comment>
-        </pre>
-
-        <h2><br />Simplest KtR Program</h2>
-        <p>
-        Execution of a KtR program ends with the <code>turnoff</code> instruction.
-         Any program which reaches the end of its instruction sequence without 
-        encountering <code>turnoff</code> is considered in error. Thus the simplest
-         KtR program is:
-        </p>
-        <pre>
-            turnoff
-        </pre>
-
-
         <h2><br />An Example Program</h2>
-        <p>Given the following world:<br></p>
-        <p><img src="images/follow-right-example.png" class="image" alt="Follow right example"></p>
+        <!--<p>Given the following world:<br></p>
+        <p><img src="images/follow-right-example.png" class="image" alt="Follow right example"></p>-->
 
         <p>
         The following program will read the contents of Tape 1, and will determine if it
         is a palindrome or not.
         </p>
         <pre>
+            <b>Palindrome.tm</b>
+            
             # This example program checks if the input string is a binary palindrome.
-
-            # Input: a string of 0's and 1's, eg '1001001'
-            Input: 10101;
-
             # Machine starts in state 0.
+
             # State 0: read the leftmost symbol
-            t1, 0, 0, _, R, A;
-            t1, 0, 1, _, >, A2;
-            t1, 0, _, _, *, acceptHalt;
+
+            t1, 0, 0, _, R, t1, A;
+            t1, 0, 1, _, >, t1, A2;
+            t1, 0, _, _, *, t1, acceptHalt;
+
 
 
             # State A, A2: find the rightmost symbol
-            t1, A, _, _, left, B;
-            t1, A, *, *, >, A;
 
-            t1, A2, _, _, <, B2;
-            t1, A2, *, *, >, A2;
+            t1, A, _, _, <, t1, B;
+            t1, A, *, *, >, t1, A;
+
+            t1, A2, _, _, <, t1, B2;
+            t1, A2, *, *, >, t1, A2;
+
 
 
             # State B, B2: check if the rightmost symbol matches the most recently read left-hand symbol
-            t1, B, 0, _, <, C;
-            t1, B, _, _, *, acceptHalt;
-            t1, B, *, *, *, rejectHalt;
 
-            t1, B2, 1, _, <, C;
-            t1, B2, _, _, *, acceptHalt;
-            t1, B2, *, *, *, rejectHalt;
+            t1, B, 0, _, <, t1, C;
+            t1, B, _, _, *, t1, acceptHalt;
+            t1, B, *, *, *, t1, rejectHalt;
+
+            t1, B2, 1, _, <, t1, C;
+            t1, B2, _, _, *, t1, acceptHalt;
+            t1, B2, *, *, *, t1, rejectHalt;
+
 
 
             # State C, D: return to left end of remaining input
-            t1, C, _, _, *, acceptHalt;
-            t1, C, *, *, <, D;
 
-            t1, D, *, *, <, D;
-            t1, D, _, _, >, 0;
+            t1, C, _, _, *, t1, acceptHalt;
+            t1, C, *, *, <, t1, D;
+            t1, D, *, *, <, t1, D;
+            t1, D, _, _, >, t1, 0;
+
         </pre>
         
         <footer>
