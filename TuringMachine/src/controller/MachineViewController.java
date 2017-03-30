@@ -894,8 +894,7 @@ public class MachineViewController implements Initializable {
                 }
                 //YCOORD += 150;
             }     
-        } 
-        
+        }         
         
         // BIND all Labels to their corresponding stateNodes
         for (int j = 0; j < numAllStates; j++){
@@ -916,8 +915,7 @@ public class MachineViewController implements Initializable {
             //endLabel.setMnemonicParsing(true);
             endLabel.setLabelFor(endNodes[j]);
             stateLabels[j] = stateLabel;
-            endLabels[j] = endLabel;
-            
+            endLabels[j] = endLabel;           
             
             
             if (XCOORD + 150 < statePane.getWidth())
@@ -929,34 +927,14 @@ public class MachineViewController implements Initializable {
                 XCOORD = 150;
                 YCOORD += 50;
             }       
-            //stateNodes[j].setStroke(Color.BLACK);
-            //endNodes[j].setStroke(Color.BLACK);
-            //stateNodes[j].setSmooth(true);
-            //endNodes[j].setSmooth(true);
+            stateNodes[j].setStroke(Color.BLACK);
+            endNodes[j].setStroke(Color.BLACK);
+            stateNodes[j].setSmooth(true);
+            endNodes[j].setSmooth(true);
             stateNodes[j].setVisible(false);
             endNodes[j].setVisible(false);
             statePane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
         }   
-        /*
-        // DRAW acceptHalt and rejectHalt nodes for which to bind to, if exists
-        anchorAcceptRejectNodes();
-        anchorAcceptRejectNodes(){
-            if(acceptCheck > 0){
-            acceptNode = createDraggingCircle(50,statePane.getHeight() - 100, 18, statePane, Color.GREEN);
-            acceptNode.setOpacity(.5);
-            acceptNode.setStroke(Color.BLACK);
-            acceptNode.setSmooth(true);
-            statePane.getChildren().add(acceptNode);
-        }
-        if(rejectCheck > 0){
-            rejectNode = createDraggingCircle(450,statePane.getHeight() - 100, 18, statePane, Color.RED);        
-            rejectNode.setOpacity(.5);        
-            rejectNode.setStroke(Color.BLACK);        
-            rejectNode.setSmooth(true);
-            statePane.getChildren().add(rejectNode);
-        }  
-        }
-        */
         
 
         // BIND all matching initial and end states into junctions
@@ -987,9 +965,7 @@ public class MachineViewController implements Initializable {
                     endNode.centerYProperty().bindBidirectional(rejectNode.centerYProperty()); 
                     endNode.setFill(Color.RED);
                     endNode.setRadius(1);
-                }                   
-                //stateNode.toFront();
-                //endNode.toFront();            
+                }                    
             }            
         }                            
         
@@ -1028,8 +1004,6 @@ public class MachineViewController implements Initializable {
     
     public void drawStates(ArrayList<StateTransition> states) {
         currentStates = states;        
-        //StateDiagram diagram = new StateDiagram();
-        //Stage stage = new Stage();
         statePane = new Pane();
         XCOORD = 72;
         YCOORD = 72;
@@ -1095,27 +1069,10 @@ public class MachineViewController implements Initializable {
         }   
         
         // DRAW acceptHalt and rejectHalt nodes for which to bind to, if exists
-        anchorAcceptRejectNodes();
-        /*
-        if(acceptCheck > 0){
-            acceptNode = createDraggingCircle(50,statePaneTab.getHeight() - 50, 18, statePane, Color.GREEN);
-            acceptNode.setOpacity(.5);
-            acceptNode.setStroke(Color.BLACK);
-            acceptNode.setSmooth(true);
-            statePane.getChildren().add(acceptNode);
-        }
-        if(rejectCheck > 0){
-            rejectNode = createDraggingCircle(400,statePaneTab.getHeight() - 50, 18, statePane, Color.RED);        
-            rejectNode.setOpacity(.5);        
-            rejectNode.setStroke(Color.BLACK);        
-            rejectNode.setSmooth(true);
-            statePane.getChildren().add(rejectNode);
-        }  */
-        
+        anchorAcceptRejectNodes();        
         bindInitToEndStates();
         
-        // BIND all matching initial and end states into junctions
-          
+        // BIND all matching initial and end states into junctions          
         drawSameStateArcbacks();  
            
         // DRAW EDGES from state to state per code
@@ -1176,9 +1133,7 @@ public class MachineViewController implements Initializable {
                     endNode.centerYProperty().bindBidirectional(rejectNode.centerYProperty()); 
                     endNode.setFill(Color.RED);
                     endNode.setRadius(1);
-                }                   
-                //stateNode.toFront();
-                //endNode.toFront();            
+                }                             
             }            
         } 
         }
@@ -1198,7 +1153,7 @@ public class MachineViewController implements Initializable {
             rejectNode.setSmooth(true);
             statePane.getChildren().add(rejectNode);
         }  
-        }
+    }
     
     public void drawTransitionLabels(){
             Line transLine;
@@ -1290,8 +1245,7 @@ public class MachineViewController implements Initializable {
                 acceptCheck++;
             if (allEndStates[i].equalsIgnoreCase("rejectHalt"))
                 rejectCheck++;
-            // DEBUG tuple output
-            //System.out.println(allInitStates[i] + " " + allTransitions[i] + " " + allEndStates[i]);
+            
             uniqueStateSet = new HashSet<>(Arrays.asList(allInitStates));
             initialUniqueStates = new String[uniqueStateSet.size()];
             uniqueStateSet.toArray(initialUniqueStates);
