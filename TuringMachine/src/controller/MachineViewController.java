@@ -202,10 +202,16 @@ public class MachineViewController implements Initializable {
         if (isReady) {
             if (runButton.getText().equals("Run")) {
                 runButton.setText("Pause");
+//                stepButton.setDisable(true);
+//                stepButton.getStyleClass().clear();
+//                stepButton.getStyleClass().add("disabled");
                 interp.run();
             }
             else {
                 runButton.setText("Run");
+//                stepButton.setDisable(false);
+//                stepButton.getStyleClass().clear();
+//                stepButton.getStyleClass().add("button");
                 interp.pause();
             }
         }
@@ -595,7 +601,7 @@ public class MachineViewController implements Initializable {
         stage.setScene(scene);
         stage.setTitle("About");
         stage.setWidth(625);
-        stage.setHeight(400);
+        stage.setHeight(500);
         stage.show();
         
         root.getChildren().add(webView);
