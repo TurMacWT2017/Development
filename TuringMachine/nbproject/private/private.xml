@@ -3,11 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/home/landon/cs4391/turingMachine/TuringMachine/src/controller/MachineViewController.java</file>
             <file>file:/home/landon/cs4391/turingMachine/TuringMachine/src/view/machineViewStyle.css</file>
             <file>file:/home/landon/cs4391/turingMachine/TuringMachine/src/view/MachineView.fxml</file>
             <file>file:/home/landon/cs4391/turingMachine/TuringMachine/src/view/about.html</file>
             <file>file:/home/landon/cs4391/turingMachine/TuringMachine/src/view/languageReference.html</file>
+=======
+            <file>file:/home/student/cs4391/turingMachine/TuringMachine/src/model/Interpreter.java</file>
+            <file>file:/home/student/cs4391/turingMachine/TuringMachine/src/controller/MachineViewController.java</file>
+            <file>file:/home/student/cs4391/turingMachine/TuringMachine/src/model/StateTransition.java</file>
+            <file>file:/home/student/cs4391/turingMachine/TuringMachine/src/view/MachineView.fxml</file>
+            <file>file:/home/student/cs4391/turingMachine/TuringMachine/src/controller/StateDiagram.java</file>
+>>>>>>> cfccb95c069897e7a964355dd3af281ea9153399
         </group>
     </open-files>
 </project-private>
