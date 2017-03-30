@@ -130,6 +130,7 @@ public class MachineViewController implements Initializable {
     private int numAllStates;
     private Pane statePane;
     @FXML private Pane statePaneTab;
+    private Pane statePaneWin;
     //used to keep track of how many tapes the user is working with and is given
     //to the interpreter upon its creation so it knows how many tapes it has
     //default is one tape
@@ -140,6 +141,7 @@ public class MachineViewController implements Initializable {
     @FXML private TextFlow selectedTape;
     private String tapeSelection;
     private Color[] tapeColor;
+    private int connected = 0; 
     
     //UI Buttons
     @FXML private Button runButton;
@@ -850,70 +852,8 @@ public class MachineViewController implements Initializable {
         Stage stage = new Stage();
         Scene scene = new Scene(statePane, 600, 600);
         ScrollPane layout = new ScrollPane();
-        Line transLine;
         
-        Circle oneAqua = new Circle(500,530,5,Color.AQUA);
-        Circle twoViolet = new Circle(500,550,5,Color.VIOLET);
-        Circle threeTan = new Circle(500,570,5,Color.TAN);
-        Text legend1 = new Text();
-        Text legend2 = new Text();
-        Text legend3 = new Text();
-        legend1.setText("  Tape 1");
-        legend2.setText("  Tape 2");
-        legend3.setText("  Tape 3");
-        legend1.setLayoutX(510.0);
-        legend1.setLayoutY(535.0);
-        legend2.setLayoutX(510.0);
-        legend2.setLayoutY(555.0);
-        legend3.setLayoutX(510.0);
-        legend3.setLayoutY(575.0);       
-        statePane.getChildren().addAll(oneAqua,twoViolet,threeTan);
-        statePane.getChildren().addAll(legend1,legend2,legend3);        
-        
-        final int numStates=states.size();
-        allInitStates = new String[numStates];
-        allTapes = new String[numStates];
-        allTransitions = new String[numStates];
-        allWriteTapes = new String[numStates];
-        allEndStates = new String[numStates];
-        acceptCheck = 0;
-        rejectCheck = 0;
-        // LOAD the initial state, end state, and transition arrays
-        for(int i =0; i< numStates;i++){
-            allInitStates[i] = states.get(i).getInitialState();
-            allTapes[i] = states.get(i).getTape();
-            allTransitions[i] = states.get(i).getReadToken() + ", " +
-                            states.get(i).getWriteToken() + ", " +
-                            states.get(i).getDirection();
-            allWriteTapes[i] = states.get(i).getWriteTape();
-            allEndStates[i] = states.get(i).getEndState();
-            if (allEndStates[i].equalsIgnoreCase("acceptHalt"))
-                acceptCheck++;
-            if (allEndStates[i].equalsIgnoreCase("rejectHalt"))
-                rejectCheck++;
-            // DEBUG tuple output
-            System.out.println(allInitStates[i] + " " + allTapes[i] + " " + 
-                    allTransitions[i] + " " + allWriteTapes[i] + " " + allEndStates[i]);
-        }     
-        
-        // Collapse duplicate-containing initialState array into non-duplicated array
-        uniqueStateSet = new HashSet<>(Arrays.asList(allInitStates));
-        initialUniqueStates = new String[uniqueStateSet.size()];
-        uniqueStateSet.toArray(initialUniqueStates);
-        numUniqueStates = initialUniqueStates.length;
-        numAllStates = allInitStates.length;
-        
-        tapeColor = new Color[numAllStates];
-        for(int i=0;i<numAllStates; i++){
-            tapeSelection = allTapes[i];
-            System.out.println("selectedTape = " + tapeSelection);
-            if(tapeSelection.equalsIgnoreCase("t1"))
-                tapeColor[i] = Color.AQUA;
-            if(tapeSelection.equalsIgnoreCase("t2"))
-                tapeColor[i] = Color.VIOLET;
-            if(tapeSelection.equalsIgnoreCase("t3"))
-                tapeColor[i] = Color.TAN;
-        }
+        drawTapeLegend();   
         
         stateNodes = new Circle[numAllStates];
         uniqueNodes = new Circle[numUniqueStates];
@@ -935,20 +875,26 @@ public class MachineViewController implements Initializable {
             uniqueNodes[j].setOpacity(.2);   
             uniqueNodes[j].setStroke(Color.BLACK);
             uniqueNodes[j].setSmooth(true);
-            if (XCOORD + 150 < statePane.getWidth())
+            if (XCOORD + 150 < statePaneTab.getWidth())
             {
                 XCOORD += 115;
-                if((j%2)==1)
-                   YCOORD -= 50; 
-                else 
-                   YCOORD += 50;
             }
             else
             {
-                XCOORD = 72;
-                YCOORD += 200;
-            }        
-        }     
+                XCOORD = 120;
+                if (YCOORD + 150 < statePaneTab.getHeight())
+                {
+                    YCOORD += 150;
+                }
+                else
+                {
+                    YCOORD = 150;
+                    
+                
+                }
+                //YCOORD += 150;
+            }     
+        }         
         
         // BIND all Labels to their corresponding stateNodes
         for (int j = 0; j < numAllStates; j++){
@@ -969,8 +915,7 @@ public class MachineViewController implements Initializable {
             //endLabel.setMnemonicParsing(true);
             endLabel.setLabelFor(endNodes[j]);
             stateLabels[j] = stateLabel;
-            endLabels[j] = endLabel;
-            
+            endLabels[j] = endLabel;           
             
             
             if (XCOORD + 150 < statePane.getWidth())
@@ -982,30 +927,15 @@ public class MachineViewController implements Initializable {
                 XCOORD = 150;
                 YCOORD += 50;
             }       
-            //stateNodes[j].setStroke(Color.BLACK);
-            //endNodes[j].setStroke(Color.BLACK);
-            //stateNodes[j].setSmooth(true);
-            //endNodes[j].setSmooth(true);
+            stateNodes[j].setStroke(Color.BLACK);
+            endNodes[j].setStroke(Color.BLACK);
+            stateNodes[j].setSmooth(true);
+            endNodes[j].setSmooth(true);
             stateNodes[j].setVisible(false);
             endNodes[j].setVisible(false);
             statePane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
         }   
         
-        // DRAW acceptHalt and rejectHalt nodes for which to bind to, if exists
-        if(acceptCheck > 0){
-            acceptNode = createDraggingCircle(50,statePane.getHeight() - 100, 18, statePane, Color.GREEN);
-            acceptNode.setOpacity(.5);
-            acceptNode.setStroke(Color.BLACK);
-            acceptNode.setSmooth(true);
-            statePane.getChildren().add(acceptNode);
-        }
-        if(rejectCheck > 0){
-            rejectNode = createDraggingCircle(450,statePane.getHeight() - 100, 18, statePane, Color.RED);        
-            rejectNode.setOpacity(.5);        
-            rejectNode.setStroke(Color.BLACK);        
-            rejectNode.setSmooth(true);
-            statePane.getChildren().add(rejectNode);
-        }  
 
         // BIND all matching initial and end states into junctions
         for(int i=0; i<numUniqueStates; i++){
@@ -1035,55 +965,17 @@ public class MachineViewController implements Initializable {
                     endNode.centerYProperty().bindBidirectional(rejectNode.centerYProperty()); 
                     endNode.setFill(Color.RED);
                     endNode.setRadius(1);
-                }                   
-                //stateNode.toFront();
-                //endNode.toFront();            
+                }                    
             }            
-        }   
-
-            for(int j=0; j<numAllStates; j++){
-                //Label endLabel=endLabels[j];
-                if(allEndStates[j].equalsIgnoreCase(allInitStates[j])){  
-                    Ellipse anchor1 = new Ellipse(stateNodes[j].getCenterX(),stateNodes[j].getCenterY()-10,3,24);
-                    anchor1.setFill(Color.BEIGE);
-                    anchor1.setStroke(Color.BLACK);
-                    anchor1.setStrokeType(StrokeType.OUTSIDE);
-                    anchor1.setRotate(45.0);
-                    anchor1.setSmooth(true);
-                    anchor1.centerXProperty().bindBidirectional(stateNodes[j].centerXProperty());
-                    anchor1.centerYProperty().bindBidirectional(stateNodes[j].centerYProperty());
-                    statePane.getChildren().add(anchor1);//, anchor2);
-                    //connectStates(anchor1,anchor2);
-
-                }
-            }       
+        }                            
         
         // DRAW EDGES from state to state per code
         //  Labels are bound to Nodes, Nodes are connected by Labels
         connectStates(startNode, stateNodes[0]);
-        ObjectProperty<Node> lastUnconnectedNode = new SimpleObjectProperty<>();
-        
-        
-        int connected = 0;  
-        for (int j = 0; j< numAllStates; j++){
-                Label prevLabel = new Label(allTransitions[j]);
-                transLine = connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
-                double transCenterX = (transLine.getStartX() + transLine.getEndX())/2;
-                double transCenterY = (transLine.getStartY() + transLine.getEndY())/2;
-                
-                Circle prevNode = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.BROWN);
-                prevNode.setOpacity(0.1);
-                prevLabel.layoutXProperty().bind(prevNode.centerXProperty());
-                prevLabel.layoutYProperty().bind(prevNode.centerYProperty());
-                prevLabel.setStyle("-fx-font-weight: bold;");
-                statePane.getChildren().addAll(prevNode,prevLabel);
-                //System.out.println(connected + " X = " + transCenterX);
-                //System.out.println(connected + " Y = " + transCenterY);
-                connected++;          
-        }       
+        ObjectProperty<Node> lastUnconnectedNode = new SimpleObjectProperty<>();       
+        drawTransitionLabels();       
 
-        // CREATE and DISPLAY the state diagram window loaded with source file load       
-           
+        // CREATE and DISPLAY the state diagram window loaded with source file load              
         layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
         layout.setFitToHeight(true);
@@ -1096,7 +988,7 @@ public class MachineViewController implements Initializable {
         //diagram.start(stage);
         stage.setScene(scene);
         stage.show();  
-                   
+          statePaneWin.getChildren().add(statePane);         
             System.out.println("Making state diagram window");
             }
         else {
@@ -1108,69 +1000,18 @@ public class MachineViewController implements Initializable {
         }       
     }
     
-    private Line connectStates(Node n1, Node n2) {
-        if (n1.getParent() != n2.getParent()) {
-            throw new IllegalArgumentException("Nodes are in different containers");
-        }
-        Pane parent = (Pane) n1.getParent();
-        Line line = new Line();
-        line.setFill(Color.BLUE);
-        line.setOpacity(.5);
-        line.startXProperty().bind(Bindings.createDoubleBinding(() -> {
-            Bounds b = n1.getBoundsInParent();
-            return b.getMinX() + b.getWidth() / 2 ;
-        }, n1.boundsInParentProperty()));
-        line.startYProperty().bind(Bindings.createDoubleBinding(() -> {
-            Bounds b = n1.getBoundsInParent();
-            return b.getMinY() + b.getHeight() / 2 ;
-        }, n1.boundsInParentProperty()));
-        line.endXProperty().bind(Bindings.createDoubleBinding(() -> {
-            Bounds b = n2.getBoundsInParent();
-            return b.getMinX() + b.getWidth() / 2 ;
-        }, n2.boundsInParentProperty()));
-        line.endYProperty().bind(Bindings.createDoubleBinding(() -> {
-            Bounds b = n2.getBoundsInParent();
-            return b.getMinY() + b.getHeight() / 2 ;
-        }, n2.boundsInParentProperty()));
-        line.getStrokeDashArray().addAll(15d, 5d, 15d, 15d, 20d);
-        line.setStrokeDashOffset(5);
-        parent.getChildren().add(line);
-        return line;
-    }
+    
     
     public void drawStates(ArrayList<StateTransition> states) {
         currentStates = states;        
-        //StateDiagram diagram = new StateDiagram();
-        //Stage stage = new Stage();
         statePane = new Pane();
-        
-        final int numStates=states.size();
-        allInitStates = new String[numStates];
-        allTransitions = new String[numStates];
-        allEndStates = new String[numStates];
-        acceptCheck = 0;
-        rejectCheck = 0;
+        XCOORD = 72;
+        YCOORD = 72;
+
         // LOAD the initial state, end state, and transition arrays
-        for(int i =0; i< numStates;i++){
-            allInitStates[i] = states.get(i).getInitialState();
-            allTransitions[i] = states.get(i).getReadToken() + ", " +
-                            states.get(i).getWriteToken() + ", " +
-                            states.get(i).getDirection();
-            allEndStates[i] = states.get(i).getEndState();
-            if (allEndStates[i].equalsIgnoreCase("acceptHalt"))
-                acceptCheck++;
-            if (allEndStates[i].equalsIgnoreCase("rejectHalt"))
-                rejectCheck++;
-            // DEBUG tuple output
-            System.out.println(allInitStates[i] + " " + allTransitions[i] + " " + allEndStates[i]);
-        }     
-        
-        // Collapse duplicate-containing initialState array into non-duplicated array
-        uniqueStateSet = new HashSet<>(Arrays.asList(allInitStates));
-        initialUniqueStates = new String[uniqueStateSet.size()];
-        uniqueStateSet.toArray(initialUniqueStates);
-        numUniqueStates = initialUniqueStates.length;
-        numAllStates = allInitStates.length;
+        loadTupleArrays(states);           
+        loadTapeColors();
+        drawTapeLegend();  
         
         stateNodes = new Circle[numAllStates];
         uniqueNodes = new Circle[numUniqueStates];
@@ -1186,22 +1027,10 @@ public class MachineViewController implements Initializable {
         startLabel.layoutYProperty().bindBidirectional(startNode.centerYProperty());
         statePane.getChildren().addAll(startNode,startLabel);
                 
+        drawUniqueInitNodes();
+        //bindInitToEndStates();
         // Non-duplicate initialStates generated into the initial Nodes
-        for (int j=0; j< numUniqueStates; j++){       
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, Color.GRAY);
-            uniqueNodes[j].setOpacity(.2);   
-            uniqueNodes[j].setStroke(Color.BLACK);
-            uniqueNodes[j].setSmooth(true);
-            if (XCOORD + 150 < statePaneTab.getWidth())
-            {
-                XCOORD += 115;
-            }
-            else
-            {
-                XCOORD = 120;
-                YCOORD += 150;
-            }        
-        }     
+             
         
         // BIND all Labels to their corresponding stateNodes
         for (int j = 0; j < numAllStates; j++){
@@ -1240,23 +1069,44 @@ public class MachineViewController implements Initializable {
         }   
         
         // DRAW acceptHalt and rejectHalt nodes for which to bind to, if exists
-        if(acceptCheck > 0){
-            acceptNode = createDraggingCircle(50,statePaneTab.getHeight() - 50, 18, statePane, Color.GREEN);
-            acceptNode.setOpacity(.5);
-            acceptNode.setStroke(Color.BLACK);
-            acceptNode.setSmooth(true);
-            statePane.getChildren().add(acceptNode);
+        anchorAcceptRejectNodes();        
+        bindInitToEndStates();
+        
+        // BIND all matching initial and end states into junctions          
+        drawSameStateArcbacks();  
+           
+        // DRAW EDGES from state to state per code
+        //  Labels are bound to Nodes, Nodes are connected by Labels
+        connectStates(startNode, stateNodes[0]); 
+        for (int j = 0; j< numAllStates; j++){
+                connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
+                connected++;          
+        }       
+        //Scene scene = new Scene(statePane, 600, 600);
+        statePaneTab.getChildren().add(statePane);
+        currentStates = states;
+    }
+    
+    public void drawUniqueInitNodes(){
+            for (int j=0; j< numUniqueStates; j++){       
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, tapeColor[j]);
+            uniqueNodes[j].setOpacity(.2);   
+            uniqueNodes[j].setStroke(Color.BLACK);
+            uniqueNodes[j].setSmooth(true);
+            if (XCOORD + 150 < statePaneTab.getWidth())
+            {
+                XCOORD += 115;
+            }
+            else
+            {
+                XCOORD = 120;
+                YCOORD += 150;
+            }        
         }
-        if(rejectCheck > 0){
-            rejectNode = createDraggingCircle(400,statePaneTab.getHeight() - 50, 18, statePane, Color.RED);        
-            rejectNode.setOpacity(.5);        
-            rejectNode.setStroke(Color.BLACK);        
-            rejectNode.setSmooth(true);
-            statePane.getChildren().add(rejectNode);
-        }  
-
-        // BIND all matching initial and end states into junctions
-        for(int i=0; i<numUniqueStates; i++){
+        }
+    
+    public void bindInitToEndStates(){
+            for(int i=0; i<numUniqueStates; i++){
             statePane.getChildren().add(uniqueNodes[i]);
             for(int j=0; j<numAllStates; j++){
                 Circle stateNode = stateNodes[j];
@@ -1283,12 +1133,49 @@ public class MachineViewController implements Initializable {
                     endNode.centerYProperty().bindBidirectional(rejectNode.centerYProperty()); 
                     endNode.setFill(Color.RED);
                     endNode.setRadius(1);
-                }                   
-                //stateNode.toFront();
-                //endNode.toFront();            
+                }                             
             }            
-        }   
-
+        } 
+        }
+    
+    public void anchorAcceptRejectNodes(){
+            if(acceptCheck > 0){
+            acceptNode = createDraggingCircle(50,statePane.getHeight() + 300, 18, statePane, Color.GREEN);
+            acceptNode.setOpacity(.5);
+            acceptNode.setStroke(Color.BLACK);
+            acceptNode.setSmooth(true);
+            statePane.getChildren().add(acceptNode);
+        }
+        if(rejectCheck > 0){
+            rejectNode = createDraggingCircle(450,statePane.getHeight() + 300, 18, statePane, Color.RED);        
+            rejectNode.setOpacity(.5);        
+            rejectNode.setStroke(Color.BLACK);        
+            rejectNode.setSmooth(true);
+            statePane.getChildren().add(rejectNode);
+        }  
+    }
+    
+    public void drawTransitionLabels(){
+            Line transLine;
+            for (int j = 0; j< numAllStates; j++){
+                Label prevLabel = new Label(allTransitions[j]);
+                transLine = connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
+                double transCenterX = (transLine.getStartX() + transLine.getEndX())/2;
+                double transCenterY = (transLine.getStartY() + transLine.getEndY())/2;
+                
+                Circle prevNode = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.BROWN);
+                prevNode.setOpacity(0.1);
+                prevLabel.layoutXProperty().bind(prevNode.centerXProperty());
+                prevLabel.layoutYProperty().bind(prevNode.centerYProperty());
+                prevLabel.setStyle("-fx-font-weight: bold;");
+                statePane.getChildren().addAll(prevNode,prevLabel);
+                //System.out.println(connected + " X = " + transCenterX);
+                //System.out.println(connected + " Y = " + transCenterY);
+                connected++;          
+            }       
+        }
+    
+    public void drawSameStateArcbacks(){
             for(int j=0; j<numAllStates; j++){
                 //Label endLabel=endLabels[j];
                 if(allEndStates[j].equalsIgnoreCase(allInitStates[j])){  
@@ -1298,26 +1185,109 @@ public class MachineViewController implements Initializable {
                     anchor1.setStrokeType(StrokeType.OUTSIDE);
                     anchor1.setRotate(45.0);
                     anchor1.setSmooth(true);
-                    anchor1.centerXProperty().bind(stateNodes[j].centerXProperty());
-                    anchor1.centerYProperty().bind(stateNodes[j].centerYProperty());
-                    anchor1.toBack();
+                    anchor1.centerXProperty().bindBidirectional(stateNodes[j].centerXProperty());
+                    anchor1.centerYProperty().bindBidirectional(stateNodes[j].centerYProperty());
                     statePane.getChildren().add(anchor1);//, anchor2);
                     //connectStates(anchor1,anchor2);
 
                 }
-            }       
+            } 
+        }
+    
+    private Line connectStates(Node n1, Node n2) {
+        if (n1.getParent() != n2.getParent()) {
+            throw new IllegalArgumentException("Nodes are in different containers");
+        }
+        Pane parent = (Pane) n1.getParent();
+        Line line = new Line();
+        line.setFill(Color.BLUE);
+        line.setOpacity(.5);
+        line.startXProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n1.getBoundsInParent();
+            return b.getMinX() + b.getWidth() / 2 ;
+        }, n1.boundsInParentProperty()));
+        line.startYProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n1.getBoundsInParent();
+            return b.getMinY() + b.getHeight() / 2 ;
+        }, n1.boundsInParentProperty()));
+        line.endXProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n2.getBoundsInParent();
+            return b.getMinX() + b.getWidth() / 2 ;
+        }, n2.boundsInParentProperty()));
+        line.endYProperty().bind(Bindings.createDoubleBinding(() -> {
+            Bounds b = n2.getBoundsInParent();
+            return b.getMinY() + b.getHeight() / 2 ;
+        }, n2.boundsInParentProperty()));
+        line.getStrokeDashArray().addAll(15d, 5d, 15d, 15d, 20d);
+        line.setStrokeDashOffset(5);
+        parent.getChildren().add(line);
+        return line;
+    }
+    
+    public void loadTupleArrays(ArrayList<StateTransition> states){
+        final int numStates=states.size();
+        allInitStates = new String[numStates];
+        allTapes = new String[numStates];
+        allTransitions = new String[numStates];
+        allWriteTapes = new String[numStates];
+        allEndStates = new String[numStates];
+        acceptCheck = 0;
+        rejectCheck = 0;
+        for(int i =0; i< states.size();i++){
+            allInitStates[i] = states.get(i).getInitialState();
+            allTapes[i] = states.get(i).getTape();
+            allTransitions[i] = states.get(i).getReadToken() + ", " +
+                            states.get(i).getWriteToken() + ", " +
+                            states.get(i).getDirection();
+            allWriteTapes[i] = states.get(i).getWriteTape();
+            allEndStates[i] = states.get(i).getEndState();
+            if (allEndStates[i].equalsIgnoreCase("acceptHalt"))
+                acceptCheck++;
+            if (allEndStates[i].equalsIgnoreCase("rejectHalt"))
+                rejectCheck++;
+            
+            uniqueStateSet = new HashSet<>(Arrays.asList(allInitStates));
+            initialUniqueStates = new String[uniqueStateSet.size()];
+            uniqueStateSet.toArray(initialUniqueStates);
+            numUniqueStates = initialUniqueStates.length;
+            numAllStates = allInitStates.length;
         
-        // DRAW EDGES from state to state per code
-        //  Labels are bound to Nodes, Nodes are connected by Labels
-        connectStates(startNode, stateNodes[0]);
-        int connected = 0;  
-        for (int j = 0; j< numAllStates; j++){
-                connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
-                connected++;          
-        }       
-        Scene scene = new Scene(statePane, 600, 600);
-        statePaneTab.getChildren().add(statePane);
-        currentStates = states;
+        } 
+        
+    }
+    
+    public void loadTapeColors(){
+        tapeColor = new Color[numAllStates];
+        for(int i=0;i<numAllStates; i++){
+            tapeSelection = allTapes[i];
+            
+            if(tapeSelection.equalsIgnoreCase("t1"))
+                tapeColor[i] = Color.AQUA;
+            if(tapeSelection.equalsIgnoreCase("t2"))
+                tapeColor[i] = Color.VIOLET;
+            if(tapeSelection.equalsIgnoreCase("t3"))
+                tapeColor[i] = Color.TAN;
+        }
+    }
+    
+    public void drawTapeLegend(){
+        Circle oneAqua = new Circle(500,530,5,Color.AQUA);
+        Circle twoViolet = new Circle(500,550,5,Color.VIOLET);
+        Circle threeTan = new Circle(500,570,5,Color.TAN);
+        Text legend1 = new Text();
+        Text legend2 = new Text();
+        Text legend3 = new Text();
+        legend1.setText("  Tape 1");
+        legend2.setText("  Tape 2");
+        legend3.setText("  Tape 3");
+        legend1.setLayoutX(510.0);
+        legend1.setLayoutY(535.0);
+        legend2.setLayoutX(510.0);
+        legend2.setLayoutY(555.0);
+        legend3.setLayoutX(510.0);
+        legend3.setLayoutY(575.0);       
+        statePane.getChildren().addAll(oneAqua,twoViolet,threeTan);
+        statePane.getChildren().addAll(legend1,legend2,legend3);      
     }
     
     // Instantiates a Circle that is draggable by mouse
