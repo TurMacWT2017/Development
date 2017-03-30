@@ -556,6 +556,9 @@ public class MachineViewController implements Initializable {
             if (fontControl.getIsDefaultFont()) {
                 TuringMachineJFXMLPrototype.setUserFontPreferences(family, size, isBold, isItalic);
             }
+            if (fontControl.getIsDefaultRW()) {
+                TuringMachineJFXMLPrototype.setUserRWHeadPreferences(RWHeadFillColor);
+            }
             if (fileLoaded) {
                 if (interp.errorFound()) {
                     updateCodeTabContent(interp.getErrorReport());
@@ -569,6 +572,7 @@ public class MachineViewController implements Initializable {
                     updateTapeContent(interp.getTapeContent(2), 2);
                 }
                 if (tapes == 3) {
+                    updateTapeContent(interp.getTapeContent(2), 2);
                     updateTapeContent(interp.getTapeContent(3), 3);
                 }
             }
@@ -815,10 +819,12 @@ public class MachineViewController implements Initializable {
         speedSlider.valueProperty().addListener(new ChangeListenerImpl());
         //this portion pulls any current user defaults that have been set and applies them
         Object[] settings = TuringMachineJFXMLPrototype.getUserFontPreferences();
+        Color savedColor = TuringMachineJFXMLPrototype.getUserRWHeadPreferences();
         family = (String) settings[0];
         size = (int) settings[1];
         isItalic = (boolean) settings[2];
         isBold = (boolean) settings[3];
+        RWHeadFillColor = savedColor;
         //these lines allow the canvas to dynamically resize when the program does
         //statePane.widthProperty().addListener(observable -> redraw(currentStates));
         //statePane.heightProperty().addListener(observable -> redraw(currentStates));

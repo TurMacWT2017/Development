@@ -66,6 +66,7 @@ public class FontControl extends TabPane {
         @FXML private ColorPicker RWColorPicker;
         @FXML private Button RWacceptButton;
         @FXML private Button RWcancelButton;
+        @FXML private CheckBox RWDefaultToggle;
         
     public FontControl() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/font_control.fxml"));
@@ -211,6 +212,11 @@ public class FontControl extends TabPane {
     @FXML
     private void makeFontDefault(ActionEvent event) {
         fontDefault = fontDefaultToggle.isSelected();
+    }
+    
+    @FXML
+    private void makeRWDefault(ActionEvent event) {
+        rwDefault = RWDefaultToggle.isSelected();
     }
     
     public boolean getIsDefaultFont() {

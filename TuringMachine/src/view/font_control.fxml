@@ -44,6 +44,7 @@
                   <TextFlow fx:id="RWPreviewBar" layoutX="2.0" layoutY="22.0" prefHeight="64.0" prefWidth="294.0" textAlignment="CENTER" />
                   <Button fx:id="RWacceptButton" layoutX="17.0" layoutY="224.0" mnemonicParsing="false" onAction="#acceptChanges" prefHeight="26.0" prefWidth="133.0" text="Accept Changes" />
                   <Button fx:id="RWcancelButton" layoutX="170.0" layoutY="224.0" mnemonicParsing="false" onAction="#cancelChanges" prefHeight="26.0" prefWidth="111.0" text="Cancel" />
+                  <CheckBox fx:id="RWDefaultToggle" layoutX="98.0" layoutY="153.0" mnemonicParsing="false" onAction="#makeRWDefault" text="Make Default" />
                </children>
           </AnchorPane>
         </content>
