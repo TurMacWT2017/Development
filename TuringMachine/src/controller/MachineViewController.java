@@ -988,7 +988,7 @@ public class MachineViewController implements Initializable {
         //diagram.start(stage);
         stage.setScene(scene);
         stage.show();  
-          statePaneWin.getChildren().add(statePane);         
+          //statePaneWin.getChildren().add(statePane);         
             System.out.println("Making state diagram window");
             }
         else {
