@@ -1070,18 +1070,13 @@ public class MachineViewController implements Initializable {
                 prevLabel.layoutXProperty().bind(prevNode.centerXProperty());
                 prevLabel.layoutYProperty().bind(prevNode.centerYProperty());
                 prevLabel.setStyle("-fx-font-weight: bold;");
-                //prevNode.setCenterX((transLine.getEndX() - transLine.getStartX())/2);
-                //prevNode.setCenterY((transLine.getEndY() - transLine.getStartY())/2);
                 statePane.getChildren().addAll(prevNode,prevLabel);
-                //prevNode.centerXProperty().bind(transLine.g);
-                //prevNode.centerYProperty().bind(stateNodes[j].centerYProperty());
                 //System.out.println(connected + " X = " + transCenterX);
                 //System.out.println(connected + " Y = " + transCenterY);
                 connected++;          
         }       
 
-        // CREATE and DISPLAY the state diagram window loaded with source file load
-        
+        // CREATE and DISPLAY the state diagram window loaded with source file load       
            
         layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
