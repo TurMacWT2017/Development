@@ -21,13 +21,16 @@
     }
     body {
         color: #000000;
-        background-color: #ffffff;
+        /*background-color: #ffffff;*/
+        /*background-image: url("../images/WT.png");
+        background-repeat: no-repeat;
+        background-size: 90%;
+        background-position: center, center;*/
         margin: 50px 50px 50px 50px;
     }
     h1 {
         text-align: center;
-        color: #ba2326;
-        background-color: #ffffff;
+        color: #400215;
     }
 
     p {
@@ -35,8 +38,7 @@
         font-size: 14px;
     }
     code, pre {
-        color: #050690;
-        background-color: #ffffff;
+        color: #710022;
         font-size: 14px;
         font-weight: bold;
     }
@@ -60,13 +62,19 @@
         font-size: 14px;
         font-weight: bold;
     }
+    
+    .background-image {
+        background-repeat: no-repeat;
+        opacity: 0.6;
+        max-width: 50%;
+    }
 
     </style>
     </head>
 
     <body>
 
-        <h1 name="top">Turing Machine Language Reference</h1>
+        <h1 name="top">Turing Machine Language Reference </h1>
 
         <h2>Basic Structure of TM Instructions:</h2>
 
@@ -97,7 +105,7 @@
                 <comment># I am a comment</comment>
             </pre>
             
-            <h3>Breakdown of Symbols</h3>
+            <h2>Breakdown of Symbols</h2>
             <p>Each comma-separated category of the tuple has its own set of instructions. In this section,
             we will give a breakdown of syntactically correct symbols for each category.</p>
             
@@ -140,7 +148,7 @@
 
             # State 0: read the leftmost symbol
 
-            t1, 0, 0, _, R, t1, A;
+            t1, 0, 0, _, >, t1, A;
             t1, 0, 1, _, >, t1, A2;
             t1, 0, _, _, *, t1, acceptHalt;
 
