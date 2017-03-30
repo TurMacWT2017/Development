@@ -88,6 +88,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
+import static javax.swing.text.StyleConstants.Bold;
 
 /**
  *
@@ -119,7 +120,9 @@ public class MachineViewController implements Initializable {
     private String[] initialUniqueStates;
     private Set<String> uniqueStateSet;
     private String[] allInitStates;
+    private String[] allTapes;
     private String[] allTransitions;
+    private String[] allWriteTapes;
     private String[] allEndStates;
     private int acceptCheck = 0;
     private int rejectCheck = 0;
@@ -135,6 +138,8 @@ public class MachineViewController implements Initializable {
     //Keeps track of the currently selected tape (in this case, its TextFlow, since
     //that's what is edited in the view)
     @FXML private TextFlow selectedTape;
+    private String tapeSelection;
+    private Color[] tapeColor;
     
     //UI Buttons
     @FXML private Button runButton;
@@ -841,26 +846,48 @@ public class MachineViewController implements Initializable {
         ScrollPane layout = new ScrollPane();
         Line transLine;
         
+        Circle oneAqua = new Circle(500,530,5,Color.AQUA);
+        Circle twoViolet = new Circle(500,550,5,Color.VIOLET);
+        Circle threeTan = new Circle(500,570,5,Color.TAN);
+        Text legend1 = new Text();
+        Text legend2 = new Text();
+        Text legend3 = new Text();
+        legend1.setText("  Tape 1");
+        legend2.setText("  Tape 2");
+        legend3.setText("  Tape 3");
+        legend1.setLayoutX(510.0);
+        legend1.setLayoutY(535.0);
+        legend2.setLayoutX(510.0);
+        legend2.setLayoutY(555.0);
+        legend3.setLayoutX(510.0);
+        legend3.setLayoutY(575.0);       
+        statePane.getChildren().addAll(oneAqua,twoViolet,threeTan);
+        statePane.getChildren().addAll(legend1,legend2,legend3);        
         
         final int numStates=states.size();
         allInitStates = new String[numStates];
+        allTapes = new String[numStates];
         allTransitions = new String[numStates];
+        allWriteTapes = new String[numStates];
         allEndStates = new String[numStates];
         acceptCheck = 0;
         rejectCheck = 0;
         // LOAD the initial state, end state, and transition arrays
         for(int i =0; i< numStates;i++){
             allInitStates[i] = states.get(i).getInitialState();
+            allTapes[i] = states.get(i).getTape();
             allTransitions[i] = states.get(i).getReadToken() + ", " +
                             states.get(i).getWriteToken() + ", " +
                             states.get(i).getDirection();
+            allWriteTapes[i] = states.get(i).getWriteTape();
             allEndStates[i] = states.get(i).getEndState();
             if (allEndStates[i].equalsIgnoreCase("acceptHalt"))
                 acceptCheck++;
             if (allEndStates[i].equalsIgnoreCase("rejectHalt"))
                 rejectCheck++;
             // DEBUG tuple output
-            System.out.println(allInitStates[i] + " " + allTransitions[i] + " " + allEndStates[i]);
+            System.out.println(allInitStates[i] + " " + allTapes[i] + " " + 
+                    allTransitions[i] + " " + allWriteTapes[i] + " " + allEndStates[i]);
         }     
         
         // Collapse duplicate-containing initialState array into non-duplicated array
@@ -869,6 +896,18 @@ public class MachineViewController implements Initializable {
         uniqueStateSet.toArray(initialUniqueStates);
         numUniqueStates = initialUniqueStates.length;
         numAllStates = allInitStates.length;
+        
+        tapeColor = new Color[numAllStates];
+        for(int i=0;i<numAllStates; i++){
+            tapeSelection = allTapes[i];
+            System.out.println("selectedTape = " + tapeSelection);
+            if(tapeSelection.equalsIgnoreCase("t1"))
+                tapeColor[i] = Color.AQUA;
+            if(tapeSelection.equalsIgnoreCase("t2"))
+                tapeColor[i] = Color.VIOLET;
+            if(tapeSelection.equalsIgnoreCase("t3"))
+                tapeColor[i] = Color.TAN;
+        }
         
         stateNodes = new Circle[numAllStates];
         uniqueNodes = new Circle[numUniqueStates];
@@ -886,7 +925,7 @@ public class MachineViewController implements Initializable {
                 
         // Non-duplicate initialStates generated into the initial Nodes
         for (int j=0; j< numUniqueStates; j++){       
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, Color.GRAY);
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, tapeColor[j]);
             uniqueNodes[j].setOpacity(.2);   
             uniqueNodes[j].setStroke(Color.BLACK);
             uniqueNodes[j].setSmooth(true);
@@ -920,10 +959,13 @@ public class MachineViewController implements Initializable {
             endLabel.layoutYProperty().bindBidirectional(endNodes[j].centerYProperty());               
             //stateLabel.setMnemonicParsing(true);
             stateLabel.setLabelFor(stateNodes[j]);
+            stateLabel.setStyle("-fx-font-weight: bold;");
             //endLabel.setMnemonicParsing(true);
             endLabel.setLabelFor(endNodes[j]);
             stateLabels[j] = stateLabel;
             endLabels[j] = endLabel;
+            
+            
             
             if (XCOORD + 150 < statePane.getWidth())
             {
@@ -934,10 +976,12 @@ public class MachineViewController implements Initializable {
                 XCOORD = 150;
                 YCOORD += 50;
             }       
-            stateNodes[j].setStroke(Color.BLACK);
-            endNodes[j].setStroke(Color.BLACK);
-            stateNodes[j].setSmooth(true);
-            endNodes[j].setSmooth(true);
+            //stateNodes[j].setStroke(Color.BLACK);
+            //endNodes[j].setStroke(Color.BLACK);
+            //stateNodes[j].setSmooth(true);
+            //endNodes[j].setSmooth(true);
+            stateNodes[j].setVisible(false);
+            endNodes[j].setVisible(false);
             statePane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
         }   
         
@@ -1000,8 +1044,8 @@ public class MachineViewController implements Initializable {
                     anchor1.setStrokeType(StrokeType.OUTSIDE);
                     anchor1.setRotate(45.0);
                     anchor1.setSmooth(true);
-                    anchor1.centerXProperty().bind(stateNodes[j].centerXProperty());
-                    anchor1.centerYProperty().bind(stateNodes[j].centerYProperty());
+                    anchor1.centerXProperty().bindBidirectional(stateNodes[j].centerXProperty());
+                    anchor1.centerYProperty().bindBidirectional(stateNodes[j].centerYProperty());
                     statePane.getChildren().add(anchor1);//, anchor2);
                     //connectStates(anchor1,anchor2);
 
@@ -1025,13 +1069,14 @@ public class MachineViewController implements Initializable {
                 prevNode.setOpacity(0.1);
                 prevLabel.layoutXProperty().bind(prevNode.centerXProperty());
                 prevLabel.layoutYProperty().bind(prevNode.centerYProperty());
+                prevLabel.setStyle("-fx-font-weight: bold;");
                 //prevNode.setCenterX((transLine.getEndX() - transLine.getStartX())/2);
                 //prevNode.setCenterY((transLine.getEndY() - transLine.getStartY())/2);
                 statePane.getChildren().addAll(prevNode,prevLabel);
                 //prevNode.centerXProperty().bind(transLine.g);
                 //prevNode.centerYProperty().bind(stateNodes[j].centerYProperty());
-                System.out.println(connected + " X = " + transCenterX);
-                System.out.println(connected + " Y = " + transCenterY);
+                //System.out.println(connected + " X = " + transCenterX);
+                //System.out.println(connected + " Y = " + transCenterY);
                 connected++;          
         }       
 
@@ -1086,7 +1131,8 @@ public class MachineViewController implements Initializable {
             Bounds b = n2.getBoundsInParent();
             return b.getMinY() + b.getHeight() / 2 ;
         }, n2.boundsInParentProperty()));
-        
+        line.getStrokeDashArray().addAll(15d, 5d, 15d, 15d, 20d);
+        line.setStrokeDashOffset(5);
         parent.getChildren().add(line);
         return line;
     }
@@ -1253,6 +1299,7 @@ public class MachineViewController implements Initializable {
                     anchor1.setSmooth(true);
                     anchor1.centerXProperty().bind(stateNodes[j].centerXProperty());
                     anchor1.centerYProperty().bind(stateNodes[j].centerYProperty());
+                    anchor1.toBack();
                     statePane.getChildren().add(anchor1);//, anchor2);
                     //connectStates(anchor1,anchor2);
 
