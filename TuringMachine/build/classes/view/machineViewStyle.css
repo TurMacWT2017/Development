@@ -31,7 +31,7 @@ and open the template in the editor.
     -fx-background-color: white;
 }
 
-#button{
+.button{
     -fx-background-color: #000000, linear-gradient(#710022 0%, #8e2746 20%, #400215 100%),
         linear-gradient(#67112b, #400215), radial-gradient(center 50% 0%, radius 100%, rgba(93,9,34,0.9), rgba(255,255,255,0));
     -fx-background-radius: 5,4,3,5;
@@ -42,6 +42,15 @@ and open the template in the editor.
     -fx-text-fill: linear-gradient(white, #d0d0d0);
     -fx-font-size: 12px;
     -fx-font-padding: 10 20 10 20;
+}
+
+.button:hover{
+    -fx-background-color: #8e2746;
+}
+
+.disabled{
+    -fx-opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .slider .thumb {
