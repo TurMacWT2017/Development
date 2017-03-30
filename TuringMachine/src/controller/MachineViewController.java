@@ -1143,6 +1143,8 @@ public class MachineViewController implements Initializable {
         //StateDiagram diagram = new StateDiagram();
         //Stage stage = new Stage();
         statePane = new Pane();
+        XCOORD = 72;
+        YCOORD = 72;
         
         final int numStates=states.size();
         allInitStates = new String[numStates];
