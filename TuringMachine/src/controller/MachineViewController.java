@@ -855,27 +855,6 @@ public class MachineViewController implements Initializable {
     
     @FXML
     public void launchStateWindow(ActionEvent event){
-        /*
-        Stage stage = new Stage();
-            //set the scene and its owner
-            ScrollPane layout = new ScrollPane();
-            stage.setTitle("State Diagram Window");
-        
-        VBox box = new VBox();
-        final Scene scene = new Scene(box,300, 250);
-        scene.setFill(null);
-        Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
-        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
-        
-        Circle r1 = createDraggingCircle(200, 200, 5, statePane, Color.BLUE);
-        r1.setFill(lg1);
-        
-        box.getChildren().add(r1);
-        
-        stage.setScene(scene);
-        stage.show();
-        
-    }*/
         
         if (fileLoaded) {
             Stage stage = new Stage();
@@ -883,11 +862,11 @@ public class MachineViewController implements Initializable {
             ScrollPane layout = new ScrollPane();
             stage.setTitle("State Diagram Window");
             Pane pane = new Pane();
-    Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
-        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+            Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
+            LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
         
-        Circle r1 = createDraggingCircle(200, 200, 20, statePane, Color.BLUE);
-        r1.setFill(lg1);
+            Circle r1 = createDraggingCircle(200, 200, 20, statePane, Color.BLUE);
+            r1.setFill(lg1);
             //Circle startNode1 = createDraggingCircle(200, 200, 5, statePane, Color.BLUE);
             pane.getChildren().add(r1);
             Scene scene = new Scene(layout, 450, 450);
@@ -896,16 +875,15 @@ public class MachineViewController implements Initializable {
             layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
             layout.setFitToHeight(true);
-            layout.setFitToWidth(true);        
+            layout.setFitToWidth(true);      
+            pane.setStyle("-fx-background-color: #F5F5DC");
             layout.setContent(pane);
             stage.setScene(scene);
 
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
             stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
             stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
-            stage.show();
-            
-            
+            stage.show();           
         }
         else {
             Alert alert = new Alert(AlertType.INFORMATION);
@@ -914,12 +892,7 @@ public class MachineViewController implements Initializable {
             alert.setContentText("Please load a program first");
             alert.showAndWait();
         }
-    }
-        
-    
-    
-        
-    
+    }  
            
     public void drawStates(ArrayList<StateTransition> states) {
         double stateTabWidth = statePaneTab. widthProperty().get();
@@ -962,7 +935,7 @@ public class MachineViewController implements Initializable {
         }     
         BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
                 StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
-        
+        statePaneTab.setStyle("-fx-background-color: #F5F5DC");
         statePaneTab.setBorder(new Border(new BorderStroke(Color.MAROON, style, CornerRadii. EMPTY, new BorderWidths(5))));
         statePaneTab.getChildren().add(statePane);
         currentStates = states;
@@ -987,8 +960,6 @@ public class MachineViewController implements Initializable {
             stateLabel.setLabelFor(stateNodes[j]);
             //endLabel.setMnemonicParsing(true);
             endLabel.setLabelFor(endNodes[j]);
-            //stateLabel.toFront();
-            //endLabel.toFront();
             stateLabels[j] = stateLabel;
             endLabels[j] = endLabel;
             
@@ -1001,8 +972,6 @@ public class MachineViewController implements Initializable {
                 XCOORD = 150;
                 YCOORD += 50;
             }       
-            ///stateNodes[j].setStroke(Color.BLACK);
-            //endNodes[j].setStroke(Color.BLACK);
             stateNodes[j].setSmooth(true);
             endNodes[j].setSmooth(true);
             statePane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
@@ -1012,41 +981,29 @@ public class MachineViewController implements Initializable {
     public void drawUniqueInitNodes(){
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
-        
-        //r1.setFill(lg1);
-            //Circle startNode1 = createDraggingCircle(200, 200, 5, statePane, Color.BLUE);
-            //pane.getChildren().add(r1);
-        //XCOORD=stateTabWidth - 450.0;
-        //YCOORD=stateTabHeight - 100.0;
-        XCOORD = 50.0;
-        YCOORD = 25.0;
+
+        XCOORD = stateTabWidth*.20;//50.0;
+        YCOORD = stateTabHeight*.10;//25.0;
         double evenRowsStart = .10;
         double oddRowStart = .125;
             for (int j=0; j< numUniqueStates; j++){
-                Random rand = new Random();
-                int r = rand.nextInt((20 - 4) + 1) + 4;
-                //int  r = rand.nextInt(20)+4;
-                int  xr = rand.nextInt((400-25)+1) + 25;
-                int  yr = rand.nextInt((400-25)+1) + 25;
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, tapeColor[j]);
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, tapeColor[j]);               
             
-                
-            
-            if (XCOORD + 100 < statePaneTab.getWidth())
+            if (XCOORD + 100 < stateTabWidth*.9)
             {
-                XCOORD += 75;
+                XCOORD += stateTabWidth*.20;//+= 75;
                 if(j%2==0)
-                    YCOORD += 100;
+                    YCOORD += stateTabHeight*.10;//100;
                 else
-                    YCOORD -= 100;
+                    YCOORD -= stateTabHeight*.10;//100;
             }
             else
             {
-                XCOORD = 50;
-                YCOORD += 100;
+                XCOORD = stateTabHeight*.25;//50;
+                YCOORD += stateTabHeight*.30;//100;
             }        
         }
-        }
+    }
     
     public void bindInitToEndStates(){
             for(int i=0; i<numUniqueStates; i++){
@@ -1079,24 +1036,17 @@ public class MachineViewController implements Initializable {
                 }                             
             }            
         } 
-        }
+    }
     
     public void anchorAcceptRejectNodes(){
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
         if(acceptCheck > 0){
-            acceptNode = createDraggingCircle(50,stateTabHeight - 70, 15, statePane, Color.LIGHTGREEN);
-            //acceptNode.setOpacity(.5);
-            //acceptNode.setStroke(Color.BLACK);
-            //acceptNode.setSmooth(true);
-          
+            acceptNode = createDraggingCircle(50,stateTabHeight - 70, 15, statePane, Color.LIGHTGREEN);          
             statePane.getChildren().add(acceptNode);
         }
         if(rejectCheck > 0){
             rejectNode = createDraggingCircle(stateTabWidth - 150,stateTabHeight - 70, 15, statePane, Color.RED);        
-            //rejectNode.setOpacity(.5);        
-            //rejectNode.setStroke(Color.BLACK);        
-            //rejectNode.setSmooth(true);
             statePane.getChildren().add(rejectNode);
         }  
     }
@@ -1115,15 +1065,12 @@ public class MachineViewController implements Initializable {
                 prevLabel.layoutYProperty().bind(prevNode.centerYProperty());
                 prevLabel.setStyle("-fx-font-weight: bold;");
                 statePane.getChildren().addAll(prevNode,prevLabel);
-                //System.out.println(connected + " X = " + transCenterX);
-                //System.out.println(connected + " Y = " + transCenterY);
                 connected++;          
             }       
         }
     
     public void drawSameStateArcbacks(){
             for(int j=0; j<numAllStates; j++){
-                //Label endLabel=endLabels[j];
                 if(allEndStates[j].equalsIgnoreCase(allInitStates[j])){  
                     Ellipse anchor1 = new Ellipse(stateNodes[j].getCenterX(),stateNodes[j].getCenterY()-10,3,24);
                     anchor1.setFill(Color.BEIGE);
@@ -1133,9 +1080,7 @@ public class MachineViewController implements Initializable {
                     anchor1.setSmooth(true);
                     anchor1.centerXProperty().bindBidirectional(stateNodes[j].centerXProperty());
                     anchor1.centerYProperty().bindBidirectional(stateNodes[j].centerYProperty());
-                    statePane.getChildren().add(anchor1);//, anchor2);
-                    //connectStates(anchor1,anchor2);
-
+                    statePane.getChildren().add(anchor1);
                 }
             } 
         }
@@ -1196,10 +1141,8 @@ public class MachineViewController implements Initializable {
             initialUniqueStates = new String[uniqueStateSet.size()];
             uniqueStateSet.toArray(initialUniqueStates);
             numUniqueStates = initialUniqueStates.length;
-            numAllStates = allInitStates.length;
-        
-        } 
-        
+            numAllStates = allInitStates.length;        
+        }         
     }
     
     public void loadTapeColors(){
