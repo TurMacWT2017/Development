@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
@@ -30,7 +31,10 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Camera;
+import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.PerspectiveCamera;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -71,9 +75,18 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.ArcType;
@@ -82,6 +95,8 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.FontPosture;
 import javafx.scene.web.WebEngine;
@@ -159,8 +174,8 @@ public class MachineViewController implements Initializable {
     @FXML private TextFlow tapeTwo;
     @FXML private TextFlow tapeThree;
 
-    private static int XCOORD = 72;
-    private static int YCOORD = 72;
+    private static double XCOORD = 50.0;
+    private static double YCOORD = 25.0;
     private static final double RADIUS = 30.0;
     //Slider
     @FXML private Slider speedSlider;
@@ -828,13 +843,10 @@ public class MachineViewController implements Initializable {
         isBold = (boolean) settings[3];
         RWHeadFillColor = savedColor;
         //these lines allow the canvas to dynamically resize when the program does
-        //statePane.widthProperty().addListener(observable -> redraw(currentStates));
-        //statePane.heightProperty().addListener(observable -> redraw(currentStates));
-        /*
-        statePane.widthProperty().DoubleBinding.bind(
-                       diagramDisplay.widthProperty());
-        statePane.heightProperty().bind(
-                       diagramDisplay.heightProperty());    */    
+        statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
+        statePaneTab.heightProperty().addListener(observable -> redraw(currentStates));
+        
+           
     }    
 
     public int getSpeed(){
@@ -843,170 +855,80 @@ public class MachineViewController implements Initializable {
     
     @FXML
     public void launchStateWindow(ActionEvent event){
-        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-        XCOORD = 72;
-        YCOORD = 72;
-        if (fileLoaded) {
-        ArrayList<StateTransition> states = currentStates;// = transitions;   
-        statePane = new Pane();
+        /*
         Stage stage = new Stage();
-        Scene scene = new Scene(statePane, 600, 600);
-        ScrollPane layout = new ScrollPane();
+            //set the scene and its owner
+            ScrollPane layout = new ScrollPane();
+            stage.setTitle("State Diagram Window");
         
-        drawTapeLegend();   
+        VBox box = new VBox();
+        final Scene scene = new Scene(box,300, 250);
+        scene.setFill(null);
+        Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
+        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
         
-        stateNodes = new Circle[numAllStates];
-        uniqueNodes = new Circle[numUniqueStates];
-        endNodes = new Circle[numAllStates];
-        stateLabels = new Label[numAllStates];
-        endLabels = new Label[numAllStates];
-        startNode = createDraggingCircle(25, 25, 5, statePane, Color.GRAY);
+        Circle r1 = createDraggingCircle(200, 200, 5, statePane, Color.BLUE);
+        r1.setFill(lg1);
         
-        // starting node (pre-first-state)
-        startLabel = new Label();       
-        startLabel.setText("start");
-        startLabel.layoutXProperty().bindBidirectional(startNode.centerXProperty());
-        startLabel.layoutYProperty().bindBidirectional(startNode.centerYProperty());
-        statePane.getChildren().addAll(startNode,startLabel);
-                
-        // Non-duplicate initialStates generated into the initial Nodes
-        for (int j=0; j< numUniqueStates; j++){       
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, tapeColor[j]);
-            uniqueNodes[j].setOpacity(.2);   
-            uniqueNodes[j].setStroke(Color.BLACK);
-            uniqueNodes[j].setSmooth(true);
-            if (XCOORD + 150 < statePaneTab.getWidth())
-            {
-                XCOORD += 115;
-            }
-            else
-            {
-                XCOORD = 120;
-                if (YCOORD + 150 < statePaneTab.getHeight())
-                {
-                    YCOORD += 150;
-                }
-                else
-                {
-                    YCOORD = 150;
-                    
-                
-                }
-                //YCOORD += 150;
-            }     
-        }         
+        box.getChildren().add(r1);
         
-        // BIND all Labels to their corresponding stateNodes
-        for (int j = 0; j < numAllStates; j++){
-            Label stateLabel = new Label(allInitStates[j]);
-            Label endLabel = new Label(allEndStates[j]);            
-            
-            stateNodes[j] = createDraggingCircle(0,0, 4, statePane, Color.BLUE);
-            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+72, 15, statePane, Color.GRAY);            
-            stateNodes[j].setOpacity(.5);
-            endNodes[j].setOpacity(.2);            
-            stateLabel.layoutXProperty().bindBidirectional(stateNodes[j].centerXProperty());
-            stateLabel.layoutYProperty().bindBidirectional(stateNodes[j].centerYProperty());
-            endLabel.layoutXProperty().bindBidirectional(endNodes[j].centerXProperty());
-            endLabel.layoutYProperty().bindBidirectional(endNodes[j].centerYProperty());               
-            //stateLabel.setMnemonicParsing(true);
-            stateLabel.setLabelFor(stateNodes[j]);
-            stateLabel.setStyle("-fx-font-weight: bold;");
-            //endLabel.setMnemonicParsing(true);
-            endLabel.setLabelFor(endNodes[j]);
-            stateLabels[j] = stateLabel;
-            endLabels[j] = endLabel;           
-            
-            
-            if (XCOORD + 150 < statePane.getWidth())
-            {
-                XCOORD += 115;
-            }
-            else
-            {
-                XCOORD = 150;
-                YCOORD += 50;
-            }       
-            stateNodes[j].setStroke(Color.BLACK);
-            endNodes[j].setStroke(Color.BLACK);
-            stateNodes[j].setSmooth(true);
-            endNodes[j].setSmooth(true);
-            stateNodes[j].setVisible(false);
-            endNodes[j].setVisible(false);
-            statePane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
-        }   
-        
-
-        // BIND all matching initial and end states into junctions
-        for(int i=0; i<numUniqueStates; i++){
-            statePane.getChildren().add(uniqueNodes[i]);
-            for(int j=0; j<numAllStates; j++){
-                Circle stateNode = stateNodes[j];
-                Circle endNode = endNodes[j];                
-                    
-                if(!allInitStates[j].equalsIgnoreCase(initialUniqueStates[i])){
-                } else {
-                    stateNode.centerXProperty().bindBidirectional(uniqueNodes[i].centerXProperty());
-                    stateNode.centerYProperty().bindBidirectional(uniqueNodes[i].centerYProperty());                    
-                }                
-                if(!allEndStates[j].equalsIgnoreCase(initialUniqueStates[i])){
-                } else {
-                    endNode.centerXProperty().bindBidirectional(uniqueNodes[i].centerXProperty());
-                    endNode.centerYProperty().bindBidirectional(uniqueNodes[i].centerYProperty());                    
-                }                            
-                if(allEndStates[j].equalsIgnoreCase("acceptHalt")){                 
-                    endNode.centerXProperty().bindBidirectional(acceptNode.centerXProperty());
-                    endNode.centerYProperty().bindBidirectional(acceptNode.centerYProperty()); 
-                    endNode.setFill(Color.GREEN);
-                    endNode.setRadius(1);
-                }
-                if(allEndStates[j].equalsIgnoreCase("rejectHalt")){                 
-                    endNode.centerXProperty().bindBidirectional(rejectNode.centerXProperty());
-                    endNode.centerYProperty().bindBidirectional(rejectNode.centerYProperty()); 
-                    endNode.setFill(Color.RED);
-                    endNode.setRadius(1);
-                }                    
-            }            
-        }                            
-        
-        // DRAW EDGES from state to state per code
-        //  Labels are bound to Nodes, Nodes are connected by Labels
-        connectStates(startNode, stateNodes[0]);
-        ObjectProperty<Node> lastUnconnectedNode = new SimpleObjectProperty<>();       
-        drawTransitionLabels();       
-
-        // CREATE and DISPLAY the state diagram window loaded with source file load              
-        layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
-        layout.setFitToHeight(true);
-
-        stage.setTitle("State Diagram Window");
-        //stage.initOwner(diagramDisplay.getScene().getWindow());
-        
-        stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
-        stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
-        //diagram.start(stage);
         stage.setScene(scene);
-        stage.show();  
-          //statePaneWin.getChildren().add(statePane);         
+        stage.show();
+        
+    }*/
+        
+        if (fileLoaded) {
+            Stage stage = new Stage();
+            //set the scene and its owner
+            ScrollPane layout = new ScrollPane();
+            stage.setTitle("State Diagram Window");
+            Pane pane = new Pane();
+    Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
+        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+        
+        Circle r1 = createDraggingCircle(200, 200, 20, statePane, Color.BLUE);
+        r1.setFill(lg1);
+            //Circle startNode1 = createDraggingCircle(200, 200, 5, statePane, Color.BLUE);
+            pane.getChildren().add(r1);
+            Scene scene = new Scene(layout, 450, 450);
+            
             System.out.println("Making state diagram window");
-            }
+            layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
+            layout.setFitToHeight(true);
+            layout.setFitToWidth(true);        
+            layout.setContent(pane);
+            stage.setScene(scene);
+
+            Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
+            stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
+            stage.show();
+            
+            
+        }
         else {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Information");
             alert.setHeaderText(null);
             alert.setContentText("Please load a program first");
             alert.showAndWait();
-        }       
+        }
     }
+        
     
     
+        
     
+           
     public void drawStates(ArrayList<StateTransition> states) {
+        double stateTabWidth = statePaneTab. widthProperty().get();
+        double stateTabHeight = statePaneTab.heightProperty().get();
+        
         currentStates = states;        
         statePane = new Pane();
-        XCOORD = 72;
-        YCOORD = 72;
+        XCOORD = 50;
+        YCOORD = 25;
 
         // LOAD the initial state, end state, and transition arrays
         loadTupleArrays(states);           
@@ -1018,7 +940,7 @@ public class MachineViewController implements Initializable {
         endNodes = new Circle[numAllStates];
         stateLabels = new Label[numAllStates];
         endLabels = new Label[numAllStates];
-        startNode = createDraggingCircle(25, 25, 5, statePane, Color.GRAY);
+        startNode = createDraggingCircle(25, stateTabHeight/2.0, 5, statePane, Color.GRAY);
         
         // starting node (pre-first-state)
         startLabel = new Label();       
@@ -1027,20 +949,36 @@ public class MachineViewController implements Initializable {
         startLabel.layoutYProperty().bindBidirectional(startNode.centerYProperty());
         statePane.getChildren().addAll(startNode,startLabel);
                 
-        drawUniqueInitNodes();
-        //bindInitToEndStates();
-        // Non-duplicate initialStates generated into the initial Nodes
-             
+        drawUniqueInitNodes();     
+        bindStateLabels();
+        anchorAcceptRejectNodes();        
+        bindInitToEndStates();        
+        drawSameStateArcbacks();  
+
+        connectStates(startNode, stateNodes[0]); 
+        for (int j = 0; j< numAllStates; j++){
+                connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
+                connected++;          
+        }     
+        BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
+                StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
         
-        // BIND all Labels to their corresponding stateNodes
-        for (int j = 0; j < numAllStates; j++){
-            Label stateLabel = new Label(allInitStates[j]);
-            Label endLabel = new Label(allEndStates[j]);            
+        statePaneTab.setBorder(new Border(new BorderStroke(Color.MAROON, style, CornerRadii. EMPTY, new BorderWidths(5))));
+        statePaneTab.getChildren().add(statePane);
+        currentStates = states;
+    }
+    
+    public void bindStateLabels(){
+        double stateTabWidth = statePaneTab.widthProperty().get();
+        double stateTabHeight = statePaneTab.heightProperty().get();
+            for (int j = 0; j < numAllStates; j++){
+            Label stateLabel = new Label("    \n" + allInitStates[j]);
+            Label endLabel = new Label("    \n" + allEndStates[j]);            
             
             stateNodes[j] = createDraggingCircle(0,0, 4, statePane, Color.BLUE);
-            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+72, 15, statePane, Color.GRAY);            
-            stateNodes[j].setOpacity(.5);
-            endNodes[j].setOpacity(.2);            
+            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+72, 4, statePane, Color.GRAY);            
+            stateNodes[j].setOpacity(.1);
+            endNodes[j].setOpacity(.1);            
             stateLabel.layoutXProperty().bindBidirectional(stateNodes[j].centerXProperty());
             stateLabel.layoutYProperty().bindBidirectional(stateNodes[j].centerYProperty());
             endLabel.layoutXProperty().bindBidirectional(endNodes[j].centerXProperty());
@@ -1049,6 +987,8 @@ public class MachineViewController implements Initializable {
             stateLabel.setLabelFor(stateNodes[j]);
             //endLabel.setMnemonicParsing(true);
             endLabel.setLabelFor(endNodes[j]);
+            //stateLabel.toFront();
+            //endLabel.toFront();
             stateLabels[j] = stateLabel;
             endLabels[j] = endLabel;
             
@@ -1061,46 +1001,49 @@ public class MachineViewController implements Initializable {
                 XCOORD = 150;
                 YCOORD += 50;
             }       
-            stateNodes[j].setStroke(Color.BLACK);
-            endNodes[j].setStroke(Color.BLACK);
+            ///stateNodes[j].setStroke(Color.BLACK);
+            //endNodes[j].setStroke(Color.BLACK);
             stateNodes[j].setSmooth(true);
             endNodes[j].setSmooth(true);
             statePane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
-        }   
-        
-        // DRAW acceptHalt and rejectHalt nodes for which to bind to, if exists
-        anchorAcceptRejectNodes();        
-        bindInitToEndStates();
-        
-        // BIND all matching initial and end states into junctions          
-        drawSameStateArcbacks();  
-           
-        // DRAW EDGES from state to state per code
-        //  Labels are bound to Nodes, Nodes are connected by Labels
-        connectStates(startNode, stateNodes[0]); 
-        for (int j = 0; j< numAllStates; j++){
-                connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
-                connected++;          
-        }       
-        //Scene scene = new Scene(statePane, 600, 600);
-        statePaneTab.getChildren().add(statePane);
-        currentStates = states;
+        } 
     }
     
     public void drawUniqueInitNodes(){
-            for (int j=0; j< numUniqueStates; j++){       
+        double stateTabWidth = statePaneTab.widthProperty().get();
+        double stateTabHeight = statePaneTab.heightProperty().get();
+        
+        //r1.setFill(lg1);
+            //Circle startNode1 = createDraggingCircle(200, 200, 5, statePane, Color.BLUE);
+            //pane.getChildren().add(r1);
+        //XCOORD=stateTabWidth - 450.0;
+        //YCOORD=stateTabHeight - 100.0;
+        XCOORD = 50.0;
+        YCOORD = 25.0;
+        double evenRowsStart = .10;
+        double oddRowStart = .125;
+            for (int j=0; j< numUniqueStates; j++){
+                Random rand = new Random();
+                int r = rand.nextInt((20 - 4) + 1) + 4;
+                //int  r = rand.nextInt(20)+4;
+                int  xr = rand.nextInt((400-25)+1) + 25;
+                int  yr = rand.nextInt((400-25)+1) + 25;
             uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, tapeColor[j]);
-            uniqueNodes[j].setOpacity(.2);   
-            uniqueNodes[j].setStroke(Color.BLACK);
-            uniqueNodes[j].setSmooth(true);
-            if (XCOORD + 150 < statePaneTab.getWidth())
+            
+                
+            
+            if (XCOORD + 100 < statePaneTab.getWidth())
             {
-                XCOORD += 115;
+                XCOORD += 75;
+                if(j%2==0)
+                    YCOORD += 100;
+                else
+                    YCOORD -= 100;
             }
             else
             {
-                XCOORD = 120;
-                YCOORD += 150;
+                XCOORD = 50;
+                YCOORD += 100;
             }        
         }
         }
@@ -1139,18 +1082,21 @@ public class MachineViewController implements Initializable {
         }
     
     public void anchorAcceptRejectNodes(){
-            if(acceptCheck > 0){
-            acceptNode = createDraggingCircle(50,statePane.getHeight() + 300, 18, statePane, Color.GREEN);
-            acceptNode.setOpacity(.5);
-            acceptNode.setStroke(Color.BLACK);
-            acceptNode.setSmooth(true);
+        double stateTabWidth = statePaneTab.widthProperty().get();
+        double stateTabHeight = statePaneTab.heightProperty().get();
+        if(acceptCheck > 0){
+            acceptNode = createDraggingCircle(50,stateTabHeight - 70, 15, statePane, Color.LIGHTGREEN);
+            //acceptNode.setOpacity(.5);
+            //acceptNode.setStroke(Color.BLACK);
+            //acceptNode.setSmooth(true);
+          
             statePane.getChildren().add(acceptNode);
         }
         if(rejectCheck > 0){
-            rejectNode = createDraggingCircle(450,statePane.getHeight() + 300, 18, statePane, Color.RED);        
-            rejectNode.setOpacity(.5);        
-            rejectNode.setStroke(Color.BLACK);        
-            rejectNode.setSmooth(true);
+            rejectNode = createDraggingCircle(stateTabWidth - 150,stateTabHeight - 70, 15, statePane, Color.RED);        
+            //rejectNode.setOpacity(.5);        
+            //rejectNode.setStroke(Color.BLACK);        
+            //rejectNode.setSmooth(true);
             statePane.getChildren().add(rejectNode);
         }  
     }
@@ -1271,27 +1217,32 @@ public class MachineViewController implements Initializable {
     }
     
     public void drawTapeLegend(){
-        Circle oneAqua = new Circle(500,530,5,Color.AQUA);
-        Circle twoViolet = new Circle(500,550,5,Color.VIOLET);
-        Circle threeTan = new Circle(500,570,5,Color.TAN);
+        double stateTabWidth = statePaneTab.widthProperty().get();
+        double stateTabHeight = statePaneTab.heightProperty().get();
+        Circle oneAqua = new Circle(stateTabWidth*.25-10.0,stateTabHeight-15,5,Color.AQUA);
+        Circle twoViolet = new Circle(stateTabWidth*.5-10.0,stateTabHeight-15,5,Color.VIOLET);
+        Circle threeTan = new Circle(stateTabWidth*.75-10.0,stateTabHeight-15,5,Color.TAN);
         Text legend1 = new Text();
         Text legend2 = new Text();
         Text legend3 = new Text();
         legend1.setText("  Tape 1");
         legend2.setText("  Tape 2");
         legend3.setText("  Tape 3");
-        legend1.setLayoutX(510.0);
-        legend1.setLayoutY(535.0);
-        legend2.setLayoutX(510.0);
-        legend2.setLayoutY(555.0);
-        legend3.setLayoutX(510.0);
-        legend3.setLayoutY(575.0);       
+        legend1.setLayoutX(stateTabWidth*.25-10.0);
+        legend1.setLayoutY(stateTabHeight-10.0);
+        legend2.setLayoutX(stateTabWidth*.5-10.0);
+        legend2.setLayoutY(stateTabHeight-10.0);
+        legend3.setLayoutX(stateTabWidth*.75-10.0);
+        legend3.setLayoutY(stateTabHeight-10.0);       
         statePane.getChildren().addAll(oneAqua,twoViolet,threeTan);
         statePane.getChildren().addAll(legend1,legend2,legend3);      
     }
     
     // Instantiates a Circle that is draggable by mouse
     private Circle createDraggingCircle(double radius, double x, double y, Pane parent, Color fill) {
+        Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, fill)};
+        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+            
         Circle c = new Circle(radius, x, y, fill);        
         ObjectProperty<Point2D> mouseLoc = new SimpleObjectProperty<>();
         c.setOnMousePressed(e -> mouseLoc.set(new Point2D(e.getX(), e.getY())));        
@@ -1302,6 +1253,7 @@ public class MachineViewController implements Initializable {
             c.setCenterY(c.getCenterY() + deltaY);
             mouseLoc.set(new Point2D(e.getX(), e.getY()));
         });
+        c.setFill(lg1);
         c.addEventFilter(MouseEvent.MOUSE_CLICKED, Event::consume);
         //parent.getChildren().add(c);
         return c ;
@@ -1309,6 +1261,7 @@ public class MachineViewController implements Initializable {
 
     private void redraw(ArrayList<StateTransition> states) {
         if (states != null) {
+           statePane.getChildren().clear();
            drawStates(states);
         }        
     }
