@@ -49,7 +49,6 @@ import javafx.stage.Stage;
 import model.Interpreter;
 import model.InterpreterException;
 
-import javafx.scene.canvas.Canvas;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -74,21 +73,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.ArcTo;
-import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.FontPosture;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
-import static javax.swing.text.StyleConstants.Bold;
 
 /**
  *
@@ -172,15 +165,16 @@ public class MachineViewController implements Initializable {
     @FXML private MenuItem showCodeWindow;
     @FXML private MenuItem fontOptions;
     @FXML private AnchorPane diagramDisplay;
-    @FXML private TextFlow codeViewTab;
     @FXML private MenuItem about;
     @FXML private MenuItem langref;
+    @FXML private MenuItem clearAllTapesButton;
     //Titled panes for the tape views
     @FXML private TitledPane tapeOnePane;
     @FXML private TitledPane tapeTwoPane;
     @FXML private TitledPane tapeThreePane;
-    //Code Window 
-    //@FXML private TextArea codeDisplay;
+    //Code Window
+    @FXML private TextFlow codeViewTab;
+
     
     //Machine Controller
     private final MachineController controller = new MachineController();
@@ -339,6 +333,7 @@ public class MachineViewController implements Initializable {
     private void tapeOneClearButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
         if (isReady) {
+            interp.stop();
             tapeOne.getChildren().clear();
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Tape Input Dialog");
@@ -354,6 +349,7 @@ public class MachineViewController implements Initializable {
     private void tapeTwoClearButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
         if (isReady) {
+            interp.stop();
             tapeTwo.getChildren().clear();
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Tape Input Dialog");
@@ -369,6 +365,7 @@ public class MachineViewController implements Initializable {
     private void tapeThreeClearButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
         if (isReady) {
+            interp.stop();
             tapeThree.getChildren().clear();
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Tape Input Dialog");
@@ -380,6 +377,15 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    @FXML
+    private void clearAllTapesButtonClicked(ActionEvent event) {
+        boolean isReady = checkProgramStatus();
+        if (isReady) {
+            interp.stop();
+            interp.popup();
+            interp.reset();
+        }
+    }
     /** The below methods handle toggling the view to either 1, 2, or 3 tape mode **/
     
     @FXML
@@ -548,8 +554,8 @@ public class MachineViewController implements Initializable {
             fontControl.initialize(family, size, isBold, isItalic, RWHeadFillColor);
             Stage stage = new Stage(StageStyle.UNDECORATED);
             stage.setScene(new Scene(fontControl));
-            stage.setWidth(300);
-            stage.setHeight(300);
+           //stage.setWidth(300);
+            //stage.setHeight(300);
             stage.setTitle("Font Chooser");
             stage.initOwner(tapeOne.getScene().getWindow());
             stage.initModality(Modality.APPLICATION_MODAL);
