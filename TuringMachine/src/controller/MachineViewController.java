@@ -82,7 +82,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-<<<<<<< HEAD
+
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -97,11 +97,11 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
-=======
+
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
->>>>>>> 6f6f3e10cc74931ff58ba42e66030dbf2bef3d6e
+
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.FontPosture;
 import javafx.scene.web.WebEngine;
@@ -1069,7 +1069,7 @@ public class MachineViewController implements Initializable {
             statePane.getChildren().add(acceptNode);
         }
         if(rejectCheck > 0){
-            rejectNode = createDraggingCircle(stateTabWidth - 150,stateTabHeight - 70, 15, statePane, Color.RED);        
+            rejectNode = createDraggingCircle(stateTabWidth - 90,stateTabHeight - 70, 15, statePane, Color.RED);        
             statePane.getChildren().add(rejectNode);
         }  
     }
@@ -1183,11 +1183,20 @@ public class MachineViewController implements Initializable {
     }
     
     public void drawTapeLegend(){
+        Stop[] stops1 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.AQUA)};
+        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops1);
+        Stop[] stops2 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.VIOLET)};
+        LinearGradient lg2 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops2);
+        Stop[] stops3 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.TAN)};
+        LinearGradient lg3 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops3);
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
         Circle oneAqua = new Circle(stateTabWidth*.25-10.0,stateTabHeight-15,5,Color.AQUA);
         Circle twoViolet = new Circle(stateTabWidth*.5-10.0,stateTabHeight-15,5,Color.VIOLET);
         Circle threeTan = new Circle(stateTabWidth*.75-10.0,stateTabHeight-15,5,Color.TAN);
+        oneAqua.setFill(lg1);
+        twoViolet.setFill(lg2);
+        threeTan.setFill(lg3);
         Text legend1 = new Text();
         Text legend2 = new Text();
         Text legend3 = new Text();
