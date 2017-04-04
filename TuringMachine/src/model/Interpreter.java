@@ -103,8 +103,7 @@ public class Interpreter
                     break;
             }
             //statePane.getChildren().add(drawStates(transitions));
-            view.drawStates(transitions);
-            MachineViewController.currentStates = transitions;            
+            view.drawStates(transitions);         
             // Set interpreter state to be the start state of the program
             interpState = transitions.get(0).getInitialState().trim();
             view.updateState(interpState);
@@ -168,6 +167,7 @@ public class Interpreter
                initialInput3 = input[2];
             }
         }
+        
     }
     
     

@@ -171,7 +171,7 @@ public class MachineViewController implements Initializable {
     @FXML private Button tapeTwoClearButton;
     @FXML private Button tapeThreeClearButton;
     //Displays
-    @FXML private TextField currentState;
+    @FXML public TextField currentState;
     @FXML private TextField currentSteps;
     //Text flows for each tape
     @FXML private TextFlow tapeOne;
@@ -208,7 +208,7 @@ public class MachineViewController implements Initializable {
     private Interpreter interp;
     private ArrayList<File> recentFiles;
     //list of states, used in drawing
-    public static ArrayList<StateTransition> currentStates;
+    private static ArrayList<StateTransition> currentStates;
     //keeps track of file status
     boolean fileLoaded = false;    
     //private Tape tm = new charTape();
@@ -303,6 +303,8 @@ public class MachineViewController implements Initializable {
             tapeThree.getChildren().clear();
             codeViewTab.getChildren().clear();
             statePaneTab.getChildren().clear();
+            clearStateTuples();
+            
             XCOORD = 72;
             YCOORD = 72;
             String input = controller.openFile(selectedFile);
@@ -866,6 +868,7 @@ public class MachineViewController implements Initializable {
         isBold = (boolean) settings[3];
         RWHeadFillColor = savedColor;
         //these lines allow the canvas to dynamically resize when the program does
+        
         statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
         statePaneTab.heightProperty().addListener(observable -> redraw(currentStates));
         
@@ -921,11 +924,11 @@ public class MachineViewController implements Initializable {
         double stateTabWidth = statePaneTab. widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
         
-        currentStates = states;        
+        //currentStates = states;        
         statePane = new Pane();
         XCOORD = 50;
         YCOORD = 25;
-
+        
         // LOAD the initial state, end state, and transition arrays
         loadTupleArrays(states);           
         loadTapeColors();
@@ -961,7 +964,7 @@ public class MachineViewController implements Initializable {
         statePaneTab.setStyle("-fx-background-color: #F5F5DC");
         statePaneTab.setBorder(new Border(new BorderStroke(Color.MAROON, style, CornerRadii. EMPTY, new BorderWidths(5))));
         statePaneTab.getChildren().add(statePane);
-        currentStates = states;
+       // currentStates = states;
     }
     
     public void bindStateLabels(){
@@ -972,9 +975,9 @@ public class MachineViewController implements Initializable {
             Label endLabel = new Label("    \n" + allEndStates[j]);            
             
             stateNodes[j] = createDraggingCircle(0,0, 4, statePane, Color.BLUE);
-            endNodes[j] = createDraggingCircle(XCOORD, YCOORD+72, 4, statePane, Color.GRAY);            
-            stateNodes[j].setOpacity(.1);
-            endNodes[j].setOpacity(.1);            
+            endNodes[j] = createDraggingCircle(0, 0, 4, statePane, Color.BLUE);            
+            //stateNodes[j].setOpacity(.1);
+            //endNodes[j].setOpacity(.1);            
             stateLabel.layoutXProperty().bindBidirectional(stateNodes[j].centerXProperty());
             stateLabel.layoutYProperty().bindBidirectional(stateNodes[j].centerYProperty());
             endLabel.layoutXProperty().bindBidirectional(endNodes[j].centerXProperty());
@@ -997,6 +1000,8 @@ public class MachineViewController implements Initializable {
             }       
             stateNodes[j].setSmooth(true);
             endNodes[j].setSmooth(true);
+            
+            
             statePane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);
         } 
     }
@@ -1010,7 +1015,11 @@ public class MachineViewController implements Initializable {
         double evenRowsStart = .10;
         double oddRowStart = .125;
             for (int j=0; j< numUniqueStates; j++){
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, tapeColor[j]);               
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, tapeColor[j]);    
+            uniqueNodes[j].setStrokeType(StrokeType.CENTERED);
+            //endNodes[j].setStrokeType(StrokeType.CENTERED);
+            uniqueNodes[j].setStroke(Color.BLACK);
+            //endNodes[j].setStroke(Color.BLACK);
             
             if (XCOORD + 100 < stateTabWidth*.9)
             {
@@ -1134,8 +1143,18 @@ public class MachineViewController implements Initializable {
         }, n2.boundsInParentProperty()));
         line.getStrokeDashArray().addAll(15d, 5d, 15d, 15d, 20d);
         line.setStrokeDashOffset(5);
+        line.toBack();
         parent.getChildren().add(line);
         return line;
+    }
+    
+    public void clearStateTuples(){
+        allInitStates = null;
+        allTapes = null;
+        allTransitions = null;
+        allWriteTapes = null;
+        allEndStates = null;
+        
     }
     
     public void loadTupleArrays(ArrayList<StateTransition> states){
@@ -1145,6 +1164,9 @@ public class MachineViewController implements Initializable {
         allTransitions = new String[numStates];
         allWriteTapes = new String[numStates];
         allEndStates = new String[numStates];
+        
+        
+        
         acceptCheck = 0;
         rejectCheck = 0;
         for(int i =0; i< states.size();i++){
