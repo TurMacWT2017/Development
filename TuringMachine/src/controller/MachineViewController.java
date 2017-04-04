@@ -964,7 +964,7 @@ public class MachineViewController implements Initializable {
         statePaneTab.setStyle("-fx-background-color: #F5F5DC");
         statePaneTab.setBorder(new Border(new BorderStroke(Color.MAROON, style, CornerRadii. EMPTY, new BorderWidths(5))));
         statePaneTab.getChildren().add(statePane);
-       // currentStates = states;
+       currentStates = states;
     }
     
     public void bindStateLabels(){
@@ -1169,6 +1169,7 @@ public class MachineViewController implements Initializable {
         allTransitions = null;
         allWriteTapes = null;
         allEndStates = null;
+        currentStates = null;
         
     }
     
