@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -52,6 +53,8 @@ public class FontControl extends TabPane {
         //fonts list
         private ObservableList<String> fonts;
         private ObservableList<String> fontSizes;
+        //Main Window
+        @FXML private TabPane fontControlTabs;
         //Main Tab
         @FXML private TextFlow previewBar;
         @FXML private CheckBox boldCheckBox;
@@ -152,6 +155,10 @@ public class FontControl extends TabPane {
             }
         });
         
+        fontControlTabs.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab t, Tab t1) -> {
+            updatePreviewBar();
+            updateRWHeadPreviewBar();
+        });
         
         
     }

@@ -38,7 +38,7 @@
                         <MenuItem fx:id="threeTapeMenuButton" mnemonicParsing="false" onAction="#setThreeTapeMode" text="3" />
                     </items>
                   </Menu>
-                  <MenuItem mnemonicParsing="false" text="Clear all Tapes" />
+                  <MenuItem fx:id="clearAllTapesButton" mnemonicParsing="false" onAction="#clearAllTapesButtonClicked" text="Clear all Tapes" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Options">
