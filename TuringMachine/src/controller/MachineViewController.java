@@ -1016,9 +1016,9 @@ public class MachineViewController implements Initializable {
         double oddRowStart = .125;
             for (int j=0; j< numUniqueStates; j++){
             uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 15, statePane, tapeColor[j]);    
-            uniqueNodes[j].setStrokeType(StrokeType.CENTERED);
+            uniqueNodes[j].setStrokeType(StrokeType.OUTSIDE);
             //endNodes[j].setStrokeType(StrokeType.CENTERED);
-            uniqueNodes[j].setStroke(Color.BLACK);
+            uniqueNodes[j].setStroke(tapeColor[j]);//Color.BLACK);
             //endNodes[j].setStroke(Color.BLACK);
             
             if (XCOORD + 100 < stateTabWidth*.9)
@@ -1073,13 +1073,28 @@ public class MachineViewController implements Initializable {
     public void anchorAcceptRejectNodes(){
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
+        
+        Color acceptColor = Color.LIGHTGREEN;
+        Color rejectColor = Color.RED;
         if(acceptCheck > 0){
-            acceptNode = createDraggingCircle(50,stateTabHeight - 70, 15, statePane, Color.LIGHTGREEN);          
-            statePane.getChildren().add(acceptNode);
+            int k = 0;
+            while(k<1){
+                acceptNode = createDraggingCircle(50,stateTabHeight - 70, 15, statePane, acceptColor);    
+                acceptNode.setStrokeType(StrokeType.OUTSIDE);
+                acceptNode.setStroke(acceptColor);//Color.BLACK);
+                statePane.getChildren().add(acceptNode);
+                k++;
+            }
         }
         if(rejectCheck > 0){
-            rejectNode = createDraggingCircle(stateTabWidth - 90,stateTabHeight - 70, 15, statePane, Color.RED);        
-            statePane.getChildren().add(rejectNode);
+            int k = 0;
+            while(k<1){
+                rejectNode = createDraggingCircle(stateTabWidth - 90,stateTabHeight - 70, 15, statePane, rejectColor);    
+                rejectNode.setStrokeType(StrokeType.OUTSIDE);
+                rejectNode.setStroke(rejectColor);//Color.BLACK);
+                statePane.getChildren().add(rejectNode);
+                k++;
+            }
         }  
     }
     
@@ -1163,10 +1178,7 @@ public class MachineViewController implements Initializable {
         allTapes = new String[numStates];
         allTransitions = new String[numStates];
         allWriteTapes = new String[numStates];
-        allEndStates = new String[numStates];
-        
-        
-        
+        allEndStates = new String[numStates];       
         acceptCheck = 0;
         rejectCheck = 0;
         for(int i =0; i< states.size();i++){
@@ -1193,8 +1205,7 @@ public class MachineViewController implements Initializable {
     public void loadTapeColors(){
         tapeColor = new Color[numAllStates];
         for(int i=0;i<numAllStates; i++){
-            tapeSelection = allTapes[i];
-            
+            tapeSelection = allTapes[i];            
             if(tapeSelection.equalsIgnoreCase("t1"))
                 tapeColor[i] = Color.AQUA;
             if(tapeSelection.equalsIgnoreCase("t2"))
