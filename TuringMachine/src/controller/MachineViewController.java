@@ -1080,8 +1080,8 @@ public class MachineViewController implements Initializable {
             int k = 0;
             while(k<1){
                 acceptNode = createDraggingCircle(50,stateTabHeight - 70, 15, statePane, acceptColor);    
-                acceptNode.setStrokeType(StrokeType.OUTSIDE);
-                acceptNode.setStroke(acceptColor);//Color.BLACK);
+                //acceptNode.setStrokeType(StrokeType.OUTSIDE);
+                //acceptNode.setStroke(acceptColor);//Color.BLACK);
                 statePane.getChildren().add(acceptNode);
                 k++;
             }
@@ -1090,8 +1090,8 @@ public class MachineViewController implements Initializable {
             int k = 0;
             while(k<1){
                 rejectNode = createDraggingCircle(stateTabWidth - 90,stateTabHeight - 70, 15, statePane, rejectColor);    
-                rejectNode.setStrokeType(StrokeType.OUTSIDE);
-                rejectNode.setStroke(rejectColor);//Color.BLACK);
+                //rejectNode.setStrokeType(StrokeType.OUTSIDE);
+                //rejectNode.setStroke(rejectColor);//Color.BLACK);
                 statePane.getChildren().add(rejectNode);
                 k++;
             }
@@ -1263,6 +1263,9 @@ public class MachineViewController implements Initializable {
             mouseLoc.set(new Point2D(e.getX(), e.getY()));
         });
         c.setFill(lg1);
+        c.setStrokeType(StrokeType.OUTSIDE);
+                c.setStroke(lg1);//Color.BLACK);
+                
         c.addEventFilter(MouseEvent.MOUSE_CLICKED, Event::consume);
         //parent.getChildren().add(c);
         return c ;
