@@ -97,9 +97,9 @@
             <Button id="button" fx:id="stepButton" layoutX="481.0" layoutY="56.0" mnemonicParsing="false" onAction="#stepButtonClicked" stylesheets="@machineViewStyle.css" text="Step" AnchorPane.rightAnchor="125.0" />
             <Button id="button" fx:id="stopButton" layoutX="536.0" layoutY="56.0" mnemonicParsing="false" onAction="#stopButtonClicked" stylesheets="@machineViewStyle.css" text="Stop" AnchorPane.rightAnchor="70.0" />
             <Button id="button" fx:id="resetButton" layoutX="589.0" layoutY="56.0" mnemonicParsing="false" onAction="#resetButtonClicked" stylesheets="@machineViewStyle.css" text="Reset" AnchorPane.rightAnchor="10.0" />
-            <Slider fx:id="speedSlider" layoutX="490.0" layoutY="126.0" showTickLabels="true" showTickMarks="true" stylesheets="@machineViewStyle.css" value="50" AnchorPane.rightAnchor="24.0" />
-            <Label fx:id="changeLabel" layoutX="575.0" layoutY="107.0" text="50" AnchorPane.rightAnchor="62.0" />
-            <Label layoutX="528.0" layoutY="107.0" text="Speed" AnchorPane.rightAnchor="85.0" />
+            <Slider fx:id="speedSlider" disable="true" layoutX="490.0" layoutY="126.0" showTickLabels="true" showTickMarks="true" stylesheets="@machineViewStyle.css" value="50" AnchorPane.rightAnchor="24.0" />
+            <Label fx:id="changeLabel" disable="true" layoutX="639.0" layoutY="107.0" text="50" AnchorPane.rightAnchor="53.0" />
+            <Label fx:id="speedLabel" disable="true" layoutX="528.0" layoutY="107.0" text="Speed" AnchorPane.rightAnchor="85.0" />
             <TextField fx:id="currentState" alignment="CENTER" editable="false" layoutX="459.0" layoutY="270.0" AnchorPane.bottomAnchor="75.0" AnchorPane.rightAnchor="10.0" />
             <TextField fx:id="currentSteps" alignment="CENTER" editable="false" layoutX="460.0" layoutY="333.0" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="10.0" />
             <Label layoutX="456.0" layoutY="246.0" text="Current State" AnchorPane.bottomAnchor="109.0" AnchorPane.rightAnchor="95.0" />

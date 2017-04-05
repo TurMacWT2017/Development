@@ -184,6 +184,7 @@ public class MachineViewController implements Initializable {
     //Slider
     @FXML private Slider speedSlider;
     @FXML private Label changeLabel;
+    @FXML private Label speedLabel;
     //Menu items
     @FXML private MenuItem openMenuItem;
     @FXML private MenuItem menuQuitButton;
@@ -311,6 +312,10 @@ public class MachineViewController implements Initializable {
             //when initializing interpreter, give it both an input and a view controller (this) to work with
             System.out.println("Number of tapes was" + tapes);
             interp = new Interpreter(input, this, tapes);
+            //enable the speed slider
+            speedSlider.setDisable(false);
+            changeLabel.setDisable(false);
+            speedLabel.setDisable(false);
 //            recentFiles.add(selectedFile);
             //Show code or error report
             if (interp.errorFound()) {
@@ -348,6 +353,8 @@ public class MachineViewController implements Initializable {
                     //tapeOne.setText(interp.getInitialInput());
                 try {
                     interp.start();
+                    //Ensure the interpreter's speed is up to date with UI
+                    interp.setRunSpeed((int) speedSlider.getValue());
                 } catch (InterpreterException ex) {
                     Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1332,8 +1339,12 @@ public class MachineViewController implements Initializable {
         }   
     }
     
-    /*** Methods for displaying various dialogs are in this area ********/
-
+    /*** Methods for displaying various dialogs are in this area
+    
+    /** Shows an auto stop dialog if the program is asked to transition to a 
+    * state that does not exist in the input file
+    * @param lookingForState 
+    */
     public void showAutoStopDialog(String lookingForState) {
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle("Warning");
@@ -1345,6 +1356,11 @@ public class MachineViewController implements Initializable {
         alert.showAndWait();
     }
 
+    /** Show the appropriate user input dialog based on current number of tapes
+     * 
+     * @param numTapes number of active tapes
+     * @return String[] input 
+     */
     public String[] showInputDialog(int numTapes) {
         String[] input = {"____", "_____", "_____"};
         //build and show the appropriate dialog
@@ -1478,6 +1494,11 @@ public class MachineViewController implements Initializable {
         return input;
     }
 
+    /**
+     * Shows mode change warning in the event that machine mode needed to be 
+     * changed. For example, a user loaded a program that references a tape
+     * they did not activate
+     */
     public void showModeChangeWarning() {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Information");
@@ -1497,8 +1518,9 @@ public class MachineViewController implements Initializable {
 
         @Override
         public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-            changeLabel.textProperty().setValue(String.valueOf((int)speedSlider.getValue()));
-            
+            int speed = (int) speedSlider.getValue();
+            changeLabel.textProperty().setValue(String.valueOf(speed));
+            interp.setRunSpeed(speed);
             //System.out.println("Speed slider = " + getSpeed());  //output speed changes
         }
     }

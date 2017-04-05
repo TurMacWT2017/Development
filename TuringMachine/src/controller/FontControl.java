@@ -83,10 +83,15 @@ public class FontControl extends TabPane {
         }
     }
     
-    /*
-    *   Used to initalize the fields of the component
+    /**
+    *   Used to initialize the fields of the component
     *   NOTE: when this component is used elsewhere, this should also be 
-    *       called to initalize its components properly after they are made
+    *       called to initialize its components properly after they are made
+     * @param defaultFamily default font family
+     * @param defaultSize default font size
+     * @param bold whether font is bold
+     * @param italic whether font is italicized
+     * @param RWHead RWHead color
     */
     public void initialize(String defaultFamily, int defaultSize, boolean bold, boolean italic, Color RWHead) {
         family = defaultFamily;
@@ -163,6 +168,9 @@ public class FontControl extends TabPane {
         
     }
     
+    /**
+     * Updates the preview bar contained within the font settings tab
+     */
     @FXML
     private void updatePreviewBar() {
         previewBar.getChildren().clear();
@@ -171,6 +179,9 @@ public class FontControl extends TabPane {
         previewBar.getChildren().add(previewText);
     }
     
+    /**
+     * Updates the preview bar contained within the RW head settings tab
+     */
     @FXML
     private void updateRWHeadPreviewBar() {
         //set rwhead preview bar
@@ -184,6 +195,10 @@ public class FontControl extends TabPane {
         RWPreviewBar.getChildren().add(rwpreviewText);
     }
     
+    /**
+     * Handles user click on Accept Changes and closes the window
+     * @param event 
+     */
     @FXML
     private void acceptChanges(ActionEvent event) {
         //set all the new values
@@ -196,6 +211,10 @@ public class FontControl extends TabPane {
         stage.close();
     }
     
+    /**
+     * Handles user click on Cancel and closes the window
+     * @param event 
+     */
     @FXML
     private void cancelChanges(ActionEvent event) {
         Node  source = (Node)  event.getSource(); 
@@ -203,12 +222,21 @@ public class FontControl extends TabPane {
         stage.close();
     }
     
+    /**
+     * Handles user click on bold check box, and calls method to update preview
+     * @param event 
+     */
     @FXML
     private void boldCheckBoxClicked(ActionEvent event) {
         isBold = boldCheckBox.isSelected();
         updatePreviewBar();
     }
 
+    /**
+     * Handles user click on italicize check box, and calls method to update 
+     * preview
+     * @param event 
+     */
     @FXML
     private void italicCheckBoxClicked(ActionEvent event) {
         isItalic = italicCheckBox.isSelected();
@@ -216,40 +244,78 @@ public class FontControl extends TabPane {
           
     }
     
+    /**
+     * Handles user click on make default checkbox for font settings
+     * @param event 
+     */
     @FXML
     private void makeFontDefault(ActionEvent event) {
         fontDefault = fontDefaultToggle.isSelected();
     }
     
+    /**
+     * Handles user click on make default checkbox for RW head settings
+     * @param event 
+     */
     @FXML
     private void makeRWDefault(ActionEvent event) {
         rwDefault = RWDefaultToggle.isSelected();
     }
     
+    /**
+     * Returns a boolean value indicating whether "Make Default"
+     * of font settings was selected
+     * @return whether font will be new default 
+     */
     public boolean getIsDefaultFont() {
         return fontDefault;
     }
     
+    /**
+     * Returns a boolean value indicating whether "Make Default" of RW
+     * Head Settings was Selected
+     * @return whether RW head settings will be new default
+     */
     public boolean getIsDefaultRW() {
         return rwDefault;
     }
-       
+    
+    /**
+     * Returns the current font size setting
+     * @return int font size
+     */
     public int getFontSize() {
         return size;
     }
     
+    /**
+     * Returns the current setting for font family
+     * @return font family
+     */
     public String getFontFamily() {
         return family;
     }
     
+    /**
+     * Returns the current setting for whether font is bold
+     * @return boolean isBold 
+     */
     public boolean getIsBold() {
         return isBold;
     }
     
+    /**
+     * Returns the current setting for whether font is italicized
+     * @return boolean isItalic
+     */
     public boolean getIsItalic() {
         return isItalic;
     }
     
+    /**
+     * Returns the current setting for color of the RW Head
+     * @return color RWHeadFontColor
+     */
     public Color getRWHeadFillColor() {
         return RWHeadFontColor;
     }

@@ -32,12 +32,12 @@ public class Interpreter
     public ArrayList<StateTransition> transitions;
     private Parser par;
     private int controlPointer = 0;
-    private final int speed = 1000;
+    private int speed = 50;
     private int stepCount = 0;
     //used to stop the thread if needed.
     private static boolean notInterrupted = true;
-    private boolean turnedOff = false;
-    private boolean reset = false;
+    private boolean turnedOff;
+    private boolean reset;
     //interpreter thread andd thread monitor
     private InterpreterThread interpThread;
     private final Object monitor = new Object();
@@ -45,7 +45,8 @@ public class Interpreter
     private Tape tapeOne;
     private Tape tapeTwo;
     private Tape tapeThree;
-    private int numTapes = 1;
+    private int numTapes;
+    private boolean animationEnabled;
     
     /** Default interpreter constructor
     * 
@@ -57,6 +58,10 @@ public class Interpreter
     */
     public Interpreter(String input, MachineViewController view, int tapes) 
     {
+        this.turnedOff = false;
+        this.reset = false;
+        this.animationEnabled = true;
+        this.numTapes = 1;
         this.view = view;
         numTapes = tapes;
         tokenize(input);
@@ -120,13 +125,39 @@ public class Interpreter
         this.view = view;
     }
     
-    
+    /**
+     * Sets the run speed of the interpreter
+     * @param newSpeed new speed
+     */
+    public void setRunSpeed(int newSpeed) {
+        speed = newSpeed;
+        if (speed == 100) {
+            animationEnabled = false;
+        }
+        else {
+            animationEnabled = true;
+        }
+    }
     /**
      * Used for changing the number of tapes the interpreter is working with
      * @param tapes number of tapes
      */
     public void setNumberOfTapes(int tapes) {
         numTapes = tapes;
+    }
+    
+    /** Enables animation. This will determine whether the interpreter
+     * will request tape animations during run (enabled) or only at the end (disabled)
+     */
+    public void enableAnimation() {
+        animationEnabled = true;
+    }
+    
+    /** Disables animation. This will determine whether the interpreter
+     * will request tape animations during run (enabled) or only at the end (disabled)
+     */
+    public void disableAnimation() {
+        animationEnabled = false;
     }
     
     /** Starts up the interpreter 
@@ -709,26 +740,37 @@ public class Interpreter
                         break;
                     }
                 }
-                
-                //update the tapes
-                if (tapeOneUpdated) {
-                    view.updateTapeContent(tapeOne.getContent(), 1);
-                }
-                if (tapeTwoUpdated) {
-                    view.updateTapeContent(tapeTwo.getContent(), 2);
-                }
-                if (tapeThreeUpdated) {
-                    view.updateTapeContent(tapeThree.getContent(), 3);
-                }
-
-                
                 //go to new state
                 interpState = endState;
-                view.updateState(interpState);
+                //update the tapes (if animation enabled)
+                if (animationEnabled) {
+                    if (tapeOneUpdated) {
+                        view.updateTapeContent(tapeOne.getContent(), 1);
+                    }
+                    if (tapeTwoUpdated) {
+                        view.updateTapeContent(tapeTwo.getContent(), 2);
+                    }
+                    if (tapeThreeUpdated) {
+                        view.updateTapeContent(tapeThree.getContent(), 3);
+                    }
+                    view.updateState(interpState);
+                    view.updateStepCount(stepCount);
+                }
                 //check if a halt state has been reached, if so, HALT
                 if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejecthalt")) {
                     notInterrupted = false;
                     view.setStoppedState();
+                    //ensure all tapes end fully updated
+                    view.updateTapeContent(tapeOne.getContent(), 1);
+                    if (numTapes == 2) {
+                        view.updateTapeContent(tapeTwo.getContent(), 2);
+                    }
+                    if (numTapes == 3) {
+                        view.updateTapeContent(tapeTwo.getContent(), 2);
+                        view.updateTapeContent(tapeThree.getContent(), 3);
+                    }
+                    view.updateState(interpState);
+                    view.updateStepCount(stepCount);
                 }
                 stepCount++;
             }
@@ -738,9 +780,8 @@ public class Interpreter
                 stepCount++;
             }
         //}
-        view.updateStepCount(stepCount);
         
-        System.out.printf("Tape\t%s\nInitial state\t%s\nRead Token\t%s\nWrite Token\t%s\nMove\t%s\nWrite Tape\t%s\nEnd State\t%s\nSpeed\t%d\n\n", tape, initialState, readToken, writeToken, direction, writeTape, endState, view.getSpeed());
+        //System.out.printf("Tape\t%s\nInitial state\t%s\nRead Token\t%s\nWrite Token\t%s\nMove\t%s\nWrite Tape\t%s\nEnd State\t%s\nSpeed\t%d\n\n", tape, initialState, readToken, writeToken, direction, writeTape, endState, view.getSpeed());
         
     }
     /**
@@ -790,8 +831,10 @@ public class Interpreter
                     // continue to step while not interrupted
                     while (notInterrupted) {
                             synchronized(monitor) {
+                                if (speed < 100) {
                                     sleep();
-                                    step();
+                                }
+                                step();
                             }
                             
                     }
@@ -806,15 +849,17 @@ public class Interpreter
                 public void sleep(){
                     //sleep before next instruction
                     try {                                 
-                           if(view.getSpeed()==0)
-                               //interpThread.sleep(500);
-                               InterpreterThread.sleep(5000);
-                           else
-                               //interpThread.sleep(500);
-                               InterpreterThread.sleep(2000-20*view.getSpeed());
-                       } catch (InterruptedException ex) {
-                           Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
-                       }
+                        if (speed == 0) {
+                            //interpThread.sleep(500);
+                            InterpreterThread.sleep(5000);
+                        }
+                        else {
+                            //interpThread.sleep(500);
+                            InterpreterThread.sleep(2000-20*speed);
+                        }
+                    } catch (InterruptedException ex) {
+                         Logger.getLogger(Interpreter.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 
                 /**
@@ -823,7 +868,7 @@ public class Interpreter
                  * <pre> Post-condition: Step will be completed </pre>
                  */
                 public void step() {
-                    System.out.println("Program stepped");
+                    //System.out.println("Program stepped");
                     boolean checkState = true;
                     int size = transitions.size();
                     //if ("HALT".equals(interpRunState) || "STEP".equals(interpRunState)) 
@@ -861,8 +906,8 @@ public class Interpreter
                                     break;
                                 }
                                 StateTransition tr = transitions.get(controlPointer);
-                                System.out.println(interpState);
-                                System.out.println(tr.getInitialState());
+                                //System.out.println(interpState);
+                                //System.out.println(tr.getInitialState());
                                 if (interpState.equalsIgnoreCase(tr.getInitialState())) {
                                     performTransition(tr);
                                     controlPointer++;
