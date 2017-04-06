@@ -926,6 +926,29 @@ public class MachineViewController implements Initializable {
             alert.showAndWait();
         }
     }  
+    
+    public void updateStateNodes(){
+        anchorAcceptRejectNodes(Color.YELLOW);
+    }
+    
+    public void updateTransLines(){
+        anchorAcceptRejectNodes(Color.YELLOW);
+    }
+        
+
+public static ArrayList<Node> getAllNodes(Pane parent) {
+    ArrayList<Node> nodes = new ArrayList<Node>();
+    addAllDescendents(parent, nodes);
+    return nodes;
+}
+
+private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
+    for (Node node : parent.getChildrenUnmodifiable()) {
+        nodes.add(node);
+        if (node instanceof Pane)
+            addAllDescendents((Pane)node, nodes);
+    }
+}
            
     public void drawStates(ArrayList<StateTransition> states) {
         double stateTabWidth = statePaneTab. widthProperty().get();
@@ -957,15 +980,17 @@ public class MachineViewController implements Initializable {
                 
         drawUniqueInitNodes();     
         bindStateLabels();
-        anchorAcceptRejectNodes();        
+        anchorAcceptRejectNodes(Color.YELLOW);        
         bindInitToEndStates();        
-        drawSameStateArcbacks();  
-
+        drawSameStateArcbacks(); 
+        drawTransitionLabels();
+/*
         connectStates(startNode, stateNodes[0]); 
         for (int j = 0; j< numAllStates; j++){
                 connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
                 connected++;          
         }     
+        */
         BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
                 StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
         statePaneTab.setStyle("-fx-background-color: #F5F5DC");
@@ -1077,7 +1102,7 @@ public class MachineViewController implements Initializable {
         } 
     }
     
-    public void anchorAcceptRejectNodes(){
+    public void anchorAcceptRejectNodes(Color fill){
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
         
@@ -1087,8 +1112,8 @@ public class MachineViewController implements Initializable {
             int k = 0;
             while(k<1){
                 acceptNode = createDraggingCircle(50,stateTabHeight - 70, 15, statePane, acceptColor);    
-                //acceptNode.setStrokeType(StrokeType.OUTSIDE);
-                //acceptNode.setStroke(acceptColor);//Color.BLACK);
+                acceptNode.setStrokeType(StrokeType.OUTSIDE);
+                acceptNode.setStroke(fill);
                 statePane.getChildren().add(acceptNode);
                 k++;
             }
@@ -1097,8 +1122,8 @@ public class MachineViewController implements Initializable {
             int k = 0;
             while(k<1){
                 rejectNode = createDraggingCircle(stateTabWidth - 90,stateTabHeight - 70, 15, statePane, rejectColor);    
-                //rejectNode.setStrokeType(StrokeType.OUTSIDE);
-                //rejectNode.setStroke(rejectColor);//Color.BLACK);
+                rejectNode.setStrokeType(StrokeType.OUTSIDE);
+                rejectNode.setStroke(fill);
                 statePane.getChildren().add(rejectNode);
                 k++;
             }
