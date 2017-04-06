@@ -214,6 +214,12 @@ public class MachineViewController implements Initializable {
     boolean fileLoaded = false;    
     //private Tape tm = new charTape();
     
+    /**
+     * Handles a click on the run button. Utilizes helper method to determine
+     * if program is ready to run. For helper method see checkProgramStatus();
+     * documentation
+     * @param event 
+     */
     @FXML
     private void runButtonClicked(ActionEvent event) {
         //Check and make sure the user has actually loaded a program
@@ -238,6 +244,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the step button. Utilizes helper method to determine
+     * if program is ready to run. For helper method see checkProgramStatus();
+     * documentation
+     * @param event 
+     */
     @FXML
     private void stepButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -246,6 +258,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the stop button. Utilizes helper method to determine
+     * if program is ready to run. For helper method see checkProgramStatus();
+     * documentation
+     * @param event 
+     */
     @FXML
     private void stopButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -254,6 +272,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the reset button. Utilizes helper method to determine
+     * if program is ready to run. For helper method see checkProgramStatus();
+     * documentation
+     * @param event 
+     */
     @FXML
     private void resetButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -263,11 +287,20 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the quit button. 
+     * @param event 
+     */
     @FXML
     private void menuQuitButtonClicked(ActionEvent event) {
         Platform.exit();
     }
     
+    /**
+     * Handles a click on the open file button. Uses machine controller to open
+     * file, starts a new interpreter
+     * @param event 
+     */
     @FXML
     private void openFileMenuItemClicked(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -364,6 +397,14 @@ public class MachineViewController implements Initializable {
         }       
     }
     
+    /****** Tape Clear button handling methods *********/
+    
+    /**
+     * Handles a click on the tape one clear button. Utilizes helper method to determine
+     * if program is ready. For helper method see checkProgramStatus();
+     * documentation
+     * @param event 
+     */
     @FXML
     private void tapeOneClearButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -380,6 +421,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the tape two clear button. Utilizes helper method to determine
+     * if program is ready. For helper method see checkProgramStatus();
+     * documentation
+     * @param event 
+     */
     @FXML
     private void tapeTwoClearButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -396,6 +443,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the tape three clear button. Utilizes helper method to determine
+     * if program is ready. For helper method see checkProgramStatus();
+     * documentation
+     * @param event 
+     */
     @FXML
     private void tapeThreeClearButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -412,6 +465,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the clear all tapes menu button. Utilizes helper method to determine
+     * if program is ready. For helper method see checkProgramStatus();
+     * documentation
+     * @param event 
+     */
     @FXML
     private void clearAllTapesButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -421,6 +480,7 @@ public class MachineViewController implements Initializable {
             interp.reset();
         }
     }
+    
     /** The below methods handle toggling the view to either 1, 2, or 3 tape mode **/
     
     @FXML
@@ -536,6 +596,11 @@ public class MachineViewController implements Initializable {
         return tapes;
     }
     
+    /**
+     * Handles click on launch code window menu item, displays code view tab
+     * content in new window
+     * @param event 
+     */
     @FXML
     private void launchCodeWindow(ActionEvent event) {
         //Parent root;
@@ -582,6 +647,11 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles click on font options menu item, and shows custom font control
+     * component
+     * @param event 
+     */
     @FXML
     public void showFontChooser(ActionEvent event) {
             FontControl fontControl = new FontControl();
@@ -627,6 +697,10 @@ public class MachineViewController implements Initializable {
             }
     }
     
+    /**
+     * Handles click on about menu item and displays about page
+     * @param event 
+     */
     @FXML
     public void aboutMenu(ActionEvent event) {
         // stuff
@@ -648,6 +722,10 @@ public class MachineViewController implements Initializable {
         root.getChildren().add(webView);
     }
     
+    /**
+     * Handles click on language reference menu item and displays language reference
+     * @param event 
+     */
     @FXML
     public void languageReference(ActionEvent event) {
         // stuff
@@ -656,8 +734,7 @@ public class MachineViewController implements Initializable {
         URL url = MachineViewController.class.getResource(File.separator + "view" + File.separator + "languageReference.html");
         String content = url.toExternalForm();
         webEngine.load(content);
-        
-        
+                
         Stage stage = new Stage();
         StackPane root = new StackPane();
         Scene scene = new Scene(root);
@@ -670,6 +747,9 @@ public class MachineViewController implements Initializable {
         root.getChildren().add(webView);
     }
     
+    /**
+     * Places the UI in a start (ready) state
+     */
     @FXML
     public void setStartState() {
         runButton.setDisable(false);
@@ -682,6 +762,9 @@ public class MachineViewController implements Initializable {
         System.out.println("Machine in step state");
     }
 
+    /**
+     * Places the UI in a stopped state
+     */
     @FXML
     public void setStoppedState() {
         System.out.println("Machine stopped");
@@ -694,21 +777,37 @@ public class MachineViewController implements Initializable {
         
     }
     
+    /**
+     * Used to reset elements in the UI back to default state
+     */
     @FXML
     public void resetView() {
         runButton.setText("Run");
     }
 
+    /**
+     * Updates the step count within the UI
+     * @param stepCount new count
+     */
     @FXML
     public void updateStepCount(int stepCount) {
         currentSteps.setText(Integer.toString(stepCount));
     }
     
+    /**
+     * Updates the UI State Display
+     * @param state new state to display
+     */
     @FXML
     public void updateState(String state) {
         currentState.setText(state);
     }
     
+    /**
+     * Gets the being displayed in a requested tape
+     * @param tape requested
+     * @return string tape content
+     */
     @FXML
     public String getTapeInput(int tape) {
         switch (tape) {
@@ -723,6 +822,11 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Sets the initial tape content for a given tape
+     * @param content content to display
+     * @param tapeNumber desired tape
+     */    
     @FXML
     public void setInitialTapeContent(String content, int tapeNumber) {
         Text input = new Text(content.substring(1));
@@ -745,6 +849,11 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Updates the content of the specified tape within the UI
+     * @param content new content to display
+     * @param tape requested tape
+     */
     @FXML
     public void updateTapeContent(String content, int tape) {
         int headLocation = interp.getRWHead(tape);

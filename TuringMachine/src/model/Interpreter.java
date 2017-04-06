@@ -185,17 +185,29 @@ public class Interpreter
         if (!input[0].equals("")) {
             initialInput = input[0];
         }
+        else {
+            initialInput = "______";
+        }
         if (numTapes == 2) {
             if (!input[1].equals("")) {                
                 initialInput2 = input[1];
+            }
+            else {
+                initialInput2 = "______";
             }
         }
         if (numTapes == 3) {
             if (!input[1].equals("")) {
                initialInput2 = input[1];
             }
+            else {
+               initialInput2 = "______";
+            }
             if (!input[2].equals("")) {
                initialInput3 = input[2];
+            }
+            else {
+               initialInput3 = "______";
             }
         }
         
@@ -208,7 +220,7 @@ public class Interpreter
      */
     private void tokenize(String input)
     {
-        int lineNum = 0;
+        int tupleNum = 0;
         String errorString;
        
         // if initial tape input string supplied by .tm program
@@ -221,7 +233,6 @@ public class Interpreter
             initialInput = input.substring(colon+1, semicolon).trim();
             String firstLine = input.substring(0, semicolon+1);
             input = input.replace(firstLine, "");
-            lineNum++;
         }
         else
         {   
@@ -240,16 +251,16 @@ public class Interpreter
             // Get the current tape - if left blank, default to tape 1
             if (i%7 == 0)
             {
-                lineNum++;
+                tupleNum++;
                 if (tokens[i].equals(""))
                 {
                     tokens[i] = "t1";
-                    //System.out.println("\nTape token: " + tokens[i] + " on line " + lineNum);
+                    //System.out.println("\nTape token: " + tokens[i] + " on line " + tupleNum);
                 }
                 if (tokens[i].equalsIgnoreCase("t1")) 
                 {
                     tokens[i] = "t1";
-                    //System.out.println("\nTape token: " + tokens[i] + " on line " + lineNum);
+                    //System.out.println("\nTape token: " + tokens[i] + " on line " + tupleNum);
                 }
                 else if (tokens[i].equalsIgnoreCase("t2"))
                 {
@@ -258,7 +269,7 @@ public class Interpreter
                         System.out.println("Tapes was changed to 2");
                         numTapes = 2;
                     }
-                    //System.out.println("\nTape 2 token: " + tokens[i] + " on line " + lineNum);
+                    //System.out.println("\nTape 2 token: " + tokens[i] + " on line " + tupleNum);
                 }
                 else if (tokens[i].equalsIgnoreCase("t3"))
                 {
@@ -266,11 +277,11 @@ public class Interpreter
                     if (view.getCurrentMode() != 3) {
                         numTapes = 3;
                     }
-                    //System.out.println("\nTape 3 token: " + tokens[i] + " on line " + lineNum);
+                    //System.out.println("\nTape 3 token: " + tokens[i] + " on line " + tupleNum);
                 }
                 else 
                 {
-                    errorString = "Error on line " + lineNum + ": Invalid tape " + tokens[i];
+                    errorString = "Error on line " + tupleNum + ": Invalid tape " + tokens[i];
                     errorReport.append(errorString);
                     errorsPresent = true;
                 }
@@ -280,7 +291,7 @@ public class Interpreter
             if (i%7 == 1)
             {
                 tokens[i] = tokens[i].trim();
-                //System.out.println("Initial state token: " + tokens[i] + " on line " + lineNum);
+                //System.out.println("Initial state token: " + tokens[i] + " on line " + tupleNum);
             }
 
             // Get the token being read
@@ -309,7 +320,7 @@ public class Interpreter
             {  
                 String token = tokens[i].trim();
                 StringBuilder dir = new StringBuilder();
-                System.out.println("Direction token: " + tokens[i] + " on line " + lineNum + "\n");
+                System.out.println("Direction token: " + tokens[i] + " on line " + tupleNum + "\n");
                 System.out.println("Token length was" + token.length());
                 if (token.matches("([R|r|\\>])(.*)"))
                 {
@@ -328,7 +339,7 @@ public class Interpreter
                 }
                 else 
                 {
-                    errorString = "\nInvalid direction on line " + lineNum + ":  "+ tokens[i] + " ,check your first specified direction";
+                    errorString = "\nInvalid direction on line " + tupleNum + ":  "+ tokens[i] + " ,check your first specified direction";
                     errorReport.append(errorString);
                     errorsPresent = true;
                 }
@@ -351,7 +362,7 @@ public class Interpreter
                     }
                     else 
                     {
-                        errorString = "\nInvalid direction on line " + lineNum + ":  "+ tokens[i] + " ,check your 2nd specified direction";
+                        errorString = "\nInvalid direction on line " + tupleNum + ":  "+ tokens[i] + " ,check your 2nd specified direction";
                         errorReport.append(errorString);
                         errorsPresent = true;
                     }
@@ -360,22 +371,19 @@ public class Interpreter
                 if (token.length() == 3) {
                     if (token.matches("(\\S)(\\S)([R|r|\\>])"))
                     {
-                        //moveRight();
                         dir.append("R");
                     }
                     else if (token.matches("(\\S)(\\S)([L|l|\\<])"))
                     {
-                        //moveLeft();
                         dir.append("L");
                     }
                     else if (token.matches("(\\S)(\\S)(\\*)"))
                     {
-                        //stay();
                         dir.append("S");
                     }
                     else 
                     {
-                        errorString = "\nInvalid direction on line " + lineNum + ":  "+ tokens[i] + " ,check your third specified direction";
+                        errorString = "\nInvalid direction on line " + tupleNum + ":  "+ tokens[i] + " ,check your third specified direction";
                         errorReport.append(errorString);
                         errorsPresent = true;
                     }
@@ -388,7 +396,7 @@ public class Interpreter
             {
                 String token = tokens[i].trim();
                 if (!token.matches("(t1|t2|t3|\\*)")) {
-                    errorString = "\nInvalid write tape specified on line " + lineNum + ":  "+ tokens[i] + "\n";
+                    errorString = "\nInvalid write tape specified on line " + tupleNum + ":  "+ tokens[i] + "\n";
                     errorReport.append(errorString);
                     errorsPresent = true;
                 }
@@ -409,7 +417,7 @@ public class Interpreter
                     tokens[i] = token;
                 }
                 
-                //System.out.println("End state token: " + tokens[i] + " on line " + lineNum + "\n");
+                //System.out.println("End state token: " + tokens[i] + " on line " + tupleNum + "\n");
             }
             //get the end state taken
             if (i%7 == 6) {
