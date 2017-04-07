@@ -164,7 +164,7 @@ public class MachineViewController implements Initializable {
     private Line[] transLines;
     private Label[] prevLabels;
     private Circle[] prevNodes;
-    
+    private ArrayList pullNodes;
     
     //UI Buttons
     @FXML private Button runButton;
@@ -914,6 +914,7 @@ public class MachineViewController implements Initializable {
             layout.setFitToHeight(true);
             layout.setFitToWidth(true);      
             pane.setStyle("-fx-background-color: #F5F5DC");
+            
             layout.setContent(pane);
             stage.setScene(scene);
 
@@ -931,31 +932,33 @@ public class MachineViewController implements Initializable {
         }
     }  
     
-    public void updateStateNodes(String stateLabel){
-        
-        anchorAcceptRejectNodes(Color.PINK);
-    }
-    
     public void updateTransLines(){
         for(int j=0; j<numAllStates;j++){
             statePane.getChildren().removeAll(prevNodes[j],prevLabels[j]);
             double transCenterX = (transLines[j].getStartX() + transLines[j].getEndX())/2;
             double transCenterY = (transLines[j].getStartY() + transLines[j].getEndY())/2;
-            prevNodes[j] = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.BROWN);
-            prevNodes[j].setOpacity(0.1);
+            prevNodes[j] = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.GRAY);
+  
                 prevLabels[j].layoutXProperty().bind(prevNodes[j].centerXProperty());
                 prevLabels[j].layoutYProperty().bind(prevNodes[j].centerYProperty());
                 //prevLabels[j].setStyle("-fx-font-weight: bold;");      
                 prevNodes[j].setVisible(false);
+                prevLabels[j].setTextFill(Color.MAROON);
                 statePane.getChildren().addAll(prevNodes[j],prevLabels[j]);
-            System.out.println("Trans line = " + transLines[j]);
+            //System.out.println("Trans line = " + transLines[j]);
         }
         //anchorAcceptRejectNodes(Color.PINK);
     }
-        
+    
+    public void updateStateNodes(String stateLabel){
+        pullNodes = new ArrayList<>();
+        pullNodes = getAllNodes(statePane);
+        System.out.println("pullNodes 0 = " + pullNodes.get(0));
+        anchorAcceptRejectNodes(Color.PINK);
+    }        
 
 public static ArrayList<Node> getAllNodes(Pane parent) {
-    ArrayList<Node> nodes = new ArrayList<Node>();
+    ArrayList<Node> nodes = new ArrayList<>();
     addAllDescendents(parent, nodes);
     return nodes;
 }
@@ -1009,6 +1012,8 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
                 connected++;          
         }     
         */
+        //updateStateNodes("");  // this will be moved
+
         BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
                 StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
         statePaneTab.setStyle("-fx-background-color: #F5F5DC");
@@ -1133,7 +1138,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             while(k<1){
                 acceptNode = createDraggingCircle(50,stateTabHeight - 70, 15, statePane, acceptColor);    
                 acceptNode.setStrokeType(StrokeType.OUTSIDE);
-                acceptNode.setStroke(fill);
+                acceptNode.setStroke(acceptColor);
                 statePane.getChildren().add(acceptNode);
                 k++;
             }
@@ -1143,7 +1148,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             while(k<1){
                 rejectNode = createDraggingCircle(stateTabWidth - 90,stateTabHeight - 70, 15, statePane, rejectColor);    
                 rejectNode.setStrokeType(StrokeType.OUTSIDE);
-                rejectNode.setStroke(fill);
+                rejectNode.setStroke(rejectColor);
                 statePane.getChildren().add(rejectNode);
                 k++;
             }
@@ -1157,7 +1162,10 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             for (int j = 0; j< numAllStates; j++){
                 prevLabels[j] = new Label();
                 prevNodes[j] = new Circle();
-                prevLabels[j].setText(allTransitions[j]);
+                allTransitions[j] = " " + allTransitions[j];
+                prevLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
+                
+                prevLabels[j].setTextFill(Color.MAROON);
                 transLines[j] = connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
                 double transCenterX = (transLines[j].getStartX() + transLines[j].getEndX())/2;
                 double transCenterY = (transLines[j].getStartY() + transLines[j].getEndY())/2;
