@@ -807,16 +807,25 @@ public class Interpreter
     public void setInitialContent(String input, int tape) {
         switch (tape) {
             case 1:
-                initialInput = input;
+                if ("".equals(input)) 
+                    initialInput = "______";
+                else 
+                    initialInput = input;
                 break;
             case 2:
-                initialInput2 = input;
+                if ("".equals(input)) 
+                    initialInput2 = "______";
+                else 
+                    initialInput2 = input;
                 break;
             case 3:
-                initialInput3 = input;
+                if ("".equals(input)) 
+                    initialInput3 = "______";
+                else 
+                    initialInput3 = input;
                 break;
             default:
-                initialInput = input;
+                initialInput = "______";
                 break;
         }                
     }
