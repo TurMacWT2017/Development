@@ -82,6 +82,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.CycleMethod;
@@ -123,7 +124,6 @@ public class MachineViewController implements Initializable {
     private boolean isBold = false;
     private boolean isItalic = false;
     private Color RWHeadFillColor = Color.RED;
-    private ResourceBundle bundle;
     
     //state diagram variables
     private Circle acceptNode;
@@ -216,7 +216,6 @@ public class MachineViewController implements Initializable {
     private static ArrayList<StateTransition> currentStates;
     //keeps track of file status
     boolean fileLoaded = false;    
-    //private Tape tm = new charTape();
     
     /**
      * Handles a click on the run button. Utilizes helper method to determine
@@ -486,7 +485,11 @@ public class MachineViewController implements Initializable {
     }
     
     /** The below methods handle toggling the view to either 1, 2, or 3 tape mode **/
-    
+
+    /**
+     * Changes the machine to one tape mode
+     * @param event 
+     */
     @FXML
     private void setOneTapeMode(ActionEvent event) {
         tapeTwoPane.setExpanded(false);
@@ -515,6 +518,10 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Changes the machine to two tape mode
+     * @param event 
+     */
     @FXML
     private void setTwoTapeMode(ActionEvent event) {
         tapeTwoPane.setExpanded(true);
@@ -543,6 +550,10 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Change machine to three tape mode
+     * @param event 
+     */
     @FXML
     private void setThreeTapeMode(ActionEvent event) {
         tapeTwoPane.setExpanded(true);
@@ -572,7 +583,12 @@ public class MachineViewController implements Initializable {
         }
 
     }
+    
     /*** These methods are used by the interpreter if a tape needs to be activated that isn't ****/
+    
+    /**
+     * Activates tape two within the UI
+     */
     @FXML
     public void activateTapeTwo() {
         tapeTwo.getChildren().clear();
@@ -581,6 +597,9 @@ public class MachineViewController implements Initializable {
         tapes = 2;
     }
     
+    /**
+     * Activates tape three within the UI
+     */
     @FXML
     public void activateTapeThree() {
         tapeThree.getChildren().clear();
@@ -699,6 +718,9 @@ public class MachineViewController implements Initializable {
                     updateTapeContent(interp.getTapeContent(3), 3);
                 }
             }
+            //This line disables word wrapping for the tape one textflow,
+            //this forces it to behave more as a tape and expand horizontally
+            tapeOne.setPrefWidth(Double.MAX_VALUE);
     }
     
     /**
@@ -759,11 +781,6 @@ public class MachineViewController implements Initializable {
         runButton.setDisable(false);
         stopButton.setDisable(false);
         stepButton.setDisable(false);
-    }
-    
-    @FXML
-    public void setStepState() {
-        System.out.println("Machine in step state");
     }
 
     /**
@@ -975,7 +992,12 @@ public class MachineViewController implements Initializable {
     }
     
     
-    
+    /**
+     * Ran on launch to add listeners and finish initialization of UI
+     * Also pulls and sets any default user preferences
+     * @param url
+     * @param rb 
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {        
         speedSlider.valueProperty().addListener(new ChangeListenerImpl());
@@ -995,10 +1017,18 @@ public class MachineViewController implements Initializable {
            
     }    
 
+    /**
+     * Gets the current value of the speed slider
+     * @return int speed
+     */
     public int getSpeed(){
         return (int)speedSlider.getValue();
     }
     
+    /**
+     * Launches the state window diagram
+     * @param event 
+     */
     @FXML
     public void launchStateWindow(ActionEvent event){
         

@@ -452,7 +452,6 @@ public class Interpreter
     {
     // don't create an interpreter thread if one is already running
         if (interpThread!= null && !interpThread.isAlive()) {
-            view.setStepState(); 
             notInterrupted = false;
             interpThread = new InterpreterThread();
             interpThread.start();
