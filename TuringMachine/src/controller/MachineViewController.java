@@ -69,6 +69,7 @@ import model.StateTransition;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
@@ -1014,7 +1015,6 @@ public class MachineViewController implements Initializable {
         statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
         statePaneTab.heightProperty().addListener(observable -> redraw(currentStates));
         
-           
     }    
 
     /**
