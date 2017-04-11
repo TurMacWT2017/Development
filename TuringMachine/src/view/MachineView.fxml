@@ -58,7 +58,7 @@
     </MenuBar>
       <VBox id="background" stylesheets="@machineViewStyle.css">
          <children>
-            <TitledPane fx:id="tapeOnePane" collapsible="false" prefHeight="99.0" prefWidth="709.0" stylesheets="@machineViewStyle.css" text="Tape 1">
+            <TitledPane fx:id="tapeOnePane" collapsible="false" contentDisplay="RIGHT" graphicTextGap="500.0" prefHeight="99.0" prefWidth="709.0" stylesheets="@machineViewStyle.css" text="Tape 1">
                <content>
                   <ScrollPane fx:id="tapeOneScroll" fitToHeight="true" prefWidth="700.0" vmax="0.0">
                      <content>
@@ -67,28 +67,32 @@
                   </ScrollPane>
                </content>
                <graphic>
-                  <Button id="button" fx:id="tapeOneClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeOneClearButtonClicked" stylesheets="@machineViewStyle.css" text="Clear" />
+                  <Button id="button" fx:id="tapeOneClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeOneClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
                </graphic>
             </TitledPane>
-          <TitledPane fx:id="tapeTwoPane" expanded="false" stylesheets="@machineViewStyle.css" text="Tape 2" visible="false">
+            <TitledPane fx:id="tapeTwoPane" contentDisplay="RIGHT" expanded="false" graphicTextGap="500.0" layoutX="10.0" layoutY="10.0" prefHeight="0.0" prefWidth="709.0" stylesheets="@machineViewStyle.css" text="Tape 2" visible="false">
                <content>
-                  <AnchorPane prefWidth="652.0" visible="false">
-                     <children>
-                        <TextFlow fx:id="tapeTwo" layoutX="29.4" layoutY="17.0" prefHeight="26.0" prefWidth="621.0" textAlignment="CENTER" AnchorPane.leftAnchor="19.0" AnchorPane.rightAnchor="70.0" />
-                        <Button id="button" fx:id="tapeTwoClearButton" layoutX="636.0" layoutY="17.0" mnemonicParsing="false" onAction="#tapeTwoClearButtonClicked" stylesheets="@machineViewStyle.css" text="Clear" AnchorPane.rightAnchor="10.0" />
-                     </children>
-                  </AnchorPane>
+                  <ScrollPane fx:id="tapeTwoScroll" fitToHeight="true" prefWidth="700.0" vmax="0.0">
+                     <content>
+                        <TextFlow fx:id="tapeTwo" />
+                     </content>
+                  </ScrollPane>
                </content>
+               <graphic>
+                  <Button id="button" fx:id="tapeTwoClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeTwoClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
+               </graphic>
             </TitledPane>
-          <TitledPane fx:id="tapeThreePane" expanded="false" stylesheets="@machineViewStyle.css" text="Tape 3" visible="false">
+            <TitledPane fx:id="tapeThreePane" contentDisplay="RIGHT" expanded="false" graphicTextGap="500.0" layoutX="10.0" layoutY="109.0" prefHeight="0.0" prefWidth="709.0" stylesheets="@machineViewStyle.css" text="Tape 3" visible="false">
                <content>
-                  <AnchorPane prefWidth="652.0" visible="false">
-                     <children>
-                        <TextFlow fx:id="tapeThree" layoutX="29.4" layoutY="17.0" prefHeight="26.0" prefWidth="621.0" textAlignment="CENTER" AnchorPane.leftAnchor="19.0" AnchorPane.rightAnchor="70.0" />
-                        <Button id="button" fx:id="tapeThreeClearButton" layoutX="636.0" layoutY="17.0" mnemonicParsing="false" onAction="#tapeThreeClearButtonClicked" stylesheets="@machineViewStyle.css" text="Clear" AnchorPane.rightAnchor="10.0" />
-                     </children>
-                  </AnchorPane>
+                  <ScrollPane fx:id="tapeThreeScroll" fitToHeight="true" prefWidth="700.0" vmax="0.0">
+                     <content>
+                        <TextFlow fx:id="tapeThree" />
+                     </content>
+                  </ScrollPane>
                </content>
+               <graphic>
+                  <Button id="button" fx:id="tapeThreeClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeThreeClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
+               </graphic>
             </TitledPane>
          </children>
       </VBox>
@@ -99,9 +103,9 @@
             <Button id="button" fx:id="stepButton" layoutX="481.0" layoutY="56.0" mnemonicParsing="false" onAction="#stepButtonClicked" stylesheets="@machineViewStyle.css" text="Step" AnchorPane.rightAnchor="125.0" />
             <Button id="button" fx:id="stopButton" layoutX="536.0" layoutY="56.0" mnemonicParsing="false" onAction="#stopButtonClicked" stylesheets="@machineViewStyle.css" text="Stop" AnchorPane.rightAnchor="70.0" />
             <Button id="button" fx:id="resetButton" layoutX="589.0" layoutY="56.0" mnemonicParsing="false" onAction="#resetButtonClicked" stylesheets="@machineViewStyle.css" text="Reset" AnchorPane.rightAnchor="10.0" />
-            <Slider fx:id="speedSlider" disable="true" layoutX="490.0" layoutY="126.0" showTickLabels="true" showTickMarks="true" stylesheets="@machineViewStyle.css" value="50" AnchorPane.rightAnchor="24.0" />
-            <Label fx:id="changeLabel" disable="true" layoutX="639.0" layoutY="107.0" text="50" AnchorPane.rightAnchor="53.0" />
-            <Label fx:id="speedLabel" disable="true" layoutX="528.0" layoutY="107.0" text="Speed" AnchorPane.rightAnchor="85.0" />
+            <Slider fx:id="speedSlider" disable="true" layoutX="554.0" layoutY="105.0" showTickLabels="true" showTickMarks="true" stylesheets="@machineViewStyle.css" value="50" AnchorPane.rightAnchor="24.0" />
+            <Label fx:id="changeLabel" disable="true" layoutX="648.0" layoutY="85.0" text="50" AnchorPane.rightAnchor="53.0" />
+            <Label fx:id="speedLabel" disable="true" layoutX="592.0" layoutY="86.0" text="Speed" AnchorPane.rightAnchor="85.0" />
             <TextField fx:id="currentState" alignment="CENTER" editable="false" layoutX="459.0" layoutY="270.0" AnchorPane.bottomAnchor="75.0" AnchorPane.rightAnchor="10.0" />
             <TextField fx:id="currentSteps" alignment="CENTER" editable="false" layoutX="460.0" layoutY="333.0" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="10.0" />
             <Label layoutX="456.0" layoutY="246.0" text="Current State" AnchorPane.bottomAnchor="109.0" AnchorPane.rightAnchor="95.0" />

@@ -496,8 +496,10 @@ public class MachineViewController implements Initializable {
     private void setOneTapeMode(ActionEvent event) {
         tapeTwoPane.setExpanded(false);
         tapeTwoPane.setVisible(false);
+        tapeTwoPane.setPrefHeight(0);
         tapeThreePane.setExpanded(false);
         tapeThreePane.setVisible(false);
+        tapeThreePane.setPrefHeight(0);
         tapes = 1;
         if (fileLoaded) {
             boolean isReady = checkProgramStatus();
@@ -528,8 +530,10 @@ public class MachineViewController implements Initializable {
     private void setTwoTapeMode(ActionEvent event) {
         tapeTwoPane.setExpanded(true);
         tapeTwoPane.setVisible(true);
+        tapeTwoPane.setPrefHeight(99);
         tapeThreePane.setExpanded(false);
         tapeThreePane.setVisible(false);
+        tapeThreePane.setPrefHeight(0);
         tapes = 2;
         if (fileLoaded) {
             boolean isReady = checkProgramStatus();
@@ -558,8 +562,10 @@ public class MachineViewController implements Initializable {
      */
     @FXML
     private void setThreeTapeMode(ActionEvent event) {
+        tapeTwoPane.setPrefHeight(99);
         tapeTwoPane.setExpanded(true);
         tapeTwoPane.setVisible(true);
+        tapeThreePane.setPrefHeight(99);
         tapeThreePane.setExpanded(true);
         tapeThreePane.setVisible(true);
         tapes = 3;
@@ -594,6 +600,7 @@ public class MachineViewController implements Initializable {
     @FXML
     public void activateTapeTwo() {
         tapeTwo.getChildren().clear();
+        tapeTwoPane.setPrefHeight(99);
         tapeTwoPane.setExpanded(true);
         tapeTwoPane.setVisible(true);
         tapes = 2;
@@ -605,6 +612,7 @@ public class MachineViewController implements Initializable {
     @FXML
     public void activateTapeThree() {
         tapeThree.getChildren().clear();
+        tapeThreePane.setPrefHeight(99);
         tapeThreePane.setExpanded(true);
         tapeThreePane.setVisible(true);
         tapes = 3;
@@ -1015,6 +1023,8 @@ public class MachineViewController implements Initializable {
         statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
         statePaneTab.heightProperty().addListener(observable -> redraw(currentStates));
         
+        tapeTwoPane.expandedProperty().addListener(observable -> resetTapePaneTwoHeight());
+        tapeThreePane.expandedProperty().addListener(observable -> resetTapeThreePaneHeight());
     }    
 
     /**
@@ -1707,6 +1717,30 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
                 + "\n The requested tape(s) has/have been activated for you automatically. \nTo change their content, simply click the clear button of the tape"
                 + "\n If you feel this was a mistake, please check your input file."));
         alert.showAndWait();
+    }
+
+    /**
+     * Helper method called by tape pane two listener on expand or collapse
+     */
+    private void resetTapePaneTwoHeight() {
+        if (tapeTwoPane.isExpanded()) {
+            tapeTwoPane.setPrefHeight(99);
+        }
+        else {
+            tapeTwoPane.setPrefHeight(0);
+        }
+    }
+
+    /**
+     * Helper method called by tape pane three listener on expand or collapse
+     */
+    private void resetTapeThreePaneHeight() {
+        if (tapeThreePane.isExpanded()) {
+            tapeThreePane.setPrefHeight(99);
+        }
+        else {
+            tapeThreePane.setPrefHeight(0);
+        }
     }
     
     /*** End dialogs section **/
