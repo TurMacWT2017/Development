@@ -29,6 +29,7 @@ import javafx.fxml.FXML;
 
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Camera;
@@ -1023,8 +1024,19 @@ public class MachineViewController implements Initializable {
         statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
         statePaneTab.heightProperty().addListener(observable -> redraw(currentStates));
         
+        //these lines allow the the UI to expand and shrink dynamically with panes as they expand or collapse
         tapeTwoPane.expandedProperty().addListener(observable -> resetTapePaneTwoHeight());
         tapeThreePane.expandedProperty().addListener(observable -> resetTapeThreePaneHeight());
+        
+        //these lines set the bind the gap between tape name and clear button
+        //thse are necessary to keep the clear buttons right aligned
+        tapeOnePane.setContentDisplay(ContentDisplay.RIGHT);
+        tapeTwoPane.setContentDisplay(ContentDisplay.RIGHT);
+        tapeThreePane.setContentDisplay(ContentDisplay.RIGHT);
+
+        tapeOnePane.graphicTextGapProperty().bind(tapeOnePane.widthProperty().subtract(215.00));
+        tapeTwoPane.graphicTextGapProperty().bind(tapeTwoPane.widthProperty().subtract(230.00));
+        tapeThreePane.graphicTextGapProperty().bind(tapeThreePane.widthProperty().subtract(230.00));
     }    
 
     /**
@@ -1742,6 +1754,27 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             tapeThreePane.setPrefHeight(0);
         }
     }
+//
+//    /**
+//     * Helper method that automatically repositions the tape one clear button on resizing
+//     */
+//    private void adjustTapeOneClearButton() {
+//        tapeOnePane.setGraphicTextGap(tapeOnePane.getGraphicTextGap() + );
+//    }
+//
+//    /**
+//     * Helper method that automatically repositions the tape three clear button on resizing
+//     */
+//    private void adjustTapeThreeClearButton() {
+//        tapeThreePane.setGraphicTextGap(tapeThreePane.widthProperty().intValue() - 220);
+//    }
+//
+//    /**
+//     * Helper method that automatically repositions the tape two clear button on resizing
+//     */
+//    private void adjustTapeTwoClearButton() {
+//        tapeTwoPane.setGraphicTextGap(tapeTwoPane.widthProperty().intValue() - 220);
+//    }
     
     /*** End dialogs section **/
     

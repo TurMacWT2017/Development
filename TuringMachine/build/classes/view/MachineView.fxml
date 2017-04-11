@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox prefHeight="598.0" prefWidth="709.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MachineViewController">
+<VBox minHeight="600.0" minWidth="720.0" prefHeight="600.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MachineViewController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
