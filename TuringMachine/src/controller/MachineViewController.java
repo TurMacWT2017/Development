@@ -204,6 +204,7 @@ public class MachineViewController implements Initializable {
     @FXML private TitledPane tapeOnePane;
     @FXML private TitledPane tapeTwoPane;
     @FXML private TitledPane tapeThreePane;
+    @FXML private ScrollPane tapeOneScroll;
     //Code Window
     @FXML private TextFlow codeViewTab;
 
@@ -719,9 +720,9 @@ public class MachineViewController implements Initializable {
                     updateTapeContent(interp.getTapeContent(3), 3);
                 }
             }
-            //This line disables word wrapping for the tape one textflow,
-            //this forces it to behave more as a tape and expand horizontally
-            tapeOne.setPrefWidth(Double.MAX_VALUE);
+            //This line helps prevent the viewport from "breaking" scrolling
+//            tapeOne.setPrefWidth(Double.MAX_VALUE);
+            tapeOneScroll.setPrefViewportWidth(700);
     }
     
     /**
@@ -969,7 +970,6 @@ public class MachineViewController implements Initializable {
                 }
             });
         }
-            
     }
     
     /**
