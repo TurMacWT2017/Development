@@ -464,7 +464,7 @@ public class MachineViewController implements Initializable {
             dialog.setHeaderText(null);
             dialog.setContentText("Tape Three: ");
             Optional<String> result = dialog.showAndWait();
-            result.ifPresent(input -> interp.setInitialContent(result.get(), 3));            
+            result.ifPresent(input -> interp.setInitialContent(result.get(), 3));
             interp.reset();
         }
     }
@@ -697,7 +697,7 @@ public class MachineViewController implements Initializable {
             isItalic = fontControl.getIsItalic();
             RWHeadFillColor = fontControl.getRWHeadFillColor();
             if (fontControl.getIsDefaultFont()) {
-                TuringMachineJFXMLPrototype.setUserFontPreferences(family, size, isBold, isItalic);
+                TuringMachineJFXMLPrototype.setUserFontPreferences(family, size, isItalic, isBold);
             }
             if (fontControl.getIsDefaultRW()) {
                 TuringMachineJFXMLPrototype.setUserRWHeadPreferences(RWHeadFillColor);
