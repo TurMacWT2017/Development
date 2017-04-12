@@ -44,6 +44,7 @@ public class TuringMachineJFXMLPrototype extends Application {
     
     @Override
     public void stop() {
+        setUserTapePreferences(controller.MachineViewController.tapes);
         model.Interpreter.haltSimulation();
         
     }
@@ -114,5 +115,23 @@ public class TuringMachineJFXMLPrototype extends Application {
     }
     
     
+    /**
+     * Sets the user's tape preference (these will always be saved as a convenience to the user)
+     * @param tapes number of tapes
+     */
+    public static void setUserTapePreferences(int tapes) {
+        Preferences prefs = Preferences.userNodeForPackage(TuringMachineJFXMLPrototype.class);
+        prefs.putInt("activeTapesSetting", tapes);
+    }
+    
+    /**
+     * Gets the user's tape preference (these will always be saved as a convenience to the user)
+     * @param tapes number of tapes
+     */
+    public static int getUserTapePreferences() {
+        Preferences prefs = Preferences.userNodeForPackage(TuringMachineJFXMLPrototype.class);
+        int tapes = prefs.getInt("activeTapesSetting", 1);
+        return tapes;
+    }
     
 }

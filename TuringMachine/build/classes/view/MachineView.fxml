@@ -60,9 +60,9 @@
          <children>
             <TitledPane fx:id="tapeOnePane" collapsible="false" contentDisplay="RIGHT" prefHeight="99.0" prefWidth="720.0" stylesheets="@machineViewStyle.css" text="Tape 1">
                <content>
-                  <ScrollPane fx:id="tapeOneScroll" fitToHeight="true" prefWidth="700.0" vmax="0.0">
+                  <ScrollPane fx:id="tapeOneScroll" fitToHeight="true" pannable="true" prefWidth="718.0" vmax="0.0">
                      <content>
-                        <TextFlow fx:id="tapeOne" />
+                        <TextFlow fx:id="tapeOne" textAlignment="CENTER" />
                      </content>
                   </ScrollPane>
                </content>

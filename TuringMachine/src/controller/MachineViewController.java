@@ -31,6 +31,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Camera;
 import javafx.scene.Group;
@@ -155,7 +156,7 @@ public class MachineViewController implements Initializable {
     //used to keep track of how many tapes the user is working with and is given
     //to the interpreter upon its creation so it knows how many tapes it has
     //default is one tape
-    private int tapes = 1;
+    public static int tapes = 1;
     
     //Keeps track of the currently selected tape (in this case, its TextFlow, since
     //that's what is edited in the view)
@@ -1032,24 +1033,26 @@ public class MachineViewController implements Initializable {
         
         //these lines set the bind the gap between tape name and clear button
         //thse are necessary to keep the clear buttons right aligned
-        tapeOnePane.setContentDisplay(ContentDisplay.LEFT);
-        tapeTwoPane.setContentDisplay(ContentDisplay.LEFT);
-        tapeThreePane.setContentDisplay(ContentDisplay.LEFT);
+        tapeOnePane.setContentDisplay(ContentDisplay.RIGHT);
+        tapeTwoPane.setContentDisplay(ContentDisplay.RIGHT);
+        tapeThreePane.setContentDisplay(ContentDisplay.RIGHT);
 
-//        tapeOnePane.graphicTextGapProperty().bind(tapeOnePane.widthProperty().subtract(215.00));
-//        tapeTwoPane.graphicTextGapProperty().bind(tapeTwoPane.widthProperty().subtract(230.00));
-//        tapeThreePane.graphicTextGapProperty().bind(tapeThreePane.widthProperty().subtract(230.00));
-//        
-//        Platform.runLater(()-> {         
-//            ((Stage) tapeOne.getScene().getWindow()).maximizedProperty().addListener((ObservableValue<? extends Boolean> prop, Boolean oldValue, Boolean newValue) -> {
-//            if (newValue == false) {
-//                tapeOnePane.graphicTextGapProperty().unbind();
-//                tapeOnePane.setGraphicTextGap(500);
-//                tapeOnePane.getParent().requestLayout();
-//                System.out.println(tapeOnePane.widthProperty().doubleValue());
-////                tapeOnePane.graphicTextGapProperty().bind(tapeOnePane.widthProperty().subtract(215.00));
-//            }
-//        });});
+
+        tapeOnePane.graphicTextGapProperty().bind(mainWindow.widthProperty().subtract(215.00));
+        tapeTwoPane.graphicTextGapProperty().bind(mainWindow.widthProperty().subtract(230.00));
+        tapeThreePane.graphicTextGapProperty().bind(mainWindow.widthProperty().subtract(230.00));
+        
+        //retrieves user's tape settings
+        tapes = TuringMachineJFXMLPrototype.getUserTapePreferences();
+        if (tapes == 2) {
+            activateTapeTwo();
+        }
+        if (tapes == 3) {
+            activateTapeTwo();
+            activateTapeThree();
+        }
+        
+        
     }    
 
     /**
