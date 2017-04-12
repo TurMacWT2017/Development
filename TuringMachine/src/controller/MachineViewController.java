@@ -711,10 +711,10 @@ public class MachineViewController implements Initializable {
             isItalic = fontControl.getIsItalic();
             RWHeadFillColor = fontControl.getRWHeadFillColor();
             if (fontControl.getIsDefaultFont()) {
-                TuringMachineJFXMLPrototype.setUserFontPreferences(family, size, isItalic, isBold);
+                TuringMachine.setUserFontPreferences(family, size, isItalic, isBold);
             }
             if (fontControl.getIsDefaultRW()) {
-                TuringMachineJFXMLPrototype.setUserRWHeadPreferences(RWHeadFillColor);
+                TuringMachine.setUserRWHeadPreferences(RWHeadFillColor);
             }
             if (fileLoaded) {
                 if (interp.errorFound()) {
@@ -1016,8 +1016,8 @@ public class MachineViewController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {        
         speedSlider.valueProperty().addListener(new ChangeListenerImpl());
         //this portion pulls any current user defaults that have been set and applies them
-        Object[] settings = TuringMachineJFXMLPrototype.getUserFontPreferences();
-        Color savedColor = TuringMachineJFXMLPrototype.getUserRWHeadPreferences();
+        Object[] settings = TuringMachine.getUserFontPreferences();
+        Color savedColor = TuringMachine.getUserRWHeadPreferences();
         family = (String) settings[0];
         size = (int) settings[1];
         isItalic = (boolean) settings[2];
@@ -1044,7 +1044,7 @@ public class MachineViewController implements Initializable {
         tapeThreePane.graphicTextGapProperty().bind(mainWindow.widthProperty().subtract(230.00));
         
         //retrieves user's tape settings
-        tapes = TuringMachineJFXMLPrototype.getUserTapePreferences();
+        tapes = TuringMachine.getUserTapePreferences();
         if (tapes == 2) {
             activateTapeTwo();
         }
