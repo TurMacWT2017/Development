@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox minHeight="600.0" minWidth="720.0" prefHeight="600.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MachineViewController">
+<VBox fx:id="mainWindow" minHeight="600.0" minWidth="720.0" prefHeight="600.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MachineViewController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -58,7 +58,7 @@
     </MenuBar>
       <VBox id="background" stylesheets="@machineViewStyle.css">
          <children>
-            <TitledPane fx:id="tapeOnePane" collapsible="false" contentDisplay="RIGHT" graphicTextGap="500.0" prefHeight="99.0" prefWidth="709.0" stylesheets="@machineViewStyle.css" text="Tape 1">
+            <TitledPane fx:id="tapeOnePane" collapsible="false" contentDisplay="RIGHT" prefHeight="99.0" prefWidth="720.0" stylesheets="@machineViewStyle.css" text="Tape 1">
                <content>
                   <ScrollPane fx:id="tapeOneScroll" fitToHeight="true" prefWidth="700.0" vmax="0.0">
                      <content>
@@ -70,7 +70,7 @@
                   <Button id="button" fx:id="tapeOneClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeOneClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
                </graphic>
             </TitledPane>
-            <TitledPane fx:id="tapeTwoPane" contentDisplay="RIGHT" expanded="false" graphicTextGap="500.0" layoutX="10.0" layoutY="10.0" prefHeight="0.0" prefWidth="709.0" stylesheets="@machineViewStyle.css" text="Tape 2" visible="false">
+            <TitledPane fx:id="tapeTwoPane" contentDisplay="RIGHT" expanded="false" layoutX="10.0" layoutY="10.0" prefHeight="0.0" prefWidth="720.0" stylesheets="@machineViewStyle.css" text="Tape 2" visible="false">
                <content>
                   <ScrollPane fx:id="tapeTwoScroll" fitToHeight="true" prefWidth="700.0" vmax="0.0">
                      <content>
@@ -82,7 +82,7 @@
                   <Button id="button" fx:id="tapeTwoClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeTwoClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
                </graphic>
             </TitledPane>
-            <TitledPane fx:id="tapeThreePane" contentDisplay="RIGHT" expanded="false" graphicTextGap="500.0" layoutX="10.0" layoutY="109.0" prefHeight="0.0" prefWidth="709.0" stylesheets="@machineViewStyle.css" text="Tape 3" visible="false">
+            <TitledPane fx:id="tapeThreePane" contentDisplay="RIGHT" expanded="false" layoutX="10.0" layoutY="109.0" prefHeight="0.0" prefWidth="720.0" stylesheets="@machineViewStyle.css" text="Tape 3" visible="false">
                <content>
                   <ScrollPane fx:id="tapeThreeScroll" fitToHeight="true" prefWidth="700.0" vmax="0.0">
                      <content>

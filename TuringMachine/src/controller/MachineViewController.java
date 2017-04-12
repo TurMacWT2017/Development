@@ -208,6 +208,8 @@ public class MachineViewController implements Initializable {
     @FXML private ScrollPane tapeOneScroll;
     //Code Window
     @FXML private TextFlow codeViewTab;
+    //Main window
+    @FXML private VBox mainWindow;
 
     
     //Machine Controller
@@ -1030,13 +1032,24 @@ public class MachineViewController implements Initializable {
         
         //these lines set the bind the gap between tape name and clear button
         //thse are necessary to keep the clear buttons right aligned
-        tapeOnePane.setContentDisplay(ContentDisplay.RIGHT);
-        tapeTwoPane.setContentDisplay(ContentDisplay.RIGHT);
-        tapeThreePane.setContentDisplay(ContentDisplay.RIGHT);
+        tapeOnePane.setContentDisplay(ContentDisplay.LEFT);
+        tapeTwoPane.setContentDisplay(ContentDisplay.LEFT);
+        tapeThreePane.setContentDisplay(ContentDisplay.LEFT);
 
-        tapeOnePane.graphicTextGapProperty().bind(tapeOnePane.widthProperty().subtract(215.00));
-        tapeTwoPane.graphicTextGapProperty().bind(tapeTwoPane.widthProperty().subtract(230.00));
-        tapeThreePane.graphicTextGapProperty().bind(tapeThreePane.widthProperty().subtract(230.00));
+//        tapeOnePane.graphicTextGapProperty().bind(tapeOnePane.widthProperty().subtract(215.00));
+//        tapeTwoPane.graphicTextGapProperty().bind(tapeTwoPane.widthProperty().subtract(230.00));
+//        tapeThreePane.graphicTextGapProperty().bind(tapeThreePane.widthProperty().subtract(230.00));
+//        
+//        Platform.runLater(()-> {         
+//            ((Stage) tapeOne.getScene().getWindow()).maximizedProperty().addListener((ObservableValue<? extends Boolean> prop, Boolean oldValue, Boolean newValue) -> {
+//            if (newValue == false) {
+//                tapeOnePane.graphicTextGapProperty().unbind();
+//                tapeOnePane.setGraphicTextGap(500);
+//                tapeOnePane.getParent().requestLayout();
+//                System.out.println(tapeOnePane.widthProperty().doubleValue());
+////                tapeOnePane.graphicTextGapProperty().bind(tapeOnePane.widthProperty().subtract(215.00));
+//            }
+//        });});
     }    
 
     /**

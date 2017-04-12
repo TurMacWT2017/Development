@@ -7,6 +7,8 @@ package controller;
 
 import java.util.prefs.Preferences;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,6 +31,7 @@ public class TuringMachineJFXMLPrototype extends Application {
         stage.setTitle("Turing Machine");
         
         stage.show();
+
         
     }
 
