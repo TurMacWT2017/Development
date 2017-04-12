@@ -10,15 +10,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import model.Interpreter;
 
 /**
- *
- * @author student
+ * Controller for performing auxilliary functions such as file opening
+ * @author Nick Ahring
  */
 public class MachineController {
-    
-    private Interpreter interp;
     
     public MachineController() {
 

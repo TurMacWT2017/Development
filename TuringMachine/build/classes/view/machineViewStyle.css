@@ -58,8 +58,5 @@ and open the template in the editor.
         linear-gradient(#67112b, #400215), radial-gradient(center 50% 0%, radius 100%, rgba(93,9,34,0.9), rgba(255,255,255,0));
 }
 
-.tape-content {
-   -fx-hpos: center;
-}
 
     

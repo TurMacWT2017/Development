@@ -8,7 +8,9 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 
 /**
- *
+ * This class represents a turing machine interpreter
+ * The interpreter is responsible for tokenizing the file, and run the compiled
+ * transition list "Program" provided by the parser
  * @author Landon Bressler 
  * @author Nick Ahring
  */
@@ -163,7 +165,7 @@ public class Interpreter
     /** Starts up the interpreter 
      * <pre> Pre-condition: Interpreter not started</pre>
      * <pre> Post condition: Interpreter and interpreter thread started</pre>
-     * @throws model.InterpreterException
+     * @throws model.InterpreterException interpreter exception
      */
     public void start() throws InterpreterException { 
         
@@ -532,7 +534,7 @@ public class Interpreter
     
     /**
      * Retrieves a description of what errors occurred
-     * @return 
+     * @return program error report 
      */
     public String getErrorReport() 
     {
@@ -541,7 +543,7 @@ public class Interpreter
     
     /**
      * Used to find if there are errors
-     * @return 
+     * @return boolean errorsPresent
      */
     public boolean errorFound() 
     {

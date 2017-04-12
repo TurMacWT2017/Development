@@ -16,8 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
- *
- * @author student
+ * Main application class. Launches the Primary FXML application
+ * @author Nick Ahring
  */
 public class TuringMachineJFXMLPrototype extends Application {
 
@@ -126,7 +126,7 @@ public class TuringMachineJFXMLPrototype extends Application {
     
     /**
      * Gets the user's tape preference (these will always be saved as a convenience to the user)
-     * @param tapes number of tapes
+     * @return number of tapes
      */
     public static int getUserTapePreferences() {
         Preferences prefs = Preferences.userNodeForPackage(TuringMachineJFXMLPrototype.class);

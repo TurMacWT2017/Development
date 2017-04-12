@@ -114,7 +114,8 @@ import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 
 /**
- *
+ * This controller controls the Main Program User Interface. The FXML that it
+ * corresponds to is MachineView.
  * @author Nick Ahring
  */
 public class MachineViewController implements Initializable {
@@ -227,7 +228,7 @@ public class MachineViewController implements Initializable {
      * Handles a click on the run button. Utilizes helper method to determine
      * if program is ready to run. For helper method see checkProgramStatus();
      * documentation
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void runButtonClicked(ActionEvent event) {
@@ -257,7 +258,7 @@ public class MachineViewController implements Initializable {
      * Handles a click on the step button. Utilizes helper method to determine
      * if program is ready to run. For helper method see checkProgramStatus();
      * documentation
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void stepButtonClicked(ActionEvent event) {
@@ -271,7 +272,7 @@ public class MachineViewController implements Initializable {
      * Handles a click on the stop button. Utilizes helper method to determine
      * if program is ready to run. For helper method see checkProgramStatus();
      * documentation
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void stopButtonClicked(ActionEvent event) {
@@ -285,7 +286,7 @@ public class MachineViewController implements Initializable {
      * Handles a click on the reset button. Utilizes helper method to determine
      * if program is ready to run. For helper method see checkProgramStatus();
      * documentation
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void resetButtonClicked(ActionEvent event) {
@@ -298,7 +299,7 @@ public class MachineViewController implements Initializable {
     
     /**
      * Handles a click on the quit button. 
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void menuQuitButtonClicked(ActionEvent event) {
@@ -308,7 +309,7 @@ public class MachineViewController implements Initializable {
     /**
      * Handles a click on the open file button. Uses machine controller to open
      * file, starts a new interpreter
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void openFileMenuItemClicked(ActionEvent event) {
@@ -412,7 +413,7 @@ public class MachineViewController implements Initializable {
      * Handles a click on the tape one clear button. Utilizes helper method to determine
      * if program is ready. For helper method see checkProgramStatus();
      * documentation
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void tapeOneClearButtonClicked(ActionEvent event) {
@@ -434,7 +435,7 @@ public class MachineViewController implements Initializable {
      * Handles a click on the tape two clear button. Utilizes helper method to determine
      * if program is ready. For helper method see checkProgramStatus();
      * documentation
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void tapeTwoClearButtonClicked(ActionEvent event) {
@@ -456,7 +457,7 @@ public class MachineViewController implements Initializable {
      * Handles a click on the tape three clear button. Utilizes helper method to determine
      * if program is ready. For helper method see checkProgramStatus();
      * documentation
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void tapeThreeClearButtonClicked(ActionEvent event) {
@@ -478,7 +479,7 @@ public class MachineViewController implements Initializable {
      * Handles a click on the clear all tapes menu button. Utilizes helper method to determine
      * if program is ready. For helper method see checkProgramStatus();
      * documentation
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void clearAllTapesButtonClicked(ActionEvent event) {
@@ -494,7 +495,7 @@ public class MachineViewController implements Initializable {
 
     /**
      * Changes the machine to one tape mode
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void setOneTapeMode(ActionEvent event) {
@@ -528,7 +529,7 @@ public class MachineViewController implements Initializable {
     
     /**
      * Changes the machine to two tape mode
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void setTwoTapeMode(ActionEvent event) {
@@ -562,7 +563,7 @@ public class MachineViewController implements Initializable {
     
     /**
      * Change machine to three tape mode
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void setThreeTapeMode(ActionEvent event) {
@@ -636,7 +637,7 @@ public class MachineViewController implements Initializable {
     /**
      * Handles click on launch code window menu item, displays code view tab
      * content in new window
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void launchCodeWindow(ActionEvent event) {
@@ -687,7 +688,7 @@ public class MachineViewController implements Initializable {
     /**
      * Handles click on font options menu item, and shows custom font control
      * component
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     public void showFontChooser(ActionEvent event) {
@@ -739,7 +740,7 @@ public class MachineViewController implements Initializable {
     
     /**
      * Handles click on about menu item and displays about page
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     public void aboutMenu(ActionEvent event) {
@@ -764,7 +765,7 @@ public class MachineViewController implements Initializable {
     
     /**
      * Handles click on language reference menu item and displays language reference
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     public void languageReference(ActionEvent event) {
@@ -1008,8 +1009,8 @@ public class MachineViewController implements Initializable {
     /**
      * Ran on launch to add listeners and finish initialization of UI
      * Also pulls and sets any default user preferences
-     * @param url
-     * @param rb 
+     * @param url URL
+     * @param rb ResourceBundle
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {        
@@ -1065,7 +1066,7 @@ public class MachineViewController implements Initializable {
     
     /**
      * Launches the state window diagram
-     * @param event 
+     * @param event ActionEvent 
      */
     @FXML
     public void launchStateWindow(ActionEvent event){
@@ -1581,7 +1582,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
     
     /** Shows an auto stop dialog if the program is asked to transition to a 
     * state that does not exist in the input file
-    * @param lookingForState 
+    * @param lookingForState state that was not found
     */
     public void showAutoStopDialog(String lookingForState) {
         Alert alert = new Alert(AlertType.WARNING);

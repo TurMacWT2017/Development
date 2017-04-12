@@ -6,8 +6,8 @@
 package model;
 
 /**
- *
- * @author student
+ *  Handles Interpreter Exceptions
+ * 
  */
 public class InterpreterException extends Exception {
 
