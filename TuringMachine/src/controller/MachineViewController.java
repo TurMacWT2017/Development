@@ -5,6 +5,7 @@
  */
 package controller;
 import java.io.File;
+import java.io.IOException;
 
 
 import java.net.URL;
@@ -203,6 +204,7 @@ public class MachineViewController implements Initializable {
     @FXML private MenuItem about;
     @FXML private MenuItem langref;
     @FXML private MenuItem clearAllTapesButton;
+    @FXML private MenuItem loadPalindrome;
     //Titled panes for the tape views
     @FXML private TitledPane tapeOnePane;
     @FXML private TitledPane tapeTwoPane;
@@ -353,13 +355,11 @@ public class MachineViewController implements Initializable {
             YCOORD = 72;
             String input = controller.openFile(selectedFile);
             //when initializing interpreter, give it both an input and a view controller (this) to work with
-            System.out.println("Number of tapes was" + tapes);
             interp = new Interpreter(input, this, tapes);
             //enable the speed slider
             speedSlider.setDisable(false);
             changeLabel.setDisable(false);
             speedLabel.setDisable(false);
-//            recentFiles.add(selectedFile);
             //Show code or error report
             if (interp.errorFound()) {
                 updateCodeTabContent(interp.getErrorReport());
@@ -405,6 +405,44 @@ public class MachineViewController implements Initializable {
                 //    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }
         }       
+    }
+    
+    /**
+     * Loads the example program "Palindrome.tm".
+     * @param event ActionEvent
+     * @throws java.io.IOException
+     */
+    public void loadPalindromeClicked(ActionEvent event) throws IOException {
+        //note that a file was loaded
+        fileLoaded = true;
+        //clear the tapes of any old content
+        tapeOne.getChildren().clear();
+        tapeTwo.getChildren().clear();
+        tapeThree.getChildren().clear();
+        codeViewTab.getChildren().clear();
+        statePaneTab.getChildren().clear();
+        clearStateTuples();
+
+        XCOORD = 72;
+        YCOORD = 72;
+        String input = controller.openExamplePalindrome();
+        //when initializing interpreter, give it both an input and a view controller (this) to work with
+        interp = new Interpreter(input, this, tapes);
+        //enable the speed slider
+        speedSlider.setDisable(false);
+        changeLabel.setDisable(false);
+        speedLabel.setDisable(false);
+        Text text1 = new Text(input);
+        text1.setFont(Font.font(family, size));
+        codeViewTab.getChildren().add(text1);
+        try {
+            interp.start();
+            //Ensure the interpreter's speed is up to date with UI
+            interp.setRunSpeed((int) speedSlider.getValue());
+        } catch (InterpreterException ex) {
+            Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     /****** Tape Clear button handling methods *********/
