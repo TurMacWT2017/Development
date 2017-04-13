@@ -67,7 +67,7 @@
                   </ScrollPane>
                </content>
                <graphic>
-                  <Button id="button" fx:id="tapeOneClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeOneClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
+                  <Button fx:id="tapeOneClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeOneClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
                </graphic>
             </TitledPane>
             <TitledPane fx:id="tapeTwoPane" contentDisplay="RIGHT" expanded="false" layoutX="10.0" layoutY="10.0" prefHeight="0.0" prefWidth="720.0" stylesheets="@machineViewStyle.css" text="Tape 2" visible="false">
@@ -79,7 +79,7 @@
                   </ScrollPane>
                </content>
                <graphic>
-                  <Button id="button" fx:id="tapeTwoClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeTwoClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
+                  <Button fx:id="tapeTwoClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeTwoClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
                </graphic>
             </TitledPane>
             <TitledPane fx:id="tapeThreePane" contentDisplay="RIGHT" expanded="false" layoutX="10.0" layoutY="109.0" prefHeight="0.0" prefWidth="720.0" stylesheets="@machineViewStyle.css" text="Tape 3" visible="false">
@@ -91,7 +91,7 @@
                   </ScrollPane>
                </content>
                <graphic>
-                  <Button id="button" fx:id="tapeThreeClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeThreeClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
+                  <Button fx:id="tapeThreeClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeThreeClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
                </graphic>
             </TitledPane>
          </children>
