@@ -9,7 +9,8 @@ import controller.MachineViewController;
 import java.util.ArrayList;
 
 /**
- *
+ * This class is used for parsing the list of tokens into an executable list of 
+ * transitions for the interpreter
  * @author Nick Ahring
  */
 public class Parser {
@@ -24,6 +25,11 @@ public class Parser {
         this.interp = interp;
     }
     
+    /**
+     * Compiles the tokens currently being held by the interpreter into a 
+     * list of executable transitions
+     * @return ArrayList
+     */
     public ArrayList<StateTransition> compile() {
         tokens = interp.getTokens();
         ArrayList<StateTransition> transitions = new ArrayList();

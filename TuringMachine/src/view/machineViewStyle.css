@@ -31,6 +31,20 @@ and open the template in the editor.
     -fx-background-color: white;
 }
 
+.titled-pane > .title > .button {
+    -fx-background-color: #000000, linear-gradient(#b0b0b0 0%, #d0d0d0 20%, #d0d0d0 100%),
+        linear-gradient(#bdbdbd, #bdbdbd), radial-gradient(center 50% 0%, radius 100%, rgba(255,255,255,0.9), rgba(255,255,255,0));
+    
+    -fx-text-fill: black;
+    -fx-font-family: "Arial";
+    -fx-font-size: 12px;
+    -fx-font-padding: 10 20 10 20;
+}
+
+.titled-pane > .title > .button:hover {
+    -fx-background-color: #b0b0b0;
+}
+
 .button{
     -fx-background-color: #000000, linear-gradient(#710022 0%, #8e2746 20%, #400215 100%),
         linear-gradient(#67112b, #400215), radial-gradient(center 50% 0%, radius 100%, rgba(93,9,34,0.9), rgba(255,255,255,0));
@@ -57,3 +71,6 @@ and open the template in the editor.
     -fx-background-color: #000000, linear-gradient(#710022 0%, #8e2746 20%, #400215 100%),
         linear-gradient(#67112b, #400215), radial-gradient(center 50% 0%, radius 100%, rgba(93,9,34,0.9), rgba(255,255,255,0));
 }
+
+
+    

@@ -29,7 +29,9 @@ import javafx.fxml.FXML;
 
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Camera;
 import javafx.scene.Group;
@@ -69,6 +71,7 @@ import model.StateTransition;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
@@ -82,6 +85,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.CycleMethod;
@@ -110,7 +114,8 @@ import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 
 /**
- *
+ * This controller controls the Main Program User Interface. The FXML that it
+ * corresponds to is MachineView.
  * @author Nick Ahring
  */
 public class MachineViewController implements Initializable {
@@ -123,7 +128,6 @@ public class MachineViewController implements Initializable {
     private boolean isBold = false;
     private boolean isItalic = false;
     private Color RWHeadFillColor = Color.RED;
-    private ResourceBundle bundle;
     
     //state diagram variables
     private Circle acceptNode;
@@ -153,7 +157,7 @@ public class MachineViewController implements Initializable {
     //used to keep track of how many tapes the user is working with and is given
     //to the interpreter upon its creation so it knows how many tapes it has
     //default is one tape
-    private int tapes = 1;
+    public static int tapes = 1;
     
     //Keeps track of the currently selected tape (in this case, its TextFlow, since
     //that's what is edited in the view)
@@ -203,8 +207,11 @@ public class MachineViewController implements Initializable {
     @FXML private TitledPane tapeOnePane;
     @FXML private TitledPane tapeTwoPane;
     @FXML private TitledPane tapeThreePane;
+    @FXML private ScrollPane tapeOneScroll;
     //Code Window
     @FXML private TextFlow codeViewTab;
+    //Main window
+    @FXML private VBox mainWindow;
 
     
     //Machine Controller
@@ -216,8 +223,13 @@ public class MachineViewController implements Initializable {
     private static ArrayList<StateTransition> currentStates;
     //keeps track of file status
     boolean fileLoaded = false;    
-    //private Tape tm = new charTape();
     
+    /**
+     * Handles a click on the run button. Utilizes helper method to determine
+     * if program is ready to run. For helper method see checkProgramStatus();
+     * documentation
+     * @param event ActionEvent
+     */
     @FXML
     private void runButtonClicked(ActionEvent event) {
         //Check and make sure the user has actually loaded a program
@@ -242,6 +254,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the step button. Utilizes helper method to determine
+     * if program is ready to run. For helper method see checkProgramStatus();
+     * documentation
+     * @param event ActionEvent
+     */
     @FXML
     private void stepButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -250,6 +268,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the stop button. Utilizes helper method to determine
+     * if program is ready to run. For helper method see checkProgramStatus();
+     * documentation
+     * @param event ActionEvent
+     */
     @FXML
     private void stopButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -258,6 +282,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the reset button. Utilizes helper method to determine
+     * if program is ready to run. For helper method see checkProgramStatus();
+     * documentation
+     * @param event ActionEvent
+     */
     @FXML
     private void resetButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -267,11 +297,20 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the quit button. 
+     * @param event ActionEvent
+     */
     @FXML
     private void menuQuitButtonClicked(ActionEvent event) {
         Platform.exit();
     }
     
+    /**
+     * Handles a click on the open file button. Uses machine controller to open
+     * file, starts a new interpreter
+     * @param event ActionEvent
+     */
     @FXML
     private void openFileMenuItemClicked(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -368,6 +407,14 @@ public class MachineViewController implements Initializable {
         }       
     }
     
+    /****** Tape Clear button handling methods *********/
+    
+    /**
+     * Handles a click on the tape one clear button. Utilizes helper method to determine
+     * if program is ready. For helper method see checkProgramStatus();
+     * documentation
+     * @param event ActionEvent
+     */
     @FXML
     private void tapeOneClearButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -384,6 +431,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the tape two clear button. Utilizes helper method to determine
+     * if program is ready. For helper method see checkProgramStatus();
+     * documentation
+     * @param event ActionEvent
+     */
     @FXML
     private void tapeTwoClearButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -400,6 +453,12 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles a click on the tape three clear button. Utilizes helper method to determine
+     * if program is ready. For helper method see checkProgramStatus();
+     * documentation
+     * @param event ActionEvent
+     */
     @FXML
     private void tapeThreeClearButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -411,11 +470,17 @@ public class MachineViewController implements Initializable {
             dialog.setHeaderText(null);
             dialog.setContentText("Tape Three: ");
             Optional<String> result = dialog.showAndWait();
-            result.ifPresent(input -> interp.setInitialContent(result.get(), 3));            
+            result.ifPresent(input -> interp.setInitialContent(result.get(), 3));
             interp.reset();
         }
     }
     
+    /**
+     * Handles a click on the clear all tapes menu button. Utilizes helper method to determine
+     * if program is ready. For helper method see checkProgramStatus();
+     * documentation
+     * @param event ActionEvent
+     */
     @FXML
     private void clearAllTapesButtonClicked(ActionEvent event) {
         boolean isReady = checkProgramStatus();
@@ -425,14 +490,21 @@ public class MachineViewController implements Initializable {
             interp.reset();
         }
     }
-    /** The below methods handle toggling the view to either 1, 2, or 3 tape mode **/
     
+    /** The below methods handle toggling the view to either 1, 2, or 3 tape mode **/
+
+    /**
+     * Changes the machine to one tape mode
+     * @param event ActionEvent
+     */
     @FXML
     private void setOneTapeMode(ActionEvent event) {
         tapeTwoPane.setExpanded(false);
         tapeTwoPane.setVisible(false);
+        tapeTwoPane.setPrefHeight(0);
         tapeThreePane.setExpanded(false);
         tapeThreePane.setVisible(false);
+        tapeThreePane.setPrefHeight(0);
         tapes = 1;
         if (fileLoaded) {
             boolean isReady = checkProgramStatus();
@@ -455,12 +527,18 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Changes the machine to two tape mode
+     * @param event ActionEvent
+     */
     @FXML
     private void setTwoTapeMode(ActionEvent event) {
         tapeTwoPane.setExpanded(true);
         tapeTwoPane.setVisible(true);
+        tapeTwoPane.setPrefHeight(99);
         tapeThreePane.setExpanded(false);
         tapeThreePane.setVisible(false);
+        tapeThreePane.setPrefHeight(0);
         tapes = 2;
         if (fileLoaded) {
             boolean isReady = checkProgramStatus();
@@ -483,10 +561,16 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Change machine to three tape mode
+     * @param event ActionEvent
+     */
     @FXML
     private void setThreeTapeMode(ActionEvent event) {
+        tapeTwoPane.setPrefHeight(99);
         tapeTwoPane.setExpanded(true);
         tapeTwoPane.setVisible(true);
+        tapeThreePane.setPrefHeight(99);
         tapeThreePane.setExpanded(true);
         tapeThreePane.setVisible(true);
         tapes = 3;
@@ -512,18 +596,28 @@ public class MachineViewController implements Initializable {
         }
 
     }
+    
     /*** These methods are used by the interpreter if a tape needs to be activated that isn't ****/
+    
+    /**
+     * Activates tape two within the UI
+     */
     @FXML
     public void activateTapeTwo() {
         tapeTwo.getChildren().clear();
+        tapeTwoPane.setPrefHeight(99);
         tapeTwoPane.setExpanded(true);
         tapeTwoPane.setVisible(true);
         tapes = 2;
     }
     
+    /**
+     * Activates tape three within the UI
+     */
     @FXML
     public void activateTapeThree() {
         tapeThree.getChildren().clear();
+        tapeThreePane.setPrefHeight(99);
         tapeThreePane.setExpanded(true);
         tapeThreePane.setVisible(true);
         tapes = 3;
@@ -540,6 +634,11 @@ public class MachineViewController implements Initializable {
         return tapes;
     }
     
+    /**
+     * Handles click on launch code window menu item, displays code view tab
+     * content in new window
+     * @param event ActionEvent
+     */
     @FXML
     private void launchCodeWindow(ActionEvent event) {
         //Parent root;
@@ -586,6 +685,11 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Handles click on font options menu item, and shows custom font control
+     * component
+     * @param event ActionEvent
+     */
     @FXML
     public void showFontChooser(ActionEvent event) {
             FontControl fontControl = new FontControl();
@@ -607,10 +711,10 @@ public class MachineViewController implements Initializable {
             isItalic = fontControl.getIsItalic();
             RWHeadFillColor = fontControl.getRWHeadFillColor();
             if (fontControl.getIsDefaultFont()) {
-                TuringMachineJFXMLPrototype.setUserFontPreferences(family, size, isBold, isItalic);
+                TuringMachine.setUserFontPreferences(family, size, isItalic, isBold);
             }
             if (fontControl.getIsDefaultRW()) {
-                TuringMachineJFXMLPrototype.setUserRWHeadPreferences(RWHeadFillColor);
+                TuringMachine.setUserRWHeadPreferences(RWHeadFillColor);
             }
             if (fileLoaded) {
                 if (interp.errorFound()) {
@@ -629,8 +733,15 @@ public class MachineViewController implements Initializable {
                     updateTapeContent(interp.getTapeContent(3), 3);
                 }
             }
+            //This line helps prevent the viewport from "breaking" scrolling
+//            tapeOne.setPrefWidth(Double.MAX_VALUE);
+            tapeOneScroll.setPrefViewportWidth(700);
     }
     
+    /**
+     * Handles click on about menu item and displays about page
+     * @param event ActionEvent
+     */
     @FXML
     public void aboutMenu(ActionEvent event) {
         // stuff
@@ -652,6 +763,10 @@ public class MachineViewController implements Initializable {
         root.getChildren().add(webView);
     }
     
+    /**
+     * Handles click on language reference menu item and displays language reference
+     * @param event ActionEvent
+     */
     @FXML
     public void languageReference(ActionEvent event) {
         // stuff
@@ -660,8 +775,7 @@ public class MachineViewController implements Initializable {
         URL url = MachineViewController.class.getResource(File.separator + "view" + File.separator + "languageReference.html");
         String content = url.toExternalForm();
         webEngine.load(content);
-        
-        
+                
         Stage stage = new Stage();
         StackPane root = new StackPane();
         Scene scene = new Scene(root);
@@ -674,18 +788,19 @@ public class MachineViewController implements Initializable {
         root.getChildren().add(webView);
     }
     
+    /**
+     * Places the UI in a start (ready) state
+     */
     @FXML
     public void setStartState() {
         runButton.setDisable(false);
         stopButton.setDisable(false);
         stepButton.setDisable(false);
     }
-    
-    @FXML
-    public void setStepState() {
-        System.out.println("Machine in step state");
-    }
 
+    /**
+     * Places the UI in a stopped state
+     */
     @FXML
     public void setStoppedState() {
         System.out.println("Machine stopped");
@@ -698,21 +813,37 @@ public class MachineViewController implements Initializable {
         
     }
     
+    /**
+     * Used to reset elements in the UI back to default state
+     */
     @FXML
     public void resetView() {
         runButton.setText("Run");
     }
 
+    /**
+     * Updates the step count within the UI
+     * @param stepCount new count
+     */
     @FXML
     public void updateStepCount(int stepCount) {
         currentSteps.setText(Integer.toString(stepCount));
     }
     
+    /**
+     * Updates the UI State Display
+     * @param state new state to display
+     */
     @FXML
     public void updateState(String state) {
         currentState.setText(state);
     }
     
+    /**
+     * Gets the being displayed in a requested tape
+     * @param tape requested
+     * @return string tape content
+     */
     @FXML
     public String getTapeInput(int tape) {
         switch (tape) {
@@ -727,6 +858,11 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Sets the initial tape content for a given tape
+     * @param content content to display
+     * @param tapeNumber desired tape
+     */    
     @FXML
     public void setInitialTapeContent(String content, int tapeNumber) {
         Text input = new Text(content.substring(1));
@@ -749,6 +885,11 @@ public class MachineViewController implements Initializable {
         }
     }
     
+    /**
+     * Updates the content of the specified tape within the UI
+     * @param content new content to display
+     * @param tape requested tape
+     */
     @FXML
     public void updateTapeContent(String content, int tape) {
         int headLocation = interp.getRWHead(tape);
@@ -842,7 +983,6 @@ public class MachineViewController implements Initializable {
                 }
             });
         }
-            
     }
     
     /**
@@ -866,13 +1006,18 @@ public class MachineViewController implements Initializable {
     }
     
     
-    
+    /**
+     * Ran on launch to add listeners and finish initialization of UI
+     * Also pulls and sets any default user preferences
+     * @param url URL
+     * @param rb ResourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {        
         speedSlider.valueProperty().addListener(new ChangeListenerImpl());
         //this portion pulls any current user defaults that have been set and applies them
-        Object[] settings = TuringMachineJFXMLPrototype.getUserFontPreferences();
-        Color savedColor = TuringMachineJFXMLPrototype.getUserRWHeadPreferences();
+        Object[] settings = TuringMachine.getUserFontPreferences();
+        Color savedColor = TuringMachine.getUserRWHeadPreferences();
         family = (String) settings[0];
         size = (int) settings[1];
         isItalic = (boolean) settings[2];
@@ -883,13 +1028,46 @@ public class MachineViewController implements Initializable {
         statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
         statePaneTab.heightProperty().addListener(observable -> redraw(currentStates));
         
-           
+        //these lines allow the the UI to expand and shrink dynamically with panes as they expand or collapse
+        tapeTwoPane.expandedProperty().addListener(observable -> resetTapePaneTwoHeight());
+        tapeThreePane.expandedProperty().addListener(observable -> resetTapeThreePaneHeight());
+        
+        //these lines set the bind the gap between tape name and clear button
+        //thse are necessary to keep the clear buttons right aligned
+        tapeOnePane.setContentDisplay(ContentDisplay.RIGHT);
+        tapeTwoPane.setContentDisplay(ContentDisplay.RIGHT);
+        tapeThreePane.setContentDisplay(ContentDisplay.RIGHT);
+
+
+        tapeOnePane.graphicTextGapProperty().bind(mainWindow.widthProperty().subtract(215.00));
+        tapeTwoPane.graphicTextGapProperty().bind(mainWindow.widthProperty().subtract(230.00));
+        tapeThreePane.graphicTextGapProperty().bind(mainWindow.widthProperty().subtract(230.00));
+        
+        //retrieves user's tape settings
+        tapes = TuringMachine.getUserTapePreferences();
+        if (tapes == 2) {
+            activateTapeTwo();
+        }
+        if (tapes == 3) {
+            activateTapeTwo();
+            activateTapeThree();
+        }
+        
+        
     }    
 
+    /**
+     * Gets the current value of the speed slider
+     * @return int speed
+     */
     public int getSpeed(){
         return (int)speedSlider.getValue();
     }
     
+    /**
+     * Launches the state window diagram
+     * @param event ActionEvent 
+     */
     @FXML
     public void launchStateWindow(ActionEvent event){
         
@@ -1404,7 +1582,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
     
     /** Shows an auto stop dialog if the program is asked to transition to a 
     * state that does not exist in the input file
-    * @param lookingForState 
+    * @param lookingForState state that was not found
     */
     public void showAutoStopDialog(String lookingForState) {
         Alert alert = new Alert(AlertType.WARNING);
@@ -1569,6 +1747,51 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
                 + "\n If you feel this was a mistake, please check your input file."));
         alert.showAndWait();
     }
+
+    /**
+     * Helper method called by tape pane two listener on expand or collapse
+     */
+    private void resetTapePaneTwoHeight() {
+        if (tapeTwoPane.isExpanded()) {
+            tapeTwoPane.setPrefHeight(99);
+        }
+        else {
+            tapeTwoPane.setPrefHeight(0);
+        }
+    }
+
+    /**
+     * Helper method called by tape pane three listener on expand or collapse
+     */
+    private void resetTapeThreePaneHeight() {
+        if (tapeThreePane.isExpanded()) {
+            tapeThreePane.setPrefHeight(99);
+        }
+        else {
+            tapeThreePane.setPrefHeight(0);
+        }
+    }
+//
+//    /**
+//     * Helper method that automatically repositions the tape one clear button on resizing
+//     */
+//    private void adjustTapeOneClearButton() {
+//        tapeOnePane.setGraphicTextGap(tapeOnePane.getGraphicTextGap() + );
+//    }
+//
+//    /**
+//     * Helper method that automatically repositions the tape three clear button on resizing
+//     */
+//    private void adjustTapeThreeClearButton() {
+//        tapeThreePane.setGraphicTextGap(tapeThreePane.widthProperty().intValue() - 220);
+//    }
+//
+//    /**
+//     * Helper method that automatically repositions the tape two clear button on resizing
+//     */
+//    private void adjustTapeTwoClearButton() {
+//        tapeTwoPane.setGraphicTextGap(tapeTwoPane.widthProperty().intValue() - 220);
+//    }
     
     /*** End dialogs section **/
     

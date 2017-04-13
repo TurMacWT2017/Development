@@ -197,7 +197,7 @@ public class FontControl extends TabPane {
     
     /**
      * Handles user click on Accept Changes and closes the window
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void acceptChanges(ActionEvent event) {
@@ -213,7 +213,7 @@ public class FontControl extends TabPane {
     
     /**
      * Handles user click on Cancel and closes the window
-     * @param event 
+     * @param event ACtionEvent
      */
     @FXML
     private void cancelChanges(ActionEvent event) {
@@ -224,7 +224,7 @@ public class FontControl extends TabPane {
     
     /**
      * Handles user click on bold check box, and calls method to update preview
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void boldCheckBoxClicked(ActionEvent event) {
@@ -235,7 +235,7 @@ public class FontControl extends TabPane {
     /**
      * Handles user click on italicize check box, and calls method to update 
      * preview
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void italicCheckBoxClicked(ActionEvent event) {
@@ -246,7 +246,7 @@ public class FontControl extends TabPane {
     
     /**
      * Handles user click on make default checkbox for font settings
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void makeFontDefault(ActionEvent event) {
@@ -255,7 +255,7 @@ public class FontControl extends TabPane {
     
     /**
      * Handles user click on make default checkbox for RW head settings
-     * @param event 
+     * @param event ActionEvent
      */
     @FXML
     private void makeRWDefault(ActionEvent event) {
@@ -322,7 +322,7 @@ public class FontControl extends TabPane {
     
     /**
      * Gets the font currently set to style preview bars
-     * @returns Font current font
+     * @return Font current font
      */
     private Font getCurrentFontSettings() {
         if (isBold && isItalic) {

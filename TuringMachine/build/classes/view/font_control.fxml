@@ -26,8 +26,8 @@
                         <ComboBox fx:id="sizeChooserBox" layoutX="66.0" layoutY="130.0" prefHeight="26.0" prefWidth="92.0" />
                         <ComboBox fx:id="fontChooserBox" layoutX="66.0" layoutY="95.0" prefHeight="26.0" prefWidth="195.0" />
                         <Label layoutX="4.0" layoutY="3.0" text="Preview" />
-                     <Button fx:id="acceptButton" layoutX="14.0" layoutY="228.0" mnemonicParsing="false" onAction="#acceptChanges" prefHeight="26.0" prefWidth="133.0" text="Accept Changes" />
-                     <Button fx:id="cancelButton" layoutX="189.0" layoutY="228.0" mnemonicParsing="false" onAction="#cancelChanges" prefHeight="26.0" prefWidth="111.0" text="Cancel" />
+                     <Button id="button" fx:id="acceptButton" layoutX="14.0" layoutY="228.0" mnemonicParsing="false" onAction="#acceptChanges" prefHeight="26.0" prefWidth="133.0" text="Accept Changes" stylesheets="@machineViewStyle.css"/>
+                     <Button id="button" fx:id="cancelButton" layoutX="189.0" layoutY="228.0" mnemonicParsing="false" onAction="#cancelChanges" prefHeight="26.0" prefWidth="111.0" text="Cancel" stylesheets="@machineViewStyle.css"/>
                      <CheckBox fx:id="fontDefaultToggle" layoutX="182.0" layoutY="178.0" mnemonicParsing="false" onAction="#makeFontDefault" text="Make Default" />
                   </children>
                </AnchorPane>
@@ -42,8 +42,8 @@
                   <Label layoutX="37.0" layoutY="95.0" text="Read/Write Head Highlighting Color" />
                   <Label layoutX="14.0" layoutY="6.0" text="Preview" />
                   <TextFlow fx:id="RWPreviewBar" layoutX="2.0" layoutY="22.0" prefHeight="71.0" prefWidth="320.0" textAlignment="CENTER" />
-                  <Button fx:id="RWacceptButton" layoutX="16.0" layoutY="228.0" mnemonicParsing="false" onAction="#acceptChanges" prefHeight="26.0" prefWidth="133.0" text="Accept Changes" />
-                  <Button fx:id="RWcancelButton" layoutX="191.0" layoutY="228.0" mnemonicParsing="false" onAction="#cancelChanges" prefHeight="26.0" prefWidth="111.0" text="Cancel" />
+                  <Button id="button" fx:id="RWacceptButton" layoutX="16.0" layoutY="228.0" mnemonicParsing="false" onAction="#acceptChanges" prefHeight="26.0" prefWidth="133.0" text="Accept Changes" stylesheets="@machineViewStyle.css"/>
+                  <Button id="button" fx:id="RWcancelButton" layoutX="191.0" layoutY="228.0" mnemonicParsing="false" onAction="#cancelChanges" prefHeight="26.0" prefWidth="111.0" text="Cancel" stylesheets="@machineViewStyle.css"/>
                   <CheckBox fx:id="RWDefaultToggle" layoutX="98.0" layoutY="165.0" mnemonicParsing="false" onAction="#makeRWDefault" text="Make Default" />
                </children>
           </AnchorPane>

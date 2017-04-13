@@ -14,14 +14,14 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
- *
- * @author student
+ * Main application class. Launches the Primary FXML application
+ * @author Nick Ahring
  */
-public class TuringMachineJFXMLPrototype extends Application {
+public class TuringMachine extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/MachineView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/machine_view.fxml"));
         
         Scene scene = new Scene(root);
         
@@ -29,6 +29,7 @@ public class TuringMachineJFXMLPrototype extends Application {
         stage.setTitle("Turing Machine");
         
         stage.show();
+
         
     }
 
@@ -41,6 +42,7 @@ public class TuringMachineJFXMLPrototype extends Application {
     
     @Override
     public void stop() {
+        setUserTapePreferences(controller.MachineViewController.tapes);
         model.Interpreter.haltSimulation();
         
     }
@@ -53,7 +55,7 @@ public class TuringMachineJFXMLPrototype extends Application {
      * @return settings, an object array containing the retrieved settings
      */
     public static Object[] getUserFontPreferences() {
-        Preferences prefs = Preferences.userNodeForPackage(TuringMachineJFXMLPrototype.class);
+        Preferences prefs = Preferences.userNodeForPackage(TuringMachine.class);
         //settings is kept in an object array for the purpose of returning the settings
         //see the portion of the controller in initialize of the view controller to see
         //the values being retrieved and set
@@ -79,7 +81,7 @@ public class TuringMachineJFXMLPrototype extends Application {
      * @param isBold if font is bold
     */
     public static void setUserFontPreferences(String family, int size, boolean isItalic, boolean isBold) {
-        Preferences prefs = Preferences.userNodeForPackage(TuringMachineJFXMLPrototype.class);
+        Preferences prefs = Preferences.userNodeForPackage(TuringMachine.class);
         prefs.put("family", family);
         prefs.putInt("size", size);
         prefs.putBoolean("isItalic", isItalic);
@@ -94,7 +96,7 @@ public class TuringMachineJFXMLPrototype extends Application {
      * @return settings, an object array containing the retrieved settings
      */
     public static Color getUserRWHeadPreferences() {
-        Preferences prefs = Preferences.userNodeForPackage(TuringMachineJFXMLPrototype.class);
+        Preferences prefs = Preferences.userNodeForPackage(TuringMachine.class);
         //gets the color string stored, the default is red if none
         String colorString = prefs.get("RWHeadColor", Color.RED.toString());
         return Color.valueOf(colorString);       
@@ -106,10 +108,28 @@ public class TuringMachineJFXMLPrototype extends Application {
     * @param color new color to store as default
     */
     public static void setUserRWHeadPreferences(Color color) {
-        Preferences prefs = Preferences.userNodeForPackage(TuringMachineJFXMLPrototype.class);
+        Preferences prefs = Preferences.userNodeForPackage(TuringMachine.class);
         prefs.put("RWHeadColor", color.toString());
     }
     
     
+    /**
+     * Sets the user's tape preference (these will always be saved as a convenience to the user)
+     * @param tapes number of tapes
+     */
+    public static void setUserTapePreferences(int tapes) {
+        Preferences prefs = Preferences.userNodeForPackage(TuringMachine.class);
+        prefs.putInt("activeTapesSetting", tapes);
+    }
+    
+    /**
+     * Gets the user's tape preference (these will always be saved as a convenience to the user)
+     * @return number of tapes
+     */
+    public static int getUserTapePreferences() {
+        Preferences prefs = Preferences.userNodeForPackage(TuringMachine.class);
+        int tapes = prefs.getInt("activeTapesSetting", 1);
+        return tapes;
+    }
     
 }
