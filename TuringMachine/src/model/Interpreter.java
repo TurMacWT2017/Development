@@ -121,6 +121,8 @@ public class Interpreter
     
     /**
      * Used for setting the view controller of this interpreter to a specific view controller
+     * <pre> Pre-condition: interpreter requires view controller </pre>
+     * <pre> Post-condition: view controller has been set </pre>
      * @param view the view controller to be used
      */
     public void setViewController(MachineViewController view) {
@@ -129,6 +131,8 @@ public class Interpreter
     
     /**
      * Sets the run speed of the interpreter
+     * <pre> Pre-condition: run speed has been changed </pre>
+     * <pre> Post-condition: new run speed will be set </pre>
      * @param newSpeed new speed
      */
     public void setRunSpeed(int newSpeed) {
@@ -142,6 +146,8 @@ public class Interpreter
     }
     /**
      * Used for changing the number of tapes the interpreter is working with
+     * <pre> Pre-condition: number of tapes change has been requested </pre>
+     * <pre> Post-condition: number of tapes changed appropriately </pre>
      * @param tapes number of tapes
      */
     public void setNumberOfTapes(int tapes) {
@@ -150,6 +156,8 @@ public class Interpreter
     
     /** Enables animation. This will determine whether the interpreter
      * will request tape animations during run (enabled) or only at the end (disabled)
+     * <pre> Pre-condition: animation has been requested enabled </pre>
+     * <pre> Post-condition: animations enabled will be true </pre>
      */
     public void enableAnimation() {
         animationEnabled = true;
@@ -157,6 +165,8 @@ public class Interpreter
     
     /** Disables animation. This will determine whether the interpreter
      * will request tape animations during run (enabled) or only at the end (disabled)
+     * <pre> Pre-condition: animations have been requested disabled </pre>
+     * <pre> Post-condition: animations enabled will be false </pre>
      */
     public void disableAnimation() {
         animationEnabled = false;
@@ -181,6 +191,8 @@ public class Interpreter
     
     /** Pop-up dialog box for when the program file does not contain input or
      *  the user clears the tape input
+     * <pre> Pre-condition: input is required to continue </pre>
+     * <pre> Post-condition: UI has received user input </pre>
      */
     public void popup() {
         String[] input = view.showInputDialog(numTapes);
@@ -217,6 +229,8 @@ public class Interpreter
     
     
     /** Parses the input program into tokens that can be interpreted into the correct symbols
+     * <pre> Pre-condition: input has been provided </pre>
+     * <pre> Post-condition: input will be tokenized and ready to parse </pre>
      * 
      * @param input the String representation of the *.tm program file
      */
@@ -521,9 +535,10 @@ public class Interpreter
         
     }
     
-    /**  Pause current program
-    *   <pre> Pre condition: Program is in run state </pre>
-    *   <pre> Post condition: Program is in pause state </pre>
+    /**  
+    * Pause current program
+    * <pre> Pre condition: Program is in run state </pre>
+    * <pre> Post condition: Program is in pause state </pre>
     */
     public void pause() 
     {
@@ -534,6 +549,8 @@ public class Interpreter
     
     /**
      * Retrieves a description of what errors occurred
+     * <pre> Pre-condition: error report was generated and requested </pre>
+     * <pre> Post-condition: error report has been converted to string and returned </pre>
      * @return program error report 
      */
     public String getErrorReport() 
@@ -543,6 +560,8 @@ public class Interpreter
     
     /**
      * Used to find if there are errors
+     * <pre> Pre-condition: errors present indicator has been requested </pre>
+     * <pre> Post-condition: errors present indicator has been returned </pre>
      * @return boolean errorsPresent
      */
     public boolean errorFound() 
@@ -552,6 +571,8 @@ public class Interpreter
     
     /**
      * Retrieves the *.tm program code
+     * <pre> Pre-condition: interpreters input code has been requested </pre>
+     * <pre> Post-condition: interpreters input code has been returned </pre>
      * @return input code
      */
     public String getMachineCode() 
@@ -561,6 +582,8 @@ public class Interpreter
     
     /**
      * Retrieves the current rwHead location
+     * <pre> Pre-condition: RWHead of a particular tape has been requested </pre>
+     * <pre> Post-condition: RWHead of requested tape has been returned </pre>
      * @param tape which tape (1, 2, or 3)
      * @return rwhead location
      */
@@ -579,6 +602,8 @@ public class Interpreter
     
     /**
      * Retrieves the current length of this interpreter's tape
+     * <pre> Pre-condition: length of a tape has been requested </pre>
+     * <pre> Post-condition: length of requested tape has been returned </pre>
      * @param tape which tape (1, 2 or 3)
      * @return int length
      */
@@ -597,15 +622,19 @@ public class Interpreter
        
     /**
      * Retrieves the initial input if provided in the program file
+     * <pre> Pre-condition: initialInput has been requested </pre>
+     * <pre> Post-condition: initialInput has been returned </pre>
      * @return initialInput Strong
      */
     public String getInitialInput()
     {
-        return initialInput; // append _ end of line marker TK
+        return initialInput;
     }
     
     /**
      * Retrieves the individual tokens
+     * <pre> Pre-condition: interpreter's list of tokens has been requested </pre>
+     * <pre> Post-condition: list of token's has been returned </pre>
      * @return the tokens provided to this interpreter
      */
     public String[] getTokens() 
@@ -615,6 +644,8 @@ public class Interpreter
     
     /**
      * Returns the current state of the machine
+     * <pre> Pre-condition: current state has been requested </pre>
+     * <pre> Post-condition: current interpreter state has been returned </pre>
      * @return current state of this interpreter
      */
     public String getState() 
@@ -622,8 +653,10 @@ public class Interpreter
         return interpState;
     }
     
-        /**
+    /**
      * Returns the current run state of the machine
+     * <pre> Pre-condition: run state requested </pre>
+     * <pre> Post-condition: run state has been returned </pre>
      * @return current state of this interpreter
      */
     public String getRunState() 
@@ -633,6 +666,8 @@ public class Interpreter
     
     /**
      * Returns the content of the specified tape
+     * <pre> Pre-condition: content has been requested </pre>
+     * <pre> Post-condition: content has been returned </pre>
      * @param tape which tape to get from
      * @return String content
      */
@@ -651,6 +686,8 @@ public class Interpreter
     
     /**
      * Performs the provided state transition
+     * <pre> Pre-condition: transition has been requested </pre>
+     * <pre> Post-condition: state transition has been performed </pre>
      * @param transition the state transition to be performed
      */
     private void performTransition(StateTransition transition)
@@ -795,6 +832,9 @@ public class Interpreter
     }
     /**
      * Used if an outside class needs to halt simulation in case of close during runtime or other unforeseen issue
+     * 
+     * <pre> Pre-condition: simulation running </pre>
+     * <pre> Post-condition: simulation halted </pre>
      */
     public static void haltSimulation() {
         notInterrupted = false;
@@ -803,6 +843,8 @@ public class Interpreter
     /**
      * Updates the initial content of a given tape, used when the user wants to change the starting
      * content of a particular tape
+     * <pre> Pre-condition: initial input not set </pre>
+     * <pre> Post-condition: initial input for all active tapes set </pre>
      * @param input the content to set
      * @param tape the tape desired
      */
@@ -950,14 +992,8 @@ public class Interpreter
                                     
                                 }
                             }
-                            //performTransition(tr);
-                            //controlPointer++;
-
-                        }
-                        
-                    //}                   
-                }
-                    
+                        }                   
+                }                    
     }
     
 }
