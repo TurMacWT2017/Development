@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
+
+<VBox fx:id="mainWindow" minHeight="600.0" minWidth="720.0" prefHeight="600.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MachineViewController">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openFileMenuItemClicked" text="Open…" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem fx:id="menuQuitButton" mnemonicParsing="false" onAction="#menuQuitButtonClicked" text="Quit" />
+          </items>
+        </Menu>
+            <Menu mnemonicParsing="false" text="Tape Options">
+              <items>
+                  <Menu mnemonicParsing="false" text="Change Number of Tapes">
+                    <items>
+                        <MenuItem fx:id="oneTapeMenuButton" mnemonicParsing="false" onAction="#setOneTapeMode" text="1" />
+                        <MenuItem fx:id="twoTapeMenuButton" mnemonicParsing="false" onAction="#setTwoTapeMode" text="2" />
+                        <MenuItem fx:id="threeTapeMenuButton" mnemonicParsing="false" onAction="#setThreeTapeMode" text="3" />
+                    </items>
+                  </Menu>
+                  <MenuItem fx:id="clearAllTapesButton" mnemonicParsing="false" onAction="#clearAllTapesButtonClicked" text="Clear all Tapes" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Options">
+              <items>
+                    <MenuItem fx:id="showStateWindow" mnemonicParsing="false" onAction="#launchStateWindow" text="Show State Diagram in a new window" />
+                    <MenuItem fx:id="showCodeWindow" mnemonicParsing="false" onAction="#launchCodeWindow" text="Show Code in a new window" />
+                  <MenuItem fx:id="fontOptions" mnemonicParsing="false" onAction="#showFontChooser" text="Font Options" />
+              </items>
+            </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem fx:id="langref" mnemonicParsing="false" onAction="#languageReference" text="Language Reference" />
+                  <MenuItem fx:id="about" mnemonicParsing="false" onAction="#aboutMenu" text="About" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+      <VBox id="background" stylesheets="@machineViewStyle.css">
+         <children>
+            <TitledPane fx:id="tapeOnePane" collapsible="false" contentDisplay="RIGHT" prefHeight="99.0" prefWidth="720.0" stylesheets="@machineViewStyle.css" text="Tape 1">
+               <content>
+                  <ScrollPane fx:id="tapeOneScroll" fitToHeight="true" pannable="true" prefWidth="718.0" vmax="0.0">
+                     <content>
+                        <TextFlow fx:id="tapeOne" textAlignment="CENTER" />
+                     </content>
+                  </ScrollPane>
+               </content>
+               <graphic>
+                  <Button id="button" fx:id="tapeOneClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeOneClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
+               </graphic>
+            </TitledPane>
+            <TitledPane fx:id="tapeTwoPane" contentDisplay="RIGHT" expanded="false" layoutX="10.0" layoutY="10.0" prefHeight="0.0" prefWidth="720.0" stylesheets="@machineViewStyle.css" text="Tape 2" visible="false">
+               <content>
+                  <ScrollPane fx:id="tapeTwoScroll" fitToHeight="true" prefWidth="700.0" vmax="0.0">
+                     <content>
+                        <TextFlow fx:id="tapeTwo" />
+                     </content>
+                  </ScrollPane>
+               </content>
+               <graphic>
+                  <Button id="button" fx:id="tapeTwoClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeTwoClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
+               </graphic>
+            </TitledPane>
+            <TitledPane fx:id="tapeThreePane" contentDisplay="RIGHT" expanded="false" layoutX="10.0" layoutY="109.0" prefHeight="0.0" prefWidth="720.0" stylesheets="@machineViewStyle.css" text="Tape 3" visible="false">
+               <content>
+                  <ScrollPane fx:id="tapeThreeScroll" fitToHeight="true" prefWidth="700.0" vmax="0.0">
+                     <content>
+                        <TextFlow fx:id="tapeThree" />
+                     </content>
+                  </ScrollPane>
+               </content>
+               <graphic>
+                  <Button id="button" fx:id="tapeThreeClearButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#tapeThreeClearButtonClicked" prefHeight="23.0" prefWidth="136.0" stylesheets="@machineViewStyle.css" text="Clear" />
+               </graphic>
+            </TitledPane>
+         </children>
+      </VBox>
+    <AnchorPane id="background" maxHeight="-1.0" maxWidth="-1.0" stylesheets="@machineViewStyle.css" VBox.vgrow="ALWAYS">
+         <children>
+            <Label layoutX="501.0" layoutY="5.0" text="Machine Controls" AnchorPane.rightAnchor="40.0" />
+            <Button id="button" fx:id="runButton" layoutX="513.0" layoutY="26.0" mnemonicParsing="false" onAction="#runButtonClicked" prefHeight="26.0" prefWidth="95.0" stylesheets="@machineViewStyle.css" text="Run" AnchorPane.rightAnchor="46.0" />
+            <Button id="button" fx:id="stepButton" layoutX="481.0" layoutY="56.0" mnemonicParsing="false" onAction="#stepButtonClicked" stylesheets="@machineViewStyle.css" text="Step" AnchorPane.rightAnchor="125.0" />
+            <Button id="button" fx:id="stopButton" layoutX="536.0" layoutY="56.0" mnemonicParsing="false" onAction="#stopButtonClicked" stylesheets="@machineViewStyle.css" text="Stop" AnchorPane.rightAnchor="70.0" />
+            <Button id="button" fx:id="resetButton" layoutX="589.0" layoutY="56.0" mnemonicParsing="false" onAction="#resetButtonClicked" stylesheets="@machineViewStyle.css" text="Reset" AnchorPane.rightAnchor="10.0" />
+            <Slider fx:id="speedSlider" disable="true" layoutX="554.0" layoutY="105.0" showTickLabels="true" showTickMarks="true" stylesheets="@machineViewStyle.css" value="50" AnchorPane.rightAnchor="24.0" />
+            <Label fx:id="changeLabel" disable="true" layoutX="648.0" layoutY="85.0" text="50" AnchorPane.rightAnchor="53.0" />
+            <Label fx:id="speedLabel" disable="true" layoutX="592.0" layoutY="86.0" text="Speed" AnchorPane.rightAnchor="85.0" />
+            <TextField fx:id="currentState" alignment="CENTER" editable="false" layoutX="459.0" layoutY="270.0" AnchorPane.bottomAnchor="75.0" AnchorPane.rightAnchor="10.0" />
+            <TextField fx:id="currentSteps" alignment="CENTER" editable="false" layoutX="460.0" layoutY="333.0" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="10.0" />
+            <Label layoutX="456.0" layoutY="246.0" text="Current State" AnchorPane.bottomAnchor="109.0" AnchorPane.rightAnchor="95.0" />
+            <Label layoutX="458.0" layoutY="309.0" text="Steps" AnchorPane.bottomAnchor="46.0" AnchorPane.rightAnchor="145.0" />
+            <AnchorPane fx:id="diagramDisplay" layoutX="5.0" layoutY="28.0" prefHeight="235.0" prefWidth="442.0" style="-fx-background-image: url('images/buffalo.png'); -fx-background-repeat: no-repeat; -fx-background-size: stretch, auto;" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="193.0" AnchorPane.topAnchor="28.0">
+               <children>
+                  <TabPane id="background" layoutY="-27.0" prefHeight="312.0" prefWidth="456.0" stylesheets="@machineViewStyle.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-27.0">
+                     <tabs>
+                        <Tab closable="false" text="State Diagram">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <content>
+                                          <javafx.scene.layout.Pane fx:id="statePaneTab" prefHeight="283.0" prefWidth="454.0" />
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab closable="false" text="Code">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <content>
+                                          <TextFlow fx:id="codeViewTab" prefHeight="283.0" prefWidth="454.0" />
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+         </children>
+    </AnchorPane>
+  </children>
+  <!-- <stylesheets> -->
+   <!-- <URL value="@../TuringMachinePrototype/BasicApplication.css" /> -->
+  <!-- </stylesheets> -->
+</VBox>
