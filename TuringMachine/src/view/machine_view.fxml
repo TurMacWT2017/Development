@@ -30,6 +30,8 @@
                   <Menu mnemonicParsing="false" text="Load an Example">
                     <items>
                       <MenuItem fx:id="loadPalindrome" mnemonicParsing="false" onAction="#loadPalindromeClicked" text="Palindrome" />
+                        <MenuItem fx:id="loadBinaryAddition" mnemonicParsing="false" onAction="#loadBinaryAdditionClicked" text="Binary Addition" />
+                        <MenuItem fx:id="loadGoBuffs" mnemonicParsing="false" onAction="#loadGoBuffsClicked" text="Go Buffs" />
                     </items>
                   </Menu>
           </items>

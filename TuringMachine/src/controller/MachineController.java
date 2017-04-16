@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Controller for performing auxilliary functions such as file opening
+ * Controller for performing auxiliary functions such as file opening
  * @author Nick Ahring
  */
 public class MachineController {
@@ -22,7 +22,12 @@ public class MachineController {
     public MachineController() {
 
     }
-    
+
+    /**
+     * Reads a given input file
+     * @param file file to be read
+     * @return string content of file
+     */
     public String openFile(File file) {
         StringBuilder sb = new StringBuilder();
         try {
@@ -46,10 +51,17 @@ public class MachineController {
         }
         return sb.toString();
     }
-
-    public String openExamplePalindrome() throws IOException {
+    
+     /**
+     * Opens an example program with the requested name.
+     * Example programs are built into the jar file.
+     * @param fileToOpen requested example file
+     * @return String representation of program
+     * @throws IOException 
+     */
+    public String openExample(String fileToOpen) throws IOException {
         StringBuilder sb = new StringBuilder();
-        InputStream stream = MachineController.class.getClassLoader().getResourceAsStream("examples/Palindrome.tm");
+        InputStream stream = MachineController.class.getClassLoader().getResourceAsStream(fileToOpen);
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
 
                 String line;
@@ -64,5 +76,4 @@ public class MachineController {
         
         return sb.toString();
     }
-    
 }

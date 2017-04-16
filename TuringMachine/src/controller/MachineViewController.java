@@ -205,6 +205,8 @@ public class MachineViewController implements Initializable {
     @FXML private MenuItem langref;
     @FXML private MenuItem clearAllTapesButton;
     @FXML private MenuItem loadPalindrome;
+    @FXML private MenuItem loadGoBuffs;
+    @FXML private MenuItem loadBinaryAddition;
     //Titled panes for the tape views
     @FXML private TitledPane tapeOnePane;
     @FXML private TitledPane tapeTwoPane;
@@ -241,16 +243,10 @@ public class MachineViewController implements Initializable {
         if (isReady) {
             if (runButton.getText().equals("Run")) {
                 runButton.setText("Pause");
-//                stepButton.setDisable(true);
-//                stepButton.getStyleClass().clear();
-//                stepButton.getStyleClass().add("disabled");
                 interp.run();
             }
             else {
                 runButton.setText("Run");
-//                stepButton.setDisable(false);
-//                stepButton.getStyleClass().clear();
-//                stepButton.getStyleClass().add("button");
                 interp.pause();
             }
         }
@@ -407,6 +403,9 @@ public class MachineViewController implements Initializable {
         }       
     }
     
+    /**** This section contains the event methods for loading the built in */
+    /**** example programs */
+    
     /**
      * Loads the example program "Palindrome.tm".
      * @param event ActionEvent
@@ -425,7 +424,7 @@ public class MachineViewController implements Initializable {
 
         XCOORD = 72;
         YCOORD = 72;
-        String input = controller.openExamplePalindrome();
+        String input = controller.openExample("examples/Palindrome.tm");
         //when initializing interpreter, give it both an input and a view controller (this) to work with
         interp = new Interpreter(input, this, tapes);
         //enable the speed slider
@@ -444,6 +443,89 @@ public class MachineViewController implements Initializable {
         }
         
     }
+    
+    /**
+     * Loads the example program "GoBuffs.tm".
+     * @param event ActionEvent
+     * @throws java.io.IOException
+     */
+    public void loadGoBuffsClicked(ActionEvent event) throws IOException {
+        //note that a file was loaded
+        fileLoaded = true;
+        //clear the tapes of any old content
+        tapeOne.getChildren().clear();
+        tapeTwo.getChildren().clear();
+        tapeThree.getChildren().clear();
+        codeViewTab.getChildren().clear();
+        statePaneTab.getChildren().clear();
+        clearStateTuples();
+
+        XCOORD = 72;
+        YCOORD = 72;
+        String input = controller.openExample("examples/GoBuffs.tm");
+        //this is a three tape program, so make sure all tapes are active
+        activateTapeTwo();
+        activateTapeThree();
+        //when initializing interpreter, give it both an input and a view controller (this) to work with
+        interp = new Interpreter(input, this, tapes);
+        //enable the speed slider
+        speedSlider.setDisable(false);
+        changeLabel.setDisable(false);
+        speedLabel.setDisable(false);
+        Text text1 = new Text(input);
+        text1.setFont(Font.font(family, size));
+        codeViewTab.getChildren().add(text1);
+        try {
+            interp.start();
+            //Ensure the interpreter's speed is up to date with UI
+            interp.setRunSpeed((int) speedSlider.getValue());
+        } catch (InterpreterException ex) {
+            Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+        /**
+     * Loads the example program "BinaryAddition.tm".
+     * @param event ActionEvent
+     * @throws java.io.IOException
+     */
+    public void loadBinaryAdditionClicked(ActionEvent event) throws IOException {
+        //note that a file was loaded
+        fileLoaded = true;
+        //clear the tapes of any old content
+        tapeOne.getChildren().clear();
+        tapeTwo.getChildren().clear();
+        tapeThree.getChildren().clear();
+        codeViewTab.getChildren().clear();
+        statePaneTab.getChildren().clear();
+        clearStateTuples();
+
+        XCOORD = 72;
+        YCOORD = 72;
+        String input = controller.openExample("example/BinaryAddition.tm");
+        //This is a three tape program, so make sure all tapes active
+        activateTapeTwo();
+        activateTapeThree();
+        //when initializing interpreter, give it both an input and a view controller (this) to work with
+        interp = new Interpreter(input, this, tapes);
+        //enable the speed slider
+        speedSlider.setDisable(false);
+        changeLabel.setDisable(false);
+        speedLabel.setDisable(false);
+        Text text1 = new Text(input);
+        text1.setFont(Font.font(family, size));
+        codeViewTab.getChildren().add(text1);
+        try {
+            interp.start();
+            //Ensure the interpreter's speed is up to date with UI
+            interp.setRunSpeed((int) speedSlider.getValue());
+        } catch (InterpreterException ex) {
+            Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+
     
     /****** Tape Clear button handling methods *********/
     
@@ -1645,9 +1727,9 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             case 1:
             {
                 Dialog<String []> dialog = new Dialog<>();
-                dialog.setTitle("Tape Input");
+                dialog.setTitle("Tape One Input");
                 dialog.setHeaderText("Initial Tape Input");
-                dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
+                dialog.setContentText("Enter initial Tape input for tape 1");
                 
                 Label label1 = new Label("Tape One: ");
                 TextField text1 = new TextField();
@@ -1679,7 +1761,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             case 2:
             {
                 Dialog<String []> dialog = new Dialog<>();
-                dialog.setTitle("Tape Input");
+                dialog.setTitle("Tape One and Two Input");
                 dialog.setHeaderText("Initial Tape Input");
                 dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
                 
@@ -1718,9 +1800,9 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             case 3:
             {
                 Dialog<String []> dialog = new Dialog<>();
-                dialog.setTitle("Tape Input");
+                dialog.setTitle("Tape One, Two, and Three Input");
                 dialog.setHeaderText("Initial Tape Input");
-                dialog.setContentText("Enter initial Tape input for tapes 1 and 2");
+                dialog.setContentText("Enter initial Tape input for tapes 1, 2, and 3");
                 
                 Label label1 = new Label("Tape One: ");
                 Label label2 = new Label("Tape Two: ");
