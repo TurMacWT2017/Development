@@ -226,7 +226,9 @@ public class MachineViewController implements Initializable {
     //list of states, used in drawing
     private static ArrayList<StateTransition> currentStates;
     //keeps track of file status
-    boolean fileLoaded = false;    
+    boolean fileLoaded = false;
+    //DEBUG
+    private final boolean DEBUG = false;
     
     /**
      * Handles a click on the run button. Utilizes helper method to determine
@@ -764,7 +766,7 @@ public class MachineViewController implements Initializable {
         //Parent root;
         if (fileLoaded) {
             Stage stage;
-            System.out.println("Making code window");
+            if (DEBUG) {System.out.println("Making code window");}
             stage = new Stage();
             ScrollPane layout = new ScrollPane();
             TextFlow codeDisplay = new TextFlow();
@@ -923,7 +925,7 @@ public class MachineViewController implements Initializable {
      */
     @FXML
     public void setStoppedState() {
-        System.out.println("Machine stopped");
+        if (DEBUG) {System.out.println("Machine stopped");}
         Platform.runLater(() -> {
             runButton.setText("Run");
         });
@@ -1013,7 +1015,7 @@ public class MachineViewController implements Initializable {
     @FXML
     public void updateTapeContent(String content, int tape) {
         int headLocation = interp.getRWHead(tape);
-        System.out.println("The requested tape was " + tape);
+        if (DEBUG) {System.out.println("The requested tape was " + tape);}
 
 
         //compensates for possibility of head being at left or right
@@ -1844,12 +1846,11 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             }
             default:
             {
-                System.out.println("Unexpected tape Number");
                 break;
             }
             
         }
-        System.out.println(Arrays.toString(input));
+        if (DEBUG) {System.out.println(Arrays.toString(input));}
         return input;
     }
 
@@ -1925,7 +1926,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             int speed = (int) speedSlider.getValue();
             changeLabel.textProperty().setValue(String.valueOf(speed));
             interp.setRunSpeed(speed);
-            //System.out.println("Speed slider = " + getSpeed());  //output speed changes
+            if (DEBUG) {System.out.println("Speed slider = " + getSpeed());}  //output speed changes
         }
     }
 }
