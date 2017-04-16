@@ -1344,15 +1344,19 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             stateLabels[j] = stateLabel;
             endLabels[j] = endLabel;
             
-            if (XCOORD + 150 < statePaneTab.getWidth())
+            if (XCOORD + 100 < stateTabWidth*.9)
             {
-                XCOORD += 115;
+                XCOORD += stateTabWidth*.15;//+= 75;
+                if(j%2==0)
+                    YCOORD += stateTabHeight*.10;//100;
+                else
+                    YCOORD -= stateTabHeight*.10;//100;
             }
             else
             {
-                XCOORD = 150;
-                YCOORD += 50;
-            }       
+                XCOORD = stateTabHeight*.25;//50;
+                YCOORD += stateTabHeight*.30;//100;
+            }           
             stateNodes[j].setSmooth(true);
             endNodes[j].setSmooth(true);
             
@@ -1378,7 +1382,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             
             if (XCOORD + 100 < stateTabWidth*.9)
             {
-                XCOORD += stateTabWidth*.20;//+= 75;
+                XCOORD += stateTabWidth*.15;//+= 75;
                 if(j%2==0)
                     YCOORD += stateTabHeight*.10;//100;
                 else
