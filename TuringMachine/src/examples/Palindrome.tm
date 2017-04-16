@@ -1,4 +1,9 @@
-Input: 10101;
+# This example program checks if the input string is a binary palindrome.
+# Input: a string of 0's and 1's, eg '1001001'
+
+# Machine starts in state 0.
+
+
 
 # State 0: read the leftmost symbol
 

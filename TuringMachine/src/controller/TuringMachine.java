@@ -61,7 +61,7 @@ public class TuringMachine extends Application {
         //the values being retrieved and set
         Object[] settings = new Object[4];        
         String family = prefs.get("family", null);
-        int size = prefs.getInt("size", 14);
+        int size = prefs.getInt("size", 28);
         boolean isItalic = prefs.getBoolean("isItalic", false);
         boolean isBold = prefs.getBoolean("isBold", false);
         settings[0] = family;
@@ -98,7 +98,7 @@ public class TuringMachine extends Application {
     public static Color getUserRWHeadPreferences() {
         Preferences prefs = Preferences.userNodeForPackage(TuringMachine.class);
         //gets the color string stored, the default is red if none
-        String colorString = prefs.get("RWHeadColor", Color.RED.toString());
+        String colorString = prefs.get("RWHeadColor", Color.MAROON.toString());
         return Color.valueOf(colorString);       
     }
     
