@@ -1,24 +1,38 @@
 Input: 10101;
 
-t1,state1,0,_,R,state2;
-t1,state1,1,_,>,state3;
-t1,state1,_,_,*,acceptHalt;
+# State 0: read the leftmost symbol
 
-t1,state2,_,_,left,state4;
-t1,state2,*,*,>,state2;
+t1, 0, 0, _, R, t1, A;
+t1, 0, 1, _, >, t1, A2;
+t1, 0, _, _, *, t1, acceptHalt;
 
-t1,state3,_,_,<,state5;
-t1,state3,*,*,>,state3;
 
-t1,state4,0,_,<,state6;
-t1,state4,_,_,*,acceptHalt;
-t1,state4,*,*,*,rejectHalt;
 
-t1,state5,1,_,<,state6;
-t1,state5,_,_,*,acceptHalt;
-t1,state5,*,*,*,rejectHalt;
+# State A, A2: find the rightmost symbol
 
-t1,state6,_,_,*,acceptHalt;
-t1,state6,*,*,<,state7;
-t1,state7,*,*,<,state7;
-t1,state7,_,_,>,state1;
+t1, A, _, _, <, t1, B;
+t1, A, *, *, >, t1, A;
+
+t1, A2, _, _, <, t1, B2;
+t1, A2, *, *, >, t1, A2;
+
+
+
+# State B, B2: check if the rightmost symbol matches the most recently read left-hand symbol
+
+t1, B, 0, _, <, t1, C;
+t1, B, _, _, *, t1, acceptHalt;
+t1, B, *, *, *, t1, rejectHalt;
+
+t1, B2, 1, _, <, t1, C;
+t1, B2, _, _, *, t1, acceptHalt;
+t1, B2, *, *, *, t1, rejectHalt;
+
+
+
+# State C, D: return to left end of remaining input
+
+t1, C, _, _, *, t1, acceptHalt;
+t1, C, *, *, <, t1, D;
+t1, D, *, *, <, t1, D;
+t1, D, _, _, >, t1, 0;

@@ -244,11 +244,25 @@ public class Interpreter
         // if initial tape input string supplied by .tm program
         if (input.toLowerCase().startsWith("input: ")) 
         {
-            System.out.println("Initial input provided");
+            if (DEBUG) {System.out.println("Initial input provided");}
             //grab the value, set it, then nix the line
             int colon = input.indexOf(":");
             int semicolon = input.indexOf(";");
-            initialInput = input.substring(colon+1, semicolon).trim();
+            String initialInputLine = input.substring(colon+1, semicolon).trim();
+            if (initialInputLine.contains(",")) {
+                String [] splitLine = initialInputLine.split(delim);
+                initialInput = splitLine[0];
+                if (splitLine.length == 2) {
+                    initialInput2 = splitLine[1].trim();
+                }
+                if (splitLine.length == 3) {
+                    initialInput3 = splitLine[2].trim();
+                }
+            }
+            else {
+                initialInput = initialInputLine;
+            }
+            //nix the line
             String firstLine = input.substring(0, semicolon+1);
             input = input.replace(firstLine, "");
         }
@@ -260,6 +274,7 @@ public class Interpreter
         //store the input code before removing the new line, in case the 
         //formatted version is needed later
         inputCode = input;
+        System.out.println(input);
         input = input.replaceAll("\n", "");
         tokens = input.split(delim);
         int tokensLength = tokens.length;
