@@ -1348,9 +1348,9 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             {
                 XCOORD += stateTabWidth*.15;//+= 75;
                 if(j%2==0)
-                    YCOORD += stateTabHeight*.10;//100;
+                    YCOORD += stateTabHeight*.20;//100;
                 else
-                    YCOORD -= stateTabHeight*.10;//100;
+                    YCOORD -= stateTabHeight*.20;//100;
             }
             else
             {
@@ -1369,8 +1369,8 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
 
-        XCOORD = stateTabWidth*.20;//50.0;
-        YCOORD = stateTabHeight*.10;//25.0;
+        XCOORD = stateTabWidth*.10;//50.0;
+        YCOORD = stateTabHeight*.20;//25.0;
         double evenRowsStart = .10;
         double oddRowStart = .125;
             for (int j=0; j< numUniqueStates; j++){
@@ -1382,15 +1382,15 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             
             if (XCOORD + 100 < stateTabWidth*.9)
             {
-                XCOORD += stateTabWidth*.15;//+= 75;
+                XCOORD += stateTabWidth*.10;//+= 75;
                 if(j%2==0)
-                    YCOORD += stateTabHeight*.10;//100;
+                    YCOORD += stateTabHeight*.30;//100;
                 else
-                    YCOORD -= stateTabHeight*.10;//100;
+                    YCOORD -= stateTabHeight*.30;//100;
             }
             else
             {
-                XCOORD = stateTabHeight*.25;//50;
+                XCOORD = stateTabHeight*.15;//50;
                 YCOORD += stateTabHeight*.30;//100;
             }        
         }
