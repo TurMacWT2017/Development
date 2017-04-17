@@ -124,11 +124,14 @@ public class MachineViewController implements Initializable {
     //used for text formatting in tape, changing text here will change tape text for the program
     //the custom control FontControl will modify these while running, if the user chooses
     //to modify them in the font control and accepts the changes. The values set here are only defaults
-    private String family = "Helvetica";
-    private int size = 16;
+    //for the code tab and window. Elsewhere, the defaults will be the user defaults.
+    private String family = "Courier";
+    private int size = 14;
     private boolean isBold = false;
     private boolean isItalic = false;
     private Color RWHeadFillColor = Color.RED;
+    private String codeTabFamily = "Courier";
+    private int codeTabSize = 14;
     
     //state diagram variables
     private Circle acceptNode;
@@ -388,7 +391,7 @@ public class MachineViewController implements Initializable {
                 //try {
                 //    launchCodeWindow(input);
                     Text text1 = new Text(input);
-                    text1.setFont(Font.font(family, size));
+                    text1.setFont(Font.font(codeTabFamily, codeTabSize));
                     codeViewTab.getChildren().add(text1);
                     //statePaneTab.getChildren().add(statePane);
                     //tapeOne.setText(interp.getInitialInput());
@@ -434,7 +437,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(family, size));
+        text1.setFont(Font.font(codeTabFamily, codeTabSize));
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -475,7 +478,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(family, size));
+        text1.setFont(Font.font(codeTabFamily, codeTabSize));
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -516,7 +519,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(family, size));
+        text1.setFont(Font.font(codeTabFamily, codeTabSize));
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -787,7 +790,8 @@ public class MachineViewController implements Initializable {
             }
             Text content = new Text(code);
             //style the content and add it
-            content.setFont(getCurrentFontSettings());
+            //content.setFont(getCurrentFontSettings());
+            content.setFont(Font.font(codeTabFamily,codeTabSize));
             codeDisplay.getChildren().add(content);
             //set the scene and its owner
             stage.setScene(new Scene(layout, 450, 450));
@@ -1115,7 +1119,8 @@ public class MachineViewController implements Initializable {
     private void updateCodeTabContent(String content) {
         Text newContent = new Text(content);
         codeViewTab.getChildren().clear();
-        newContent.setFont(getCurrentFontSettings());        
+//        newContent.setFont(getCurrentFontSettings());
+        newContent.setFont(Font.font(family,size));
         codeViewTab.getChildren().add(newContent);
     }
     
@@ -1924,7 +1929,12 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         @Override
         public void changed(ObservableValue arg0, Object arg1, Object arg2) {
             int speed = (int) speedSlider.getValue();
-            changeLabel.textProperty().setValue(String.valueOf(speed));
+            if (speed == 100) {
+                changeLabel.textProperty().setValue("Instant");
+            }
+            else {
+                changeLabel.textProperty().setValue(String.valueOf(speed));
+            }
             interp.setRunSpeed(speed);
             if (DEBUG) {System.out.println("Speed slider = " + getSpeed());}  //output speed changes
         }
