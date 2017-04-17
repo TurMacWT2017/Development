@@ -1277,8 +1277,8 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         
         //currentStates = states;        
         statePane = new Pane();
-        XCOORD = 50;
-        YCOORD = 25;
+        //XCOORD = 50;
+        //YCOORD = 25;
         
         // LOAD the initial state, end state, and transition arrays
         loadTupleArrays(states);           
@@ -1290,7 +1290,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         endNodes = new Circle[numAllStates];
         stateLabels = new Label[numAllStates];
         endLabels = new Label[numAllStates];
-        startNode = createDraggingCircle(25, stateTabHeight/2.0, 5, statePane, Color.GRAY);
+        startNode = createDraggingCircle(stateTabWidth/2.0, 15, 5, statePane, Color.GRAY);
         
         // starting node (pre-first-state)
         startLabel = new Label();       
@@ -1305,18 +1305,20 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         bindInitToEndStates();        
         drawSameStateArcbacks(); 
         drawTransitionLabels();
-/*
+
         connectStates(startNode, stateNodes[0]); 
-        for (int j = 0; j< numAllStates; j++){
-                connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
-                connected++;          
-        }     
-        */
+
         //updateStateNodes("");  // this will be moved
 
         BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
                 StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
-        statePaneTab.setStyle("-fx-background-color: #F5F5DC");
+        
+        //statePaneTab.setStyle("-fx-background-color: #F5F5DC");
+        statePaneTab.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
+                + " -fx-border: 12px solid; -fx-border-color: white; -fx-background-radius: 15.0;"
+                + " -fx-border-radius: 15.0");
+        // CHANGE BACKGROUND TO GRADIENT HERE
+        
         statePaneTab.setBorder(new Border(new BorderStroke(Color.MAROON, style, CornerRadii. EMPTY, new BorderWidths(5))));
         statePaneTab.getChildren().add(statePane);
        currentStates = states;
@@ -1343,20 +1345,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             endLabel.setLabelFor(endNodes[j]);
             stateLabels[j] = stateLabel;
             endLabels[j] = endLabel;
-            
-            if (XCOORD + 100 < stateTabWidth*.9)
-            {
-                XCOORD += stateTabWidth*.15;//+= 75;
-                if(j%2==0)
-                    YCOORD += stateTabHeight*.20;//100;
-                else
-                    YCOORD -= stateTabHeight*.20;//100;
-            }
-            else
-            {
-                XCOORD = stateTabHeight*.25;//50;
-                YCOORD += stateTabHeight*.30;//100;
-            }           
+          
             stateNodes[j].setSmooth(true);
             endNodes[j].setSmooth(true);
             
@@ -1390,7 +1379,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             }
             else
             {
-                XCOORD = stateTabHeight*.15;//50;
+                XCOORD = stateTabWidth*.10;//50;
                 YCOORD += stateTabHeight*.30;//100;
             }        
         }
@@ -1466,7 +1455,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             for (int j = 0; j< numAllStates; j++){
                 prevLabels[j] = new Label();
                 prevNodes[j] = new Circle();
-                allTransitions[j] = " " + allTransitions[j];
+                allTransitions[j] = "    " + allTransitions[j];
                 prevLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
                 
                 prevLabels[j].setTextFill(Color.MAROON);
@@ -1528,6 +1517,9 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         }, n2.boundsInParentProperty()));
         line.getStrokeDashArray().addAll(15d, 5d, 15d, 15d, 20d);
         line.setStrokeDashOffset(5);
+        line.setStrokeLineJoin(StrokeLineJoin.ROUND);
+        line. setStrokeLineCap(StrokeLineCap.ROUND);
+       
         line.toBack();
         parent.getChildren().add(line);
         return line;
