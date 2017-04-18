@@ -1321,15 +1321,12 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
                 StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
         
         //statePaneTab.setStyle("-fx-background-color: #F5F5DC");
-<<<<<<< HEAD
+
         statePaneTab.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
                 + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
-                + " -fx-border-radius: 1.0");
-=======
-        statePaneTab.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #7a6f66);"//#91847a
-                + " -fx-border: 12px solid; -fx-border-color: #67112b; -fx-background-radius: 5.0;"
                 + " -fx-border-radius: 5.0");
->>>>>>> 4ff681447c9b89a8f6d5dc193cfb8f89b9e8b989
+
+
         // CHANGE BACKGROUND TO GRADIENT HERE
         
         statePaneTab.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
@@ -1465,17 +1462,17 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             transNodes = new Circle[numAllStates];
             transLines = new Line[numAllStates];
             for (int j = 0; j< numAllStates; j++){
-<<<<<<< HEAD
+
                 transLabels[j] = new Label();
                 transNodes[j] = new Circle();
                 allTransitions[j] = "    " + allTransitions[j];
                 transLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
-=======
-                prevLabels[j] = new Label();
-                prevNodes[j] = new Circle();
+
+                transLabels[j] = new Label();
+                transNodes[j] = new Circle();
                 allTransitions[j] = "  " + allTransitions[j];
-                prevLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
->>>>>>> 4ff681447c9b89a8f6d5dc193cfb8f89b9e8b989
+                transLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
+
                 
                 transLabels[j].setTextFill(Color.web("#67112b"));
                 transLines[j] = connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
