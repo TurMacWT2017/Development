@@ -274,7 +274,7 @@ public class Interpreter
         //store the input code before removing the new line, in case the 
         //formatted version is needed later
         inputCode = input;
-        System.out.println(input);
+        if (DEBUG) {System.out.println(input);}
         input = input.replaceAll("\n", "");
         tokens = input.split(delim);
         int tokensLength = tokens.length;

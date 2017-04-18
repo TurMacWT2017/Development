@@ -43,9 +43,16 @@ public class FontControl extends TabPane {
         private String newFamily;
         private int size;
         private int newSize;
+        private String codeFamily;
+        private String newCodeFamily;
+        private int codeSize;
+        private int newCodeSize;
         private boolean isBold;
         private boolean isItalic;
+        private boolean isCodeBold;
+        private boolean isCodeItalic;
         private boolean fontDefault;
+        private boolean codeDefault;
         private boolean rwDefault;
         private Color RWHeadFontColor;
         private Color newRWHeadFontColor;
@@ -70,6 +77,15 @@ public class FontControl extends TabPane {
         @FXML private Button RWacceptButton;
         @FXML private Button RWcancelButton;
         @FXML private CheckBox RWDefaultToggle;
+        //Code tab
+        @FXML private TextFlow codePreviewBar;
+        @FXML private CheckBox boldCodeCheckBox;
+        @FXML private CheckBox italicCodeCheckBox;
+        @FXML private CheckBox codeDefaultToggle;
+        @FXML private ComboBox codeSizeChooserBox;
+        @FXML private ComboBox codeFontChooserBox;
+        @FXML private Button codeAcceptButton;
+        @FXML private Button codeCancelButton;
         
     public FontControl() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/font_control.fxml"));
@@ -115,39 +131,22 @@ public class FontControl extends TabPane {
         rwpreviewText = new Text("aBbCcZz1234");
         rwpreviewText.setFont(getCurrentFontSettings());
         RWPreviewBar.getChildren().add(rwpreviewText);
-        //fill font sizes combobox
-        fontSizes = FXCollections.observableArrayList("8", "10", "12", "14", "16", "18", "20", "22", "24", "26", "28", "30", "32", "34", "36", "38");
-        sizeChooserBox.getItems().addAll(fontSizes);
-        //show what the default as the initial item in both combo boxes
-        sizeChooserBox.getSelectionModel().select(Integer.toString(size));
-        //fill combobox with all available system fonts
-        String fontsList[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-        ArrayList fontArray = new ArrayList<>(Arrays.asList(fontsList));
-        fonts = FXCollections.observableArrayList(fontArray);
-        fontChooserBox.getItems().addAll(fonts);
-        //set the combo box default item to show as the current font
-        fontChooserBox.getSelectionModel().select(family);
-        fontChooserBox.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue ov, String t, String t1) {
-                newFamily = t1;
-                updatePreviewBar();
-            }    
-        });
-        sizeChooserBox.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue ov, String t, String t1) {
-                newSize = Integer.parseInt(t1);
-                updatePreviewBar();
-            }    
-        });
-        
+        //initializes combo boxes
+        initializeFontTabComboBoxes();
+        initializeCodeTabComboBoxes();
         //restore any previous bold or italic settings
         if (isBold) {
             boldCheckBox.setSelected(true);
         }
         if (isItalic) {
             italicCheckBox.setSelected(true);
+        }
+        //restore any previous code tab bold or italic settings
+        if (isCodeBold) {
+            boldCodeCheckBox.setSelected(true);
+        }
+        if (isCodeItalic) {
+            italicCodeCheckBox.setSelected(true);
         }
         
         //color picker listener and setting of default value
@@ -163,6 +162,7 @@ public class FontControl extends TabPane {
         fontControlTabs.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab t, Tab t1) -> {
             updatePreviewBar();
             updateRWHeadPreviewBar();
+            updateCodePreviewBar();
         });
         
         
@@ -193,6 +193,17 @@ public class FontControl extends TabPane {
         rwpreviewText = new Text("aBbCcZz1234");
         rwpreviewText.setFont(getCurrentFontSettings());
         RWPreviewBar.getChildren().add(rwpreviewText);
+    }
+    
+    /**
+     * Updates the preview bar contained within the code settings tab
+     */
+    @FXML
+    private void updateCodePreviewBar() {
+        codePreviewBar.getChildren().clear();
+        Text previewText = new Text("AaBbCcZz1234");
+        previewText.setFont(getCurrentCodeSettings());
+        codePreviewBar.getChildren().add(previewText);
     }
     
     /**
@@ -245,6 +256,28 @@ public class FontControl extends TabPane {
     }
     
     /**
+     * Handles user click on code bold check box, and calls method to update preview
+     * @param event ActionEvent
+     */
+    @FXML
+    private void boldCodeCheckBoxClicked(ActionEvent event) {
+        isCodeBold = boldCodeCheckBox.isSelected();
+        updateCodePreviewBar();
+    }
+
+    /**
+     * Handles user click on code italicize check box, and calls method to update 
+     * preview
+     * @param event ActionEvent
+     */
+    @FXML
+    private void italicCodeCheckBoxClicked(ActionEvent event) {
+        isCodeItalic = boldCodeCheckBox.isSelected();
+        updateCodePreviewBar();
+          
+    }
+    
+    /**
      * Handles user click on make default checkbox for font settings
      * @param event ActionEvent
      */
@@ -278,6 +311,16 @@ public class FontControl extends TabPane {
      */
     public boolean getIsDefaultRW() {
         return rwDefault;
+    }
+    
+    
+    /**
+     * Returns a boolean value indicating whether "Make Default" of code
+     * Settings was Selected
+     * @return whether RW head settings will be new default
+     */
+    public boolean getIsDefaultCode() {
+        return codeDefault;
     }
     
     /**
@@ -340,6 +383,25 @@ public class FontControl extends TabPane {
     }
     
     /**
+     * Gets the font currently set in code tab to style code preview bar
+     * @return Font current font
+     */
+    private Font getCurrentCodeSettings() {
+        if (isCodeBold && isCodeItalic) {
+            return Font.font(newCodeFamily, FontWeight.BOLD, FontPosture.ITALIC, newCodeSize);
+        }
+        else if (isCodeBold) {
+            return Font.font(newCodeFamily, FontWeight.BOLD, newCodeSize);
+        }
+        else if (isCodeItalic) {
+            return Font.font(newCodeFamily, FontPosture.ITALIC, newCodeSize);
+        }
+        else {
+            return Font.font(newCodeFamily, newCodeSize);
+        }   
+    }
+    
+    /**
      * Gets the current fill color for the RW Head Character
      * @return Color current highlight color 
      */
@@ -347,4 +409,64 @@ public class FontControl extends TabPane {
         return RWHeadFontColor;
     }
     
+    /**
+     * Does all of the initializing for the font tab combo boxes
+     */
+    private void initializeFontTabComboBoxes() {
+        //fill font sizes combobox
+        fontSizes = FXCollections.observableArrayList("8", "10", "12", "14", "16", "18", "20", "22", "24", "26", "28", "30", "32", "34", "36", "38");
+        sizeChooserBox.getItems().addAll(fontSizes);
+        //show what the default as the initial item in both combo boxes
+        sizeChooserBox.getSelectionModel().select(Integer.toString(size));
+        //fill combobox with all available system fonts
+        String fontsList[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        ArrayList fontArray = new ArrayList<>(Arrays.asList(fontsList));
+        fonts = FXCollections.observableArrayList(fontArray);
+        fontChooserBox.getItems().addAll(fonts);
+        //set the combo box default item to show as the current font
+        fontChooserBox.getSelectionModel().select(family);
+        fontChooserBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String t, String t1) {
+                newFamily = t1;
+                updatePreviewBar();
+            }    
+        });
+        sizeChooserBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String t, String t1) {
+                newSize = Integer.parseInt(t1);
+                updatePreviewBar();
+            }    
+        });
+        
+    }
+    
+    /**
+     * Does all of the initializing for the code tab combo boxes
+     */
+    private void initializeCodeTabComboBoxes() {
+        //fill font sizes combobox
+        codeSizeChooserBox.getItems().addAll(fontSizes);
+        //show what the default as the initial item in both combo boxes
+        codeSizeChooserBox.getSelectionModel().select(Integer.toString(size));
+        //fill combobox with all available system fonts
+        codeFontChooserBox.getItems().addAll(fonts);
+        //set the combo box default item to show as the current font
+        codeFontChooserBox.getSelectionModel().select(family);
+        codeFontChooserBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String t, String t1) {
+                newCodeFamily = t1;
+                updateCodePreviewBar();
+            }    
+        });
+        codeSizeChooserBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String t, String t1) {
+                newCodeSize = Integer.parseInt(t1);
+                updateCodePreviewBar();
+            }    
+        });
+    }
 }
