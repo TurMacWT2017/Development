@@ -24,6 +24,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -130,8 +131,10 @@ public class MachineViewController implements Initializable {
     private boolean isBold = false;
     private boolean isItalic = false;
     private Color RWHeadFillColor = Color.RED;
-    private String codeTabFamily = "Courier";
-    private int codeTabSize = 14;
+    private String codeFamily = "Courier";
+    private int codeSize = 14;
+    private boolean isCodeBold = false;
+    private boolean isCodeItalic = false;
     
     //state diagram variables
     private Circle acceptNode;
@@ -219,7 +222,9 @@ public class MachineViewController implements Initializable {
     @FXML private TextFlow codeViewTab;
     //Main window
     @FXML private VBox mainWindow;
-
+    //Code diagram window
+    @FXML private Stage codeStage;
+    @FXML private TextFlow codeDisplay;
     
     //Machine Controller
     private final MachineController controller = new MachineController();
@@ -391,7 +396,7 @@ public class MachineViewController implements Initializable {
                 //try {
                 //    launchCodeWindow(input);
                     Text text1 = new Text(input);
-                    text1.setFont(Font.font(codeTabFamily, codeTabSize));
+                    text1.setFont(getCurrentCodeFontSettings());
                     codeViewTab.getChildren().add(text1);
                     //statePaneTab.getChildren().add(statePane);
                     //tapeOne.setText(interp.getInitialInput());
@@ -437,7 +442,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(codeTabFamily, codeTabSize));
+        text1.setFont(getCurrentCodeFontSettings());
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -478,7 +483,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(codeTabFamily, codeTabSize));
+        text1.setFont(getCurrentCodeFontSettings());
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -519,7 +524,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(codeTabFamily, codeTabSize));
+        text1.setFont(getCurrentCodeFontSettings());
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -768,11 +773,10 @@ public class MachineViewController implements Initializable {
     private void launchCodeWindow(ActionEvent event) {
         //Parent root;
         if (fileLoaded) {
-            Stage stage;
             if (DEBUG) {System.out.println("Making code window");}
-            stage = new Stage();
+            codeStage = new Stage();
             ScrollPane layout = new ScrollPane();
-            TextFlow codeDisplay = new TextFlow();
+            codeDisplay = new TextFlow();
             codeDisplay.setPrefHeight(450);
             codeDisplay.setPrefWidth(450);
             layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -791,16 +795,16 @@ public class MachineViewController implements Initializable {
             Text content = new Text(code);
             //style the content and add it
             //content.setFont(getCurrentFontSettings());
-            content.setFont(Font.font(codeTabFamily,codeTabSize));
+            content.setFont(getCurrentCodeFontSettings());
             codeDisplay.getChildren().add(content);
             //set the scene and its owner
-            stage.setScene(new Scene(layout, 450, 450));
-            stage.setTitle("Code Window");
-            stage.initOwner(tapeOne.getScene().getWindow());
+            codeStage.setScene(new Scene(layout, 450, 450));
+            codeStage.setTitle("Code Window");
+            codeStage.initOwner(tapeOne.getScene().getWindow());
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-            stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
-            stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
-            stage.show();
+            codeStage.setX((primScreenBounds.getWidth() - codeStage.getWidth()) / 4); 
+            codeStage.setY((primScreenBounds.getHeight() - codeStage.getHeight()) / 8);
+            codeStage.show();
         }
         else {
             Alert alert = new Alert(AlertType.INFORMATION);
@@ -820,7 +824,7 @@ public class MachineViewController implements Initializable {
     public void showFontChooser(ActionEvent event) {
             FontControl fontControl = new FontControl();
             //initialize the font chooser
-            fontControl.initialize(family, size, isBold, isItalic, RWHeadFillColor);
+            fontControl.initialize(family, size, isBold, isItalic, RWHeadFillColor, codeSize, codeFamily, isCodeBold, isCodeItalic);
             Stage stage = new Stage(StageStyle.UNDECORATED);
             stage.setScene(new Scene(fontControl));
            //stage.setWidth(300);
@@ -835,6 +839,10 @@ public class MachineViewController implements Initializable {
             family = fontControl.getFontFamily();
             isBold = fontControl.getIsBold();
             isItalic = fontControl.getIsItalic();
+            codeSize = fontControl.getCodeFontSize();
+            codeFamily = fontControl.getCodeFamily();
+            isCodeBold = fontControl.getCodeBold();
+            isCodeItalic = fontControl.getCodeItalic();
             RWHeadFillColor = fontControl.getRWHeadFillColor();
             if (fontControl.getIsDefaultFont()) {
                 TuringMachine.setUserFontPreferences(family, size, isItalic, isBold);
@@ -858,9 +866,22 @@ public class MachineViewController implements Initializable {
                     updateTapeContent(interp.getTapeContent(2), 2);
                     updateTapeContent(interp.getTapeContent(3), 3);
                 }
+                //force update of code tab content to reflect changed font
+                ObservableList<Node> nodes =  codeViewTab.getChildren();  
+                StringBuilder sb = new StringBuilder();  
+                nodes.forEach((node) -> {  
+                    sb.append((((Text)node).getText()));
+                });
+                    String txt = sb.toString();  
+                updateCodeTabContent(txt);
+                if (codeDisplay != null) {
+                    codeDisplay.getChildren().clear();
+                    Text newContent = new Text(txt);
+                    newContent.setFont(getCurrentCodeFontSettings());
+                    codeDisplay.getChildren().add(newContent);
+                }
             }
             //This line helps prevent the viewport from "breaking" scrolling
-//            tapeOne.setPrefWidth(Double.MAX_VALUE);
             tapeOneScroll.setPrefViewportWidth(700);
     }
     
@@ -1119,8 +1140,7 @@ public class MachineViewController implements Initializable {
     private void updateCodeTabContent(String content) {
         Text newContent = new Text(content);
         codeViewTab.getChildren().clear();
-//        newContent.setFont(getCurrentFontSettings());
-        newContent.setFont(Font.font(family,size));
+        newContent.setFont(getCurrentCodeFontSettings());
         codeViewTab.getChildren().add(newContent);
     }
     
@@ -1701,6 +1721,26 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             return Font.font(family, size);
         }   
     }
+    
+    /**
+    * Returns the current code Font settings to allow easy text formatting
+    * @return Font current font
+    */
+    private Font getCurrentCodeFontSettings() {
+        if (isCodeBold && isCodeItalic) {
+            return Font.font(codeFamily, FontWeight.BOLD, FontPosture.ITALIC, codeSize);
+        }
+        else if (isCodeBold) {
+            return Font.font(codeFamily, FontWeight.BOLD, codeSize);
+        }
+        else if (isCodeItalic) {
+            return Font.font(codeFamily, FontPosture.ITALIC, codeSize);
+        }
+        else {
+            return Font.font(codeFamily, codeSize);
+        }   
+    }
+    
     
     /*** Methods for displaying various dialogs are in this area
     
