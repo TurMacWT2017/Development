@@ -124,11 +124,14 @@ public class MachineViewController implements Initializable {
     //used for text formatting in tape, changing text here will change tape text for the program
     //the custom control FontControl will modify these while running, if the user chooses
     //to modify them in the font control and accepts the changes. The values set here are only defaults
-    private String family = "Helvetica";
-    private int size = 16;
+    //for the code tab and window. Elsewhere, the defaults will be the user defaults.
+    private String family = "Courier";
+    private int size = 14;
     private boolean isBold = false;
     private boolean isItalic = false;
     private Color RWHeadFillColor = Color.RED;
+    private String codeTabFamily = "Courier";
+    private int codeTabSize = 14;
     
     //state diagram variables
     private Circle acceptNode;
@@ -388,7 +391,7 @@ public class MachineViewController implements Initializable {
                 //try {
                 //    launchCodeWindow(input);
                     Text text1 = new Text(input);
-                    text1.setFont(Font.font(family, size));
+                    text1.setFont(Font.font(codeTabFamily, codeTabSize));
                     codeViewTab.getChildren().add(text1);
                     //statePaneTab.getChildren().add(statePane);
                     //tapeOne.setText(interp.getInitialInput());
@@ -434,7 +437,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(family, size));
+        text1.setFont(Font.font(codeTabFamily, codeTabSize));
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -475,7 +478,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(family, size));
+        text1.setFont(Font.font(codeTabFamily, codeTabSize));
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -505,7 +508,7 @@ public class MachineViewController implements Initializable {
 
         XCOORD = 72;
         YCOORD = 72;
-        String input = controller.openExample("example/BinaryAddition.tm");
+        String input = controller.openExample("examples/BinaryAddition.tm");
         //This is a three tape program, so make sure all tapes active
         activateTapeTwo();
         activateTapeThree();
@@ -516,7 +519,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(family, size));
+        text1.setFont(Font.font(codeTabFamily, codeTabSize));
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -787,7 +790,8 @@ public class MachineViewController implements Initializable {
             }
             Text content = new Text(code);
             //style the content and add it
-            content.setFont(getCurrentFontSettings());
+            //content.setFont(getCurrentFontSettings());
+            content.setFont(Font.font(codeTabFamily,codeTabSize));
             codeDisplay.getChildren().add(content);
             //set the scene and its owner
             stage.setScene(new Scene(layout, 450, 450));
@@ -1115,7 +1119,8 @@ public class MachineViewController implements Initializable {
     private void updateCodeTabContent(String content) {
         Text newContent = new Text(content);
         codeViewTab.getChildren().clear();
-        newContent.setFont(getCurrentFontSettings());        
+//        newContent.setFont(getCurrentFontSettings());
+        newContent.setFont(Font.font(family,size));
         codeViewTab.getChildren().add(newContent);
     }
     
@@ -1271,12 +1276,14 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
     }
 }
            
-    public void drawStates(ArrayList<StateTransition> states) {
-        double stateTabWidth = statePaneTab. widthProperty().get();
-        double stateTabHeight = statePaneTab.heightProperty().get();
+    public void drawStates(ArrayList<StateTransition> states) {       
         
         //currentStates = states;        
         statePane = new Pane();
+        double stateTabWidth = statePaneTab. widthProperty().get();
+        double stateTabHeight = statePaneTab.heightProperty().get();
+        XCOORD = stateTabWidth*.10;//50.0;
+        YCOORD = stateTabHeight*.20;//25.0;
         //XCOORD = 50;
         //YCOORD = 25;
         
@@ -1314,9 +1321,15 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
                 StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
         
         //statePaneTab.setStyle("-fx-background-color: #F5F5DC");
+<<<<<<< HEAD
         statePaneTab.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
                 + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
                 + " -fx-border-radius: 1.0");
+=======
+        statePaneTab.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #7a6f66);"//#91847a
+                + " -fx-border: 12px solid; -fx-border-color: #67112b; -fx-background-radius: 5.0;"
+                + " -fx-border-radius: 5.0");
+>>>>>>> 4ff681447c9b89a8f6d5dc193cfb8f89b9e8b989
         // CHANGE BACKGROUND TO GRADIENT HERE
         
         statePaneTab.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
@@ -1358,8 +1371,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
 
-        XCOORD = stateTabWidth*.10;//50.0;
-        YCOORD = stateTabHeight*.20;//25.0;
+        
         double evenRowsStart = .10;
         double oddRowStart = .125;
             for (int j=0; j< numUniqueStates; j++){
@@ -1369,7 +1381,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             uniqueNodes[j].setStroke(tapeColor[j]);//Color.BLACK);
             //endNodes[j].setStroke(Color.BLACK);
             
-            if (XCOORD + 100 < stateTabWidth*.9)
+            if (XCOORD + 25 <= stateTabWidth*.95)
             {
                 XCOORD += stateTabWidth*.10;//+= 75;
                 if(j%2==0)
@@ -1453,10 +1465,17 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             transNodes = new Circle[numAllStates];
             transLines = new Line[numAllStates];
             for (int j = 0; j< numAllStates; j++){
+<<<<<<< HEAD
                 transLabels[j] = new Label();
                 transNodes[j] = new Circle();
                 allTransitions[j] = "    " + allTransitions[j];
                 transLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
+=======
+                prevLabels[j] = new Label();
+                prevNodes[j] = new Circle();
+                allTransitions[j] = "  " + allTransitions[j];
+                prevLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
+>>>>>>> 4ff681447c9b89a8f6d5dc193cfb8f89b9e8b989
                 
                 transLabels[j].setTextFill(Color.web("#67112b"));
                 transLines[j] = connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
@@ -1515,7 +1534,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             Bounds b = n2.getBoundsInParent();
             return b.getMinY() + b.getHeight() / 2 ;
         }, n2.boundsInParentProperty()));
-        line.getStrokeDashArray().addAll(15d, 5d, 15d, 15d, 20d);
+        line.getStrokeDashArray().addAll(15d, 5d, 15d, 10d, 20d);
         line.setStrokeDashOffset(5);
         line.setStrokeLineJoin(StrokeLineJoin.ROUND);
         line. setStrokeLineCap(StrokeLineCap.ROUND);
@@ -1920,7 +1939,12 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         @Override
         public void changed(ObservableValue arg0, Object arg1, Object arg2) {
             int speed = (int) speedSlider.getValue();
-            changeLabel.textProperty().setValue(String.valueOf(speed));
+            if (speed == 100) {
+                changeLabel.textProperty().setValue("Instant");
+            }
+            else {
+                changeLabel.textProperty().setValue(String.valueOf(speed));
+            }
             interp.setRunSpeed(speed);
             if (DEBUG) {System.out.println("Speed slider = " + getSpeed());}  //output speed changes
         }
