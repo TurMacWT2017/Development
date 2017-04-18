@@ -49,6 +49,8 @@ public class Interpreter
     private Tape tapeThree;
     private int numTapes;
     private boolean animationEnabled;
+    //DEBUG
+    private final boolean DEBUG = false;
     
     /** Default interpreter constructor
     * 
@@ -242,11 +244,25 @@ public class Interpreter
         // if initial tape input string supplied by .tm program
         if (input.toLowerCase().startsWith("input: ")) 
         {
-            System.out.println("Initial input provided");
+            if (DEBUG) {System.out.println("Initial input provided");}
             //grab the value, set it, then nix the line
             int colon = input.indexOf(":");
             int semicolon = input.indexOf(";");
-            initialInput = input.substring(colon+1, semicolon).trim();
+            String initialInputLine = input.substring(colon+1, semicolon).trim();
+            if (initialInputLine.contains(",")) {
+                String [] splitLine = initialInputLine.split(delim);
+                initialInput = splitLine[0];
+                if (splitLine.length == 2) {
+                    initialInput2 = splitLine[1].trim();
+                }
+                if (splitLine.length == 3) {
+                    initialInput3 = splitLine[2].trim();
+                }
+            }
+            else {
+                initialInput = initialInputLine;
+            }
+            //nix the line
             String firstLine = input.substring(0, semicolon+1);
             input = input.replace(firstLine, "");
         }
@@ -258,6 +274,7 @@ public class Interpreter
         //store the input code before removing the new line, in case the 
         //formatted version is needed later
         inputCode = input;
+        System.out.println(input);
         input = input.replaceAll("\n", "");
         tokens = input.split(delim);
         int tokensLength = tokens.length;
@@ -276,7 +293,7 @@ public class Interpreter
                 if (tokens[i].equalsIgnoreCase("t1")) 
                 {
                     tokens[i] = "t1";
-                    //System.out.println("\nTape token: " + tokens[i] + " on line " + tupleNum);
+                    if (DEBUG) {System.out.println("\nTape token: " + tokens[i] + " on line " + tupleNum);}
                 }
                 else if (tokens[i].equalsIgnoreCase("t2"))
                 {
@@ -285,7 +302,7 @@ public class Interpreter
                         System.out.println("Tapes was changed to 2");
                         numTapes = 2;
                     }
-                    //System.out.println("\nTape 2 token: " + tokens[i] + " on line " + tupleNum);
+                    if (DEBUG) {System.out.println("\nTape 2 token: " + tokens[i] + " on line " + tupleNum);}
                 }
                 else if (tokens[i].equalsIgnoreCase("t3"))
                 {
@@ -293,7 +310,7 @@ public class Interpreter
                     if (view.getCurrentMode() != 3) {
                         numTapes = 3;
                     }
-                    //System.out.println("\nTape 3 token: " + tokens[i] + " on line " + tupleNum);
+                    if (DEBUG) {System.out.println("\nTape 3 token: " + tokens[i] + " on line " + tupleNum);}
                 }
                 else 
                 {
@@ -314,10 +331,6 @@ public class Interpreter
             if (i%7 == 2)
             {
                 tokens[i] = tokens[i].trim();
-//                if (token.equalsIgnoreCase("*")) {
-//                    tokens[i] = "WILDCARD";
-//                }
-                //tokens[i] = token;
                 
             }
 
@@ -325,10 +338,6 @@ public class Interpreter
             if (i%7 == 3)
             {
                 tokens[i] = tokens[i].trim();
-//                if (token.equalsIgnoreCase("*")) {
-//                    tokens[i] = "NO_CHANGE";
-//                }
-                //tokens[i] = token;
             }
 
             // Get the direction the read/write head needs to move
@@ -336,21 +345,20 @@ public class Interpreter
             {  
                 String token = tokens[i].trim();
                 StringBuilder dir = new StringBuilder();
-                System.out.println("Direction token: " + tokens[i] + " on line " + tupleNum + "\n");
-                System.out.println("Token length was" + token.length());
+                if (DEBUG) {
+                    System.out.println("Direction token: " + tokens[i] + " on line " + tupleNum + "\n");
+                    System.out.println("Token length was" + token.length());
+                }
                 if (token.matches("([R|r|\\>])(.*)"))
                 {
-                    //moveRight();
                     dir.append("R");
                 }
                 else if (token.matches("([L|l|\\<])(.*)"))
                 {
-                    //moveLeft();
                     dir.append("L");
                 }
                 else if (token.matches("\\*(.*)"))
                 {
-                    //stay();
                     dir.append("S");
                 }
                 else 
@@ -361,19 +369,17 @@ public class Interpreter
                 }
                 //check for a 2nd direction
                 if (token.length() >= 2) {
+                    if (token.length() == 2 && numTapes != 3) {numTapes = 2;}
                     if (token.matches("(\\S{1})([R|r|\\>])(\\S{0,1})"))
                     {
-                        //moveRight();
                         dir.append("R");
                     }
                     else if (token.matches("(\\S{1})([L|l|\\<])(\\S{0,1})"))
                     {
-                        //moveLeft();
                         dir.append("L");
                     }
                     else if (token.matches("(\\S{1})(\\*)(\\S{0,1})"))
                     {
-                        //stay();
                         dir.append("S");
                     }
                     else 
@@ -385,6 +391,7 @@ public class Interpreter
                 }
                 //check for a 3nd direction
                 if (token.length() == 3) {
+                    numTapes = 3;
                     if (token.matches("(\\S)(\\S)([R|r|\\>])"))
                     {
                         dir.append("R");
@@ -421,7 +428,6 @@ public class Interpreter
                     //if they did, after tokenize it will be switched for them.
                     if (token.equalsIgnoreCase("t2")) {
                         if ((view.getCurrentMode() != 2) && (view.getCurrentMode() != 3)) {
-                            System.out.println(view.getCurrentMode());
                             numTapes = 2;
                         }
                     }
@@ -433,7 +439,7 @@ public class Interpreter
                     tokens[i] = token;
                 }
                 
-                //System.out.println("End state token: " + tokens[i] + " on line " + tupleNum + "\n");
+                if (DEBUG) {System.out.println("End state token: " + tokens[i] + " on line " + tupleNum + "\n");}
             }
             //get the end state taken
             if (i%7 == 6) {
@@ -441,8 +447,10 @@ public class Interpreter
                 tokens[i] = tokens[i].trim();
             }
         }
-        //System.out.println("Number of lines: " + numberOfLines);
-        System.out.println("Initial input provided: " + initialInput);
+        if (DEBUG) {
+            System.out.println("Initial input provided: " + initialInput);
+            System.out.println("Number of tapes: " + numTapes);
+        }
     }
     
     /** Runs the current program 
@@ -497,7 +505,7 @@ public class Interpreter
     */
     public void reset() 
     {
-        System.out.println("Interpreter reset");
+        if (DEBUG) {System.out.println("Interpreter reset");}
         reset = true;
         //Make sure the interpreter state is halted
         interpRunState = "HALT";
@@ -542,7 +550,7 @@ public class Interpreter
     */
     public void pause() 
     {
-        System.out.println("Machine paused");
+        if (DEBUG) {System.out.println("Machine paused");}
         notInterrupted = false;
         //view.setPauseState();
     }
@@ -728,7 +736,6 @@ public class Interpreter
             if ((token == readToken.charAt(0)) || (readToken.equals("*"))) {
             //if no change requested, write no new token, otherwise write
                 if (!writeToken.equals("*")) {
-                    //System.out.println("New token");
                     if (writeTape.equalsIgnoreCase("t1")) {
                         tapeOne.write(writeToken.charAt(0));
                         tapeOneUpdated = true;
@@ -791,32 +798,48 @@ public class Interpreter
                 //update the tapes (if animation enabled)
                 if (animationEnabled) {
                     if (tapeOneUpdated) {
-                        view.updateTapeContent(tapeOne.getContent(), 1);
+                        Platform.runLater(() -> {
+                            view.updateTapeContent(tapeOne.getContent(), 1);
+                        });
                     }
                     if (tapeTwoUpdated) {
-                        view.updateTapeContent(tapeTwo.getContent(), 2);
+                        Platform.runLater(() -> {
+                            view.updateTapeContent(tapeTwo.getContent(), 2);
+                        });
                     }
                     if (tapeThreeUpdated) {
-                        view.updateTapeContent(tapeThree.getContent(), 3);
+                        Platform.runLater(() -> {
+                            view.updateTapeContent(tapeThree.getContent(), 3);
+                        });
                     }
-                    view.updateState(interpState);
-                    view.updateStepCount(stepCount);
+                    Platform.runLater(() -> {
+                        view.updateState(interpState);
+                        view.updateStepCount(stepCount);
+                    });
                 }
                 //check if a halt state has been reached, if so, HALT
                 if (interpState.equalsIgnoreCase("accepthalt") || interpState.equalsIgnoreCase("rejecthalt")) {
                     notInterrupted = false;
-                    view.setStoppedState();
                     //ensure all tapes end fully updated
-                    view.updateTapeContent(tapeOne.getContent(), 1);
+                    Platform.runLater(() -> {
+                        view.setStoppedState();
+                        view.updateTapeContent(tapeOne.getContent(), 1);
+                    });
                     if (numTapes == 2) {
+                        Platform.runLater(() -> {
                         view.updateTapeContent(tapeTwo.getContent(), 2);
+                        });
                     }
                     if (numTapes == 3) {
+                        Platform.runLater(() -> {
                         view.updateTapeContent(tapeTwo.getContent(), 2);
                         view.updateTapeContent(tapeThree.getContent(), 3);
+                        });
                     }
-                    view.updateState(interpState);
-                    view.updateStepCount(stepCount);
+                    Platform.runLater(() -> {
+                        view.updateState(interpState);
+                        view.updateStepCount(stepCount);
+                    });
                 }
                 stepCount++;
             }
@@ -827,7 +850,7 @@ public class Interpreter
             }
         //}
         
-        //System.out.printf("Tape\t%s\nInitial state\t%s\nRead Token\t%s\nWrite Token\t%s\nMove\t%s\nWrite Tape\t%s\nEnd State\t%s\nSpeed\t%d\n\n", tape, initialState, readToken, writeToken, direction, writeTape, endState, view.getSpeed());
+        if (DEBUG) {System.out.printf("Tape\t%s\nInitial state\t%s\nRead Token\t%s\nWrite Token\t%s\nMove\t%s\nWrite Tape\t%s\nEnd State\t%s\nSpeed\t%d\n\n", tape, initialState, readToken, writeToken, direction, writeTape, endState, view.getSpeed());}
         
     }
     /**
@@ -928,7 +951,6 @@ public class Interpreter
                  * <pre> Post-condition: Step will be completed </pre>
                  */
                 public void step() {
-                    //System.out.println("Program stepped");
                     boolean checkState = true;
                     int size = transitions.size();
                     //if ("HALT".equals(interpRunState) || "STEP".equals(interpRunState)) 
@@ -944,10 +966,10 @@ public class Interpreter
                                         //notInterrupted = false;
                                         //view.setStoppedState();
                                         view.updateState(interpState);
-                                        System.out.println("end of commands was reached in a halt state");
+                                        if (DEBUG) {System.out.println("end of commands was reached in a halt state");}
                                 }
                                 else {
-                                        System.out.println("end of commands was reached but no halt state");
+                                        if (DEBUG) {System.out.println("end of commands was reached but no halt state");}
                                 }
                             }
                             else {
