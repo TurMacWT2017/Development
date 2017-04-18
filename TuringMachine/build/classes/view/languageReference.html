@@ -65,9 +65,10 @@
         font-weight: bold;
     }
     
-    .background-image {
-        background-position: center,center;
-        background-repeat: no-repeat;
+    .image2 {
+        max-height: 400px;
+        max-width: 400px;
+        padding: 20px;
     }
     
     .background {
@@ -139,57 +140,83 @@
             
 
         <h2><br />An Example Program</h2>
-        <!--<p>Given the following world:<br></p>
-        <p><img src="images/follow-right-example.png" class="image" alt="Follow right example"></p>-->
 
         <p>
-        The following program will read the contents of Tape 1, and will determine if it
-        is a palindrome or not.
+        The following example will read the comma-separated input line, insert the values
+        into their respective tapes, and sum the two tapes and store the result in tape 3.
+        The <i>input:</i> line is optional. If it isn't there, a popup box will appear asking
+        for the inputs of each tape.
         </p>
         <pre>
-            <b>Palindrome.tm</b>
+            <b>BinaryAddition.tm</b>
             
-            # This example program checks if the input string is a binary palindrome.
-            # Machine starts in state 0.
+            # This is a Binary Addition program
+            # It accepts two binary numbers as inputs for tape 1 and tape 2,
+            # sums them together onto tape 3
+            input: 100000101, 1110;
 
-            # State 0: read the leftmost symbol
+            # Start State for Tape 1 (start1) - get to the rightmost bit of tape1
 
-            t1, 0, 0, _, >, t1, A;
-            t1, 0, 1, _, >, t1, A2;
-            t1, 0, _, _, *, t1, acceptHalt;
+            t1, start, _, _, <, t1, start2;
+            t1, start, *, *, >, t1, start;
 
+            # Start State for Tape 2 (start2) - get to the rightmost bit of tape2
 
+            t2, start2, _, _, *<, t2, A;
+            t2, start2, *, *, *>, t2, start2;
 
-            # State A, A2: find the rightmost symbol
+            # STATE A
+            t1, A, 0, 0, <, t1, B;
+            t1, A, 1, 1, <, t1, C;
+            t1, A, _, _, *, t1, endOfFirst;
 
-            t1, A, _, _, <, t1, B;
-            t1, A, *, *, >, t1, A;
+            # STATE B
+            t2, B, 0, 0, *<<, t3, A;
+            t2, B, 1, 1, *<<, t3, A;
+            t2, B, _, 0, **<, t3, endOfSecond;
 
-            t1, A2, _, _, <, t1, B2;
-            t1, A2, *, *, >, t1, A2;
+            # STATE C
+            t2, C, 0, 1, *<<, t3, A;
+            t2, C, 1, 0, *<<, t3, Carry;
+            t2, C, _, 1, *<<, t3, endOfSecond;
 
+            # STATE Carry
+            t1, Carry, 0, 0, <, t1, Carry0;
+            t1, Carry, 1, 1, <, t1, Carry1;
+            t1, Carry, _, _, *, t1, endOfFirstCarry;
 
+            # STATE Carry0
+            t2, Carry0, 0, 1, *<<, t3, A;
+            t2, Carry0, 1, 0, *<<, t3, Carry;
+            t2, Carry0, _, 1, **<, t3, endOfSecond;
 
-            # State B, B2: check if the rightmost symbol matches the most recently read left-hand symbol
+            # STATE Carry1
+            t2, Carry1, 0, 0, *<<, t3, Carry;
+            t2, Carry1, 1, 1, *<<, t3, Carry;
+            t2, Carry1, _, 0, **<, t3, endOfSecondCarry;
 
-            t1, B, 0, _, <, t1, C;
-            t1, B, _, _, *, t1, acceptHalt;
-            t1, B, *, *, *, t1, rejectHalt;
+            # STATE endOfFirstCarry
+            t2, endOfFirstCarry, 0, 1, *<<, t3, endOfFirst;
+            t2, endOfFirstCarry, 1, 0, *<<, t3, endOfFirstCarry;
+            t2, endOfFirstCarry, _, 1, **<, t3, acceptHalt;
 
-            t1, B2, 1, _, <, t1, C;
-            t1, B2, _, _, *, t1, acceptHalt;
-            t1, B2, *, *, *, t1, rejectHalt;
+            # STATE endOfSecondCarry
+            t1, endOfSecondCarry, 0, 1, <*<, t3, endOfSecond;
+            t1, endOfSecondCarry, 1, 0, <*<, t3, acceptHalt;
 
+            # STATE endOfFirst
+            t2, endOfFirst, 0, 0, *<<, t3, endOfFirst;
+            t2, endOfFirst, 1, 1, *<<, t3, endOfFirst;
+            t2, endOfFirst, _, _, ***, t2, acceptHalt;
 
-
-            # State C, D: return to left end of remaining input
-
-            t1, C, _, _, *, t1, acceptHalt;
-            t1, C, *, *, <, t1, D;
-            t1, D, *, *, <, t1, D;
-            t1, D, _, _, >, t1, 0;
-
+            # STATE endOfSecond
+            t1, endOfSecond, 0, 0, <*<, t3, endOfSecond;
+            t1, endOfSecond, 1, 1, <*<, t3, endOfSecond;
+            t1, endOfSecond, _, _, *, t1, acceptHalt;
         </pre>
+        
+        <p>If the input file does not contain an input line, the following will pop-up upon load:</p>
+        <p><img src="InputScreen.png" class="image2" alt="Input Dialog Screen"></p>
         
         <footer>
             <p class="copyleft">
