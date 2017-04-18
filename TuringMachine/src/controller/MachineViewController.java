@@ -508,7 +508,7 @@ public class MachineViewController implements Initializable {
 
         XCOORD = 72;
         YCOORD = 72;
-        String input = controller.openExample("example/BinaryAddition.tm");
+        String input = controller.openExample("examples/BinaryAddition.tm");
         //This is a three tape program, so make sure all tapes active
         activateTapeTwo();
         activateTapeThree();
