@@ -850,6 +850,9 @@ public class MachineViewController implements Initializable {
             if (fontControl.getIsDefaultRW()) {
                 TuringMachine.setUserRWHeadPreferences(RWHeadFillColor);
             }
+            if (fontControl.getIsDefaultCode()) {
+                TuringMachine.setUserCodeFontPreferences(codeFamily, codeSize, isCodeItalic, isCodeBold);
+            }
             if (fileLoaded) {
                 if (interp.errorFound()) {
                     updateCodeTabContent(interp.getErrorReport());
@@ -1165,11 +1168,18 @@ public class MachineViewController implements Initializable {
         //this portion pulls any current user defaults that have been set and applies them
         Object[] settings = TuringMachine.getUserFontPreferences();
         Color savedColor = TuringMachine.getUserRWHeadPreferences();
+        Object[] codeSettings = TuringMachine.getUserCodeFontPreferences();
+        //set main (tape) font settings
         family = (String) settings[0];
         size = (int) settings[1];
         isItalic = (boolean) settings[2];
         isBold = (boolean) settings[3];
         RWHeadFillColor = savedColor;
+        //set code font settings
+        codeFamily = (String) codeSettings[0];
+        codeSize = (int) codeSettings[1];
+        isCodeItalic = (boolean) codeSettings[2];
+        isCodeBold = (boolean) codeSettings[3];
         //these lines allow the canvas to dynamically resize when the program does
         
         statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
