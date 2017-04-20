@@ -1311,10 +1311,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         statePane = new Pane();
         double stateTabWidth = statePaneTab. widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
-        XCOORD = stateTabWidth*.10;//50.0;
-        YCOORD = stateTabHeight*.20;//25.0;
-        //XCOORD = 50;
-        //YCOORD = 25;
+        
         
         // LOAD the initial state, end state, and transition arrays
         loadTupleArrays(states);           
@@ -1396,7 +1393,8 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
     public void drawUniqueInitNodes(){
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
-
+        XCOORD = stateTabWidth*.05;//50.0;
+        YCOORD = stateTabHeight*.25;//25.0;
         
         double evenRowsStart = .10;
         double oddRowStart = .125;
@@ -1407,17 +1405,17 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             uniqueNodes[j].setStroke(tapeColor[j]);//Color.BLACK);
             //endNodes[j].setStroke(Color.BLACK);
             
-            if (XCOORD + 25 <= stateTabWidth*.95)
+            if (XCOORD + 100 <= stateTabWidth*.95)
             {
                 XCOORD += stateTabWidth*.10;//+= 75;
                 if(j%2==0)
-                    YCOORD += stateTabHeight*.60;//100;
+                    YCOORD += stateTabHeight*.33;//100;
                 else
-                    YCOORD -= stateTabHeight*.60;//100;
+                    YCOORD -= stateTabHeight*.33;//100;
             }
             else
             {
-                XCOORD = stateTabWidth*.10;//50;
+                XCOORD = stateTabWidth*.20;//50;
                 YCOORD += stateTabHeight*.30;//100;
             }        
         }
@@ -1428,14 +1426,16 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             statePane.getChildren().add(uniqueNodes[i]);
             for(int j=0; j<numAllStates; j++){
                 Circle stateNode = stateNodes[j];
-                Circle endNode = endNodes[j];   
+                Circle endNode = endNodes[j];  
+                /*
                 stateNodes[j].setOpacity(.5);
                 stateNodes[j].setVisible(true);
                 stateNodes[j].setRadius(4);
                 stateNodes[j].setFill(Color.web("#67112b"));
                 stateNodes[j].setStroke(Color.web("#67112b"));
                 stateNodes[j].toFront();
-                    
+                */
+                stateNodes[j].setVisible(false);
                 if(!allInitStates[j].equalsIgnoreCase(initialUniqueStates[i])){
                 } else {
                     stateNode.centerXProperty().bindBidirectional(uniqueNodes[i].centerXProperty());
@@ -1473,7 +1473,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         if(acceptCheck > 0){
             int k = 0;
             while(k<1){
-                acceptNode = createDraggingCircle(50,stateTabHeight - 70, 15, statePane, acceptColor);    
+                acceptNode = createDraggingCircle(30,stateTabHeight - 40, 15, statePane, acceptColor);    
                 acceptNode.setStrokeType(StrokeType.OUTSIDE);
                 acceptNode.setStroke(acceptColor);
                 statePane.getChildren().add(acceptNode);
@@ -1483,7 +1483,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         if(rejectCheck > 0){
             int k = 0;
             while(k<1){
-                rejectNode = createDraggingCircle(stateTabWidth - 90,stateTabHeight - 70, 15, statePane, rejectColor);    
+                rejectNode = createDraggingCircle(stateTabWidth - 70,stateTabHeight - 40, 15, statePane, rejectColor);    
                 rejectNode.setStrokeType(StrokeType.OUTSIDE);
                 rejectNode.setStroke(rejectColor);
                 statePane.getChildren().add(rejectNode);
@@ -1536,14 +1536,14 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
                 if(allEndStates[j].equalsIgnoreCase(allInitStates[j])){  
                    
                     Arc arc = new Arc();
-arc.setLayoutX(stateNodes[j].getCenterX()+stateNodes[j].getRadius());
-arc.setLayoutY(stateNodes[j].getCenterX()+stateNodes[j].getRadius());
-arc.setRadiusX(50.0f);
-arc.setRadiusY(50.0f);
-arc.setStartAngle(45.0f);
-arc.setLength(50.0f);
-arc.setType(ArcType.ROUND);
-arc.setFill(Color.TRANSPARENT);
+                    arc.setLayoutX(stateNodes[j].getCenterX()+stateNodes[j].getRadius());
+                    arc.setLayoutY(stateNodes[j].getCenterX()+stateNodes[j].getRadius());
+                    arc.setRadiusX(50.0f);
+                    arc.setRadiusY(50.0f);
+                    arc.setStartAngle(45.0f);
+                    arc.setLength(50.0f);
+                    arc.setType(ArcType.ROUND);
+                    arc.setFill(Color.TRANSPARENT);
                     //transLabels[j].setText(transLabels[j].getText()+"/n/n/n/n/n");
                     //Ellipse anchor1 = new Ellipse(stateNodes[j].getCenterX(),stateNodes[j].getCenterY()-10,3,24);
                     //anchor1.setFill(Color.BEIGE);
@@ -1551,14 +1551,16 @@ arc.setFill(Color.TRANSPARENT);
                     arc.setStrokeType(StrokeType.OUTSIDE);
                     //anchor1.setRotate(45.0);
                     arc.setSmooth(true);
+                    arc.toBack();
                     arc.setOpacity(.7);
                      //arc.getStrokeDashArray().addAll(15d, 5d, 10d, 15d, 20d);
-        arc.setStrokeDashOffset(5);
-        arc.setStrokeLineJoin(StrokeLineJoin.ROUND);
-        arc.setStrokeLineCap(StrokeLineCap.ROUND);
+                    arc.setStrokeDashOffset(5);
+                    arc.setStrokeLineJoin(StrokeLineJoin.ROUND);
+                    arc.setStrokeLineCap(StrokeLineCap.ROUND);
                     
                     arc.layoutXProperty().bindBidirectional(stateNodes[j].centerXProperty());
                     arc.layoutYProperty().bindBidirectional(stateNodes[j].centerYProperty());
+                    
                     statePane.getChildren().add(arc);
                 }
             } 
@@ -1660,9 +1662,9 @@ arc.setFill(Color.TRANSPARENT);
         LinearGradient lg3 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops3);
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
-        Circle oneAqua = new Circle(stateTabWidth*.25-10.0,stateTabHeight-15,5,Color.AQUA);
-        Circle twoViolet = new Circle(stateTabWidth*.5-10.0,stateTabHeight-15,5,Color.VIOLET);
-        Circle threeTan = new Circle(stateTabWidth*.75-10.0,stateTabHeight-15,5,Color.TAN);
+        Circle oneAqua = new Circle(stateTabWidth-60.0,15.0,5,Color.AQUA);
+        Circle twoViolet = new Circle(stateTabWidth-60.0,30.0,5,Color.VIOLET);
+        Circle threeTan = new Circle(stateTabWidth-60.0,45.0,5,Color.TAN);
         oneAqua.setFill(lg1);
         twoViolet.setFill(lg2);
         threeTan.setFill(lg3);
@@ -1672,12 +1674,12 @@ arc.setFill(Color.TRANSPARENT);
         legend1.setText("  Tape 1");
         legend2.setText("  Tape 2");
         legend3.setText("  Tape 3");
-        legend1.setLayoutX(stateTabWidth*.25-10.0);
-        legend1.setLayoutY(stateTabHeight-10.0);
-        legend2.setLayoutX(stateTabWidth*.5-10.0);
-        legend2.setLayoutY(stateTabHeight-10.0);
-        legend3.setLayoutX(stateTabWidth*.75-10.0);
-        legend3.setLayoutY(stateTabHeight-10.0);       
+        legend1.setLayoutX(stateTabWidth-60.0);
+        legend1.setLayoutY(20.0);
+        legend2.setLayoutX(stateTabWidth-60.0);
+        legend2.setLayoutY(35.0);
+        legend3.setLayoutX(stateTabWidth-60.0);
+        legend3.setLayoutY(50.0);       
         statePane.getChildren().addAll(oneAqua,twoViolet,threeTan);
         statePane.getChildren().addAll(legend1,legend2,legend3);      
     }
