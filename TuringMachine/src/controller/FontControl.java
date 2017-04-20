@@ -108,8 +108,12 @@ public class FontControl extends TabPane {
      * @param bold whether font is bold
      * @param italic whether font is italicized
      * @param RWHead RWHead color
+     * @param cSize code size
+     * @param cFamily code family
+     * @param cBold code bold
+     * @param cItalic code italic
     */
-    public void initialize(String defaultFamily, int defaultSize, boolean bold, boolean italic, Color RWHead) {
+    public void initialize(String defaultFamily, int defaultSize, boolean bold, boolean italic, Color RWHead, int cSize, String cFamily, boolean cBold, boolean cItalic) {
         family = defaultFamily;
         size = defaultSize;
         //keep these at default values too until they are changed for consistency
@@ -119,18 +123,18 @@ public class FontControl extends TabPane {
         isItalic = italic;
         RWHeadFontColor = RWHead;
         newRWHeadFontColor = RWHead;
+        codeFamily = cFamily;
+        newCodeFamily = cFamily;
+        codeSize = cSize;
+        newCodeSize = cSize;
+        isCodeBold = cBold;
+        isCodeItalic = cItalic;
         //set main preview bar
-        Text previewText = new Text("AaBbCcZz1234");
-        previewText.setFont(getCurrentFontSettings());
-        previewBar.getChildren().add(previewText);
+        updatePreviewBar();
+        //set code preview bar
+        updateCodePreviewBar();
         //set rwhead preview bar
-        Text rwpreviewText = new Text("A");
-        rwpreviewText.setFont(getCurrentFontSettings());
-        rwpreviewText.setFill(RWHead);
-        RWPreviewBar.getChildren().add(rwpreviewText);
-        rwpreviewText = new Text("aBbCcZz1234");
-        rwpreviewText.setFont(getCurrentFontSettings());
-        RWPreviewBar.getChildren().add(rwpreviewText);
+        updateRWHeadPreviewBar();
         //initializes combo boxes
         initializeFontTabComboBoxes();
         initializeCodeTabComboBoxes();
@@ -216,6 +220,8 @@ public class FontControl extends TabPane {
         family = newFamily;
         size = newSize;
         RWHeadFontColor = newRWHeadFontColor;
+        codeSize = newCodeSize;
+        codeFamily = newCodeFamily;
         //then exit
         Node  source = (Node)  event.getSource(); 
         Stage stage  = (Stage) source.getScene().getWindow();
@@ -272,7 +278,7 @@ public class FontControl extends TabPane {
      */
     @FXML
     private void italicCodeCheckBoxClicked(ActionEvent event) {
-        isCodeItalic = boldCodeCheckBox.isSelected();
+        isCodeItalic = italicCodeCheckBox.isSelected();
         updateCodePreviewBar();
           
     }
@@ -293,6 +299,16 @@ public class FontControl extends TabPane {
     @FXML
     private void makeRWDefault(ActionEvent event) {
         rwDefault = RWDefaultToggle.isSelected();
+    }
+    
+        
+    /**
+     * Handles user click on make default checkbox for code settings
+     * @param event ActionEvent
+     */
+    @FXML
+    private void makeCodeDefault(ActionEvent event) {
+        codeDefault = codeDefaultToggle.isSelected();
     }
     
     /**
@@ -353,6 +369,38 @@ public class FontControl extends TabPane {
      */
     public boolean getIsItalic() {
         return isItalic;
+    }
+    
+        /**
+     * Returns the current code font size setting
+     * @return int font size
+     */
+    public int getCodeFontSize() {
+        return codeSize;
+    }
+    
+    /**
+     * Returns the current setting for font family
+     * @return font family
+     */
+    public String getCodeFamily() {
+        return codeFamily;
+    }
+    
+    /**
+     * Returns the current setting for whether font is bold
+     * @return boolean isBold 
+     */
+    public boolean getCodeBold() {
+        return isCodeBold;
+    }
+    
+    /**
+     * Returns the current setting for whether font is italicized
+     * @return boolean isItalic
+     */
+    public boolean getCodeItalic() {
+        return isCodeItalic;
     }
     
     /**
@@ -449,11 +497,11 @@ public class FontControl extends TabPane {
         //fill font sizes combobox
         codeSizeChooserBox.getItems().addAll(fontSizes);
         //show what the default as the initial item in both combo boxes
-        codeSizeChooserBox.getSelectionModel().select(Integer.toString(size));
+        codeSizeChooserBox.getSelectionModel().select(Integer.toString(codeSize));
         //fill combobox with all available system fonts
         codeFontChooserBox.getItems().addAll(fonts);
         //set the combo box default item to show as the current font
-        codeFontChooserBox.getSelectionModel().select(family);
+        codeFontChooserBox.getSelectionModel().select(codeFamily);
         codeFontChooserBox.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue ov, String t, String t1) {
