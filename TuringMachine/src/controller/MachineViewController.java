@@ -24,6 +24,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -130,8 +131,10 @@ public class MachineViewController implements Initializable {
     private boolean isBold = false;
     private boolean isItalic = false;
     private Color RWHeadFillColor = Color.RED;
-    private String codeTabFamily = "Courier";
-    private int codeTabSize = 14;
+    private String codeFamily = "Courier";
+    private int codeSize = 14;
+    private boolean isCodeBold = false;
+    private boolean isCodeItalic = false;
     
     //state diagram variables
     private Circle acceptNode;
@@ -219,7 +222,9 @@ public class MachineViewController implements Initializable {
     @FXML private TextFlow codeViewTab;
     //Main window
     @FXML private VBox mainWindow;
-
+    //Code diagram window
+    @FXML private Stage codeStage;
+    @FXML private TextFlow codeDisplay;
     
     //Machine Controller
     private final MachineController controller = new MachineController();
@@ -351,9 +356,7 @@ public class MachineViewController implements Initializable {
             codeViewTab.getChildren().clear();
             statePaneTab.getChildren().clear();
             clearStateTuples();
-            
-            XCOORD = 72;
-            YCOORD = 72;
+
             String input = controller.openFile(selectedFile);
             //when initializing interpreter, give it both an input and a view controller (this) to work with
             interp = new Interpreter(input, this, tapes);
@@ -391,7 +394,7 @@ public class MachineViewController implements Initializable {
                 //try {
                 //    launchCodeWindow(input);
                     Text text1 = new Text(input);
-                    text1.setFont(Font.font(codeTabFamily, codeTabSize));
+                    text1.setFont(getCurrentCodeFontSettings());
                     codeViewTab.getChildren().add(text1);
                     //statePaneTab.getChildren().add(statePane);
                     //tapeOne.setText(interp.getInitialInput());
@@ -427,8 +430,6 @@ public class MachineViewController implements Initializable {
         statePaneTab.getChildren().clear();
         clearStateTuples();
 
-        XCOORD = 72;
-        YCOORD = 72;
         String input = controller.openExample("examples/Palindrome.tm");
         //when initializing interpreter, give it both an input and a view controller (this) to work with
         interp = new Interpreter(input, this, tapes);
@@ -437,7 +438,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(codeTabFamily, codeTabSize));
+        text1.setFont(getCurrentCodeFontSettings());
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -465,8 +466,6 @@ public class MachineViewController implements Initializable {
         statePaneTab.getChildren().clear();
         clearStateTuples();
 
-        XCOORD = 72;
-        YCOORD = 72;
         String input = controller.openExample("examples/GoBuffs.tm");
         //this is a three tape program, so make sure all tapes are active
         activateTapeTwo();
@@ -478,7 +477,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(codeTabFamily, codeTabSize));
+        text1.setFont(getCurrentCodeFontSettings());
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -506,8 +505,6 @@ public class MachineViewController implements Initializable {
         statePaneTab.getChildren().clear();
         clearStateTuples();
 
-        XCOORD = 72;
-        YCOORD = 72;
         String input = controller.openExample("examples/BinaryAddition.tm");
         //This is a three tape program, so make sure all tapes active
         activateTapeTwo();
@@ -519,7 +516,7 @@ public class MachineViewController implements Initializable {
         changeLabel.setDisable(false);
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
-        text1.setFont(Font.font(codeTabFamily, codeTabSize));
+        text1.setFont(getCurrentCodeFontSettings());
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -768,11 +765,10 @@ public class MachineViewController implements Initializable {
     private void launchCodeWindow(ActionEvent event) {
         //Parent root;
         if (fileLoaded) {
-            Stage stage;
             if (DEBUG) {System.out.println("Making code window");}
-            stage = new Stage();
+            codeStage = new Stage();
             ScrollPane layout = new ScrollPane();
-            TextFlow codeDisplay = new TextFlow();
+            codeDisplay = new TextFlow();
             codeDisplay.setPrefHeight(450);
             codeDisplay.setPrefWidth(450);
             layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -791,16 +787,16 @@ public class MachineViewController implements Initializable {
             Text content = new Text(code);
             //style the content and add it
             //content.setFont(getCurrentFontSettings());
-            content.setFont(Font.font(codeTabFamily,codeTabSize));
+            content.setFont(getCurrentCodeFontSettings());
             codeDisplay.getChildren().add(content);
             //set the scene and its owner
-            stage.setScene(new Scene(layout, 450, 450));
-            stage.setTitle("Code Window");
-            stage.initOwner(tapeOne.getScene().getWindow());
+            codeStage.setScene(new Scene(layout, 450, 450));
+            codeStage.setTitle("Code Window");
+            codeStage.initOwner(tapeOne.getScene().getWindow());
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-            stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
-            stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
-            stage.show();
+            codeStage.setX((primScreenBounds.getWidth() - codeStage.getWidth()) / 4); 
+            codeStage.setY((primScreenBounds.getHeight() - codeStage.getHeight()) / 8);
+            codeStage.show();
         }
         else {
             Alert alert = new Alert(AlertType.INFORMATION);
@@ -820,7 +816,7 @@ public class MachineViewController implements Initializable {
     public void showFontChooser(ActionEvent event) {
             FontControl fontControl = new FontControl();
             //initialize the font chooser
-            fontControl.initialize(family, size, isBold, isItalic, RWHeadFillColor);
+            fontControl.initialize(family, size, isBold, isItalic, RWHeadFillColor, codeSize, codeFamily, isCodeBold, isCodeItalic);
             Stage stage = new Stage(StageStyle.UNDECORATED);
             stage.setScene(new Scene(fontControl));
            //stage.setWidth(300);
@@ -835,12 +831,19 @@ public class MachineViewController implements Initializable {
             family = fontControl.getFontFamily();
             isBold = fontControl.getIsBold();
             isItalic = fontControl.getIsItalic();
+            codeSize = fontControl.getCodeFontSize();
+            codeFamily = fontControl.getCodeFamily();
+            isCodeBold = fontControl.getCodeBold();
+            isCodeItalic = fontControl.getCodeItalic();
             RWHeadFillColor = fontControl.getRWHeadFillColor();
             if (fontControl.getIsDefaultFont()) {
                 TuringMachine.setUserFontPreferences(family, size, isItalic, isBold);
             }
             if (fontControl.getIsDefaultRW()) {
                 TuringMachine.setUserRWHeadPreferences(RWHeadFillColor);
+            }
+            if (fontControl.getIsDefaultCode()) {
+                TuringMachine.setUserCodeFontPreferences(codeFamily, codeSize, isCodeItalic, isCodeBold);
             }
             if (fileLoaded) {
                 if (interp.errorFound()) {
@@ -858,9 +861,22 @@ public class MachineViewController implements Initializable {
                     updateTapeContent(interp.getTapeContent(2), 2);
                     updateTapeContent(interp.getTapeContent(3), 3);
                 }
+                //force update of code tab content to reflect changed font
+                ObservableList<Node> nodes =  codeViewTab.getChildren();  
+                StringBuilder sb = new StringBuilder();  
+                nodes.forEach((node) -> {  
+                    sb.append((((Text)node).getText()));
+                });
+                    String txt = sb.toString();  
+                updateCodeTabContent(txt);
+                if (codeDisplay != null) {
+                    codeDisplay.getChildren().clear();
+                    Text newContent = new Text(txt);
+                    newContent.setFont(getCurrentCodeFontSettings());
+                    codeDisplay.getChildren().add(newContent);
+                }
             }
             //This line helps prevent the viewport from "breaking" scrolling
-//            tapeOne.setPrefWidth(Double.MAX_VALUE);
             tapeOneScroll.setPrefViewportWidth(700);
     }
     
@@ -1119,8 +1135,7 @@ public class MachineViewController implements Initializable {
     private void updateCodeTabContent(String content) {
         Text newContent = new Text(content);
         codeViewTab.getChildren().clear();
-//        newContent.setFont(getCurrentFontSettings());
-        newContent.setFont(Font.font(family,size));
+        newContent.setFont(getCurrentCodeFontSettings());
         codeViewTab.getChildren().add(newContent);
     }
     
@@ -1145,11 +1160,18 @@ public class MachineViewController implements Initializable {
         //this portion pulls any current user defaults that have been set and applies them
         Object[] settings = TuringMachine.getUserFontPreferences();
         Color savedColor = TuringMachine.getUserRWHeadPreferences();
+        Object[] codeSettings = TuringMachine.getUserCodeFontPreferences();
+        //set main (tape) font settings
         family = (String) settings[0];
         size = (int) settings[1];
         isItalic = (boolean) settings[2];
         isBold = (boolean) settings[3];
         RWHeadFillColor = savedColor;
+        //set code font settings
+        codeFamily = (String) codeSettings[0];
+        codeSize = (int) codeSettings[1];
+        isCodeItalic = (boolean) codeSettings[2];
+        isCodeBold = (boolean) codeSettings[3];
         //these lines allow the canvas to dynamically resize when the program does
         
         statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
@@ -1203,24 +1225,29 @@ public class MachineViewController implements Initializable {
             //set the scene and its owner
             ScrollPane layout = new ScrollPane();
             stage.setTitle("State Diagram Window");
-            Pane pane = new Pane();
+            Pane windowPane = statePane;
             Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
             LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
         
-            Circle r1 = createDraggingCircle(200, 200, 20, statePane, Color.BLUE);
-            r1.setFill(lg1);
+            //Circle r1 = createDraggingCircle(200, 200, 20, statePane, Color.BLUE);
+            //r1.setFill(lg1);
             //Circle startNode1 = createDraggingCircle(200, 200, 5, statePane, Color.BLUE);
-            pane.getChildren().add(r1);
-            Scene scene = new Scene(layout, 450, 450);
+            //ArrayList<Node> fromStateTab = getAllNodes(statePane);
+            //addAllDescendents(windowPane,fromStateTab);
+            //pane.getChildren().add(r1);
+            Scene scene = new Scene(layout, 550, 450);
             
             System.out.println("Making state diagram window");
             layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
             layout.setFitToHeight(true);
             layout.setFitToWidth(true);      
-            pane.setStyle("-fx-background-color: #F5F5DC");
+            //pane.setStyle("-fx-background-color: #F5F5DC");
+            windowPane.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
+                + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
+                + " -fx-border-radius: 5.0");
             
-            layout.setContent(pane);
+            layout.setContent(windowPane);
             stage.setScene(scene);
 
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
@@ -1242,13 +1269,15 @@ public class MachineViewController implements Initializable {
             statePane.getChildren().removeAll(transNodes[j],transLabels[j]);
             double transCenterX = (transLines[j].getStartX() + transLines[j].getEndX())/2;
             double transCenterY = (transLines[j].getStartY() + transLines[j].getEndY())/2;
+            
+            
             transNodes[j] = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.GRAY);
   
                 transLabels[j].layoutXProperty().bind(transNodes[j].centerXProperty());
                 transLabels[j].layoutYProperty().bind(transNodes[j].centerYProperty());
                 //prevLabels[j].setStyle("-fx-font-weight: bold;");      
                 transNodes[j].setVisible(false);
-                transLabels[j].setTextFill(Color.MAROON);
+                transLabels[j].setTextFill(Color.web("#67112b"));
                 statePane.getChildren().addAll(transNodes[j],transLabels[j]);
             //System.out.println("Trans line = " + transLines[j]);
         }
@@ -1277,7 +1306,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
 }
            
     public void drawStates(ArrayList<StateTransition> states) {       
-        
+        //statePaneTab.getChildren().clear();
         //currentStates = states;        
         statePane = new Pane();
         double stateTabWidth = statePaneTab. widthProperty().get();
@@ -1399,7 +1428,13 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             statePane.getChildren().add(uniqueNodes[i]);
             for(int j=0; j<numAllStates; j++){
                 Circle stateNode = stateNodes[j];
-                Circle endNode = endNodes[j];                
+                Circle endNode = endNodes[j];   
+                stateNodes[j].setOpacity(.5);
+                stateNodes[j].setVisible(true);
+                stateNodes[j].setRadius(4);
+                stateNodes[j].setFill(Color.web("#67112b"));
+                stateNodes[j].setStroke(Color.web("#67112b"));
+                stateNodes[j].toFront();
                     
                 if(!allInitStates[j].equalsIgnoreCase(initialUniqueStates[i])){
                 } else {
@@ -1416,14 +1451,14 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
                     endNode.centerXProperty().bindBidirectional(acceptNode.centerXProperty());
                     endNode.centerYProperty().bindBidirectional(acceptNode.centerYProperty()); 
                     endNode.setFill(Color.GREEN);
-                    endNode.setRadius(1);
+                    endNode.setRadius(4.0f);
                 }
                 if(allEndStates[j].equalsIgnoreCase("rejectHalt")){   
                     
                     endNode.centerXProperty().bindBidirectional(rejectNode.centerXProperty());
                     endNode.centerYProperty().bindBidirectional(rejectNode.centerYProperty()); 
                     endNode.setFill(Color.RED);
-                    endNode.setRadius(1);
+                    endNode.setRadius(4.0f);
                 }                             
             }            
         } 
@@ -1461,30 +1496,35 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             transLabels = new Label[numAllStates];
             transNodes = new Circle[numAllStates];
             transLines = new Line[numAllStates];
+            
+            
             for (int j = 0; j< numAllStates; j++){
 
                 transLabels[j] = new Label();
                 transNodes[j] = new Circle();
-                allTransitions[j] = "    " + allTransitions[j];
-                transLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
-
-                transLabels[j] = new Label();
-                transNodes[j] = new Circle();
-                allTransitions[j] = "  " + allTransitions[j];
-                transLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
-
                 
-                transLabels[j].setTextFill(Color.web("#67112b"));
+                
+                String transition = "  " + allTransitions[j];
+            /*    
+                ArrayList<Node> fromStateTab = getAllNodes(statePane);
+            for(int i=0; i<fromStateTab.size(); i++){
+                System.out.println("i= "+fromStateTab.get(i).toString());
+            }
+             */   
+                transLabels[j].setText(transLabels[j].getText()+"/n/n/n/n/n");
+                //allTransitions[j] = "  " + allTransitions[j];
+                
                 transLines[j] = connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
+                transLines[j].toBack();
                 double transCenterX = (transLines[j].getStartX() + transLines[j].getEndX())/2;
-                double transCenterY = (transLines[j].getStartY() + transLines[j].getEndY())/2;
-                
-                
-                transNodes[j] = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.BROWN);
-                
+                double transCenterY = (transLines[j].getStartY() + transLines[j].getEndY())/2;                        
+                transNodes[j] = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.BROWN);                
                 transLabels[j].layoutXProperty().bind(transNodes[j].centerXProperty());
                 transLabels[j].layoutYProperty().bind(transNodes[j].centerYProperty());
-                //prevLabels[j].setStyle("-fx-font-weight: bold;");
+                transLabels[j].setText(transition.replaceAll(", ", " "));
+              
+                
+                transLabels[j].setTextFill(Color.web("#67112b"));
                 transNodes[j].setVisible(false);
                 statePane.getChildren().addAll(transNodes[j],transLabels[j]);
                 connected++;          
@@ -1494,15 +1534,32 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
     public void drawSameStateArcbacks(){
             for(int j=0; j<numAllStates; j++){
                 if(allEndStates[j].equalsIgnoreCase(allInitStates[j])){  
-                    Ellipse anchor1 = new Ellipse(stateNodes[j].getCenterX(),stateNodes[j].getCenterY()-10,3,24);
-                    anchor1.setFill(Color.BEIGE);
-                    anchor1.setStroke(Color.web("#67112b"));
-                    anchor1.setStrokeType(StrokeType.OUTSIDE);
-                    anchor1.setRotate(45.0);
-                    anchor1.setSmooth(true);
-                    anchor1.centerXProperty().bindBidirectional(stateNodes[j].centerXProperty());
-                    anchor1.centerYProperty().bindBidirectional(stateNodes[j].centerYProperty());
-                    statePane.getChildren().add(anchor1);
+                   
+                    Arc arc = new Arc();
+arc.setLayoutX(stateNodes[j].getCenterX()+stateNodes[j].getRadius());
+arc.setLayoutY(stateNodes[j].getCenterX()+stateNodes[j].getRadius());
+arc.setRadiusX(50.0f);
+arc.setRadiusY(50.0f);
+arc.setStartAngle(45.0f);
+arc.setLength(50.0f);
+arc.setType(ArcType.ROUND);
+arc.setFill(Color.TRANSPARENT);
+                    //transLabels[j].setText(transLabels[j].getText()+"/n/n/n/n/n");
+                    //Ellipse anchor1 = new Ellipse(stateNodes[j].getCenterX(),stateNodes[j].getCenterY()-10,3,24);
+                    //anchor1.setFill(Color.BEIGE);
+                    arc.setStroke(Color.BLACK);
+                    arc.setStrokeType(StrokeType.OUTSIDE);
+                    //anchor1.setRotate(45.0);
+                    arc.setSmooth(true);
+                    arc.setOpacity(.7);
+                     //arc.getStrokeDashArray().addAll(15d, 5d, 10d, 15d, 20d);
+        arc.setStrokeDashOffset(5);
+        arc.setStrokeLineJoin(StrokeLineJoin.ROUND);
+        arc.setStrokeLineCap(StrokeLineCap.ROUND);
+                    
+                    arc.layoutXProperty().bindBidirectional(stateNodes[j].centerXProperty());
+                    arc.layoutYProperty().bindBidirectional(stateNodes[j].centerYProperty());
+                    statePane.getChildren().add(arc);
                 }
             } 
         }
@@ -1513,8 +1570,8 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         }
         Pane parent = (Pane) n1.getParent();
         Line line = new Line();
-        line.setFill(Color.BLUE);
-        line.setOpacity(.5);
+        line.setFill(Color.ROYALBLUE);
+        line.setOpacity(.7);
         line.startXProperty().bind(Bindings.createDoubleBinding(() -> {
             Bounds b = n1.getBoundsInParent();
             return b.getMinX() + b.getWidth() / 2 ;
@@ -1531,10 +1588,10 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             Bounds b = n2.getBoundsInParent();
             return b.getMinY() + b.getHeight() / 2 ;
         }, n2.boundsInParentProperty()));
-        line.getStrokeDashArray().addAll(15d, 5d, 15d, 10d, 20d);
+        line.getStrokeDashArray().addAll(2d, 2d, 2d, 2d, 2d);
         line.setStrokeDashOffset(5);
         line.setStrokeLineJoin(StrokeLineJoin.ROUND);
-        line. setStrokeLineCap(StrokeLineCap.ROUND);
+        line.setStrokeLineCap(StrokeLineCap.ROUND);
        
         line.toBack();
         parent.getChildren().add(line);
@@ -1711,6 +1768,26 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             return Font.font(family, size);
         }   
     }
+    
+    /**
+    * Returns the current code Font settings to allow easy text formatting
+    * @return Font current font
+    */
+    private Font getCurrentCodeFontSettings() {
+        if (isCodeBold && isCodeItalic) {
+            return Font.font(codeFamily, FontWeight.BOLD, FontPosture.ITALIC, codeSize);
+        }
+        else if (isCodeBold) {
+            return Font.font(codeFamily, FontWeight.BOLD, codeSize);
+        }
+        else if (isCodeItalic) {
+            return Font.font(codeFamily, FontPosture.ITALIC, codeSize);
+        }
+        else {
+            return Font.font(codeFamily, codeSize);
+        }   
+    }
+    
     
     /*** Methods for displaying various dialogs are in this area
     

@@ -50,7 +50,7 @@ public class TuringMachine extends Application {
     /**
      * Returns the user font preferences
      * The preference is read from the OS specific registry. If no such
-     * preference can be found, null is returned.
+     * preference can be found, an appropriate value is returned.
      * 
      * @return settings, an object array containing the retrieved settings
      */
@@ -59,11 +59,12 @@ public class TuringMachine extends Application {
         //settings is kept in an object array for the purpose of returning the settings
         //see the portion of the controller in initialize of the view controller to see
         //the values being retrieved and set
-        Object[] settings = new Object[4];        
+        Object[] settings = new Object[7];        
         String family = prefs.get("family", null);
         int size = prefs.getInt("size", 28);
         boolean isItalic = prefs.getBoolean("isItalic", false);
         boolean isBold = prefs.getBoolean("isBold", false);
+        
         settings[0] = family;
         settings[1] = size;
         settings[2] = isItalic;
@@ -89,9 +90,50 @@ public class TuringMachine extends Application {
     }
     
     /**
+     * Returns the user code font preferences
+     * The preference is read from the OS specific registry. If no such
+     * preference can be found, an appropriate default is returned.
+     * 
+     * @return settings, an object array containing the retrieved settings
+     */
+    public static Object[] getUserCodeFontPreferences() {
+        Preferences prefs = Preferences.userNodeForPackage(TuringMachine.class);
+        //settings is kept in an object array for the purpose of returning the settings
+        //see the portion of the controller in initialize of the view controller to see
+        //the values being retrieved and set
+        Object[] settings = new Object[4];
+        String codeFamily = prefs.get("codeFamily", "Courier");
+        int codeSize = prefs.getInt("codeSize", 14);
+        boolean isCodeItalic = prefs.getBoolean("isCodeItalic", false);
+        boolean isCodeBold = prefs.getBoolean("isCodeBold", false);
+        
+        settings[0] = codeFamily;
+        settings[1] = codeSize;
+        settings[2] = isCodeItalic;
+        settings[3] = isCodeBold;
+        return settings;
+        
+    }
+    
+    /**
+    * Sets the users code font settings. The settings are persisted in the OS specific registry
+     * @param cFamily code family
+     * @param cSize code font size
+     * @param isCodeItalic whether code is italic
+     * @param isCodeBold whether code is bold
+    */
+    public static void setUserCodeFontPreferences(String cFamily, int cSize, boolean isCodeItalic, boolean isCodeBold) {
+        Preferences prefs = Preferences.userNodeForPackage(TuringMachine.class);
+        prefs.putInt("codeSize", cSize);
+        prefs.put("codeFamily", cFamily);
+        prefs.putBoolean("isCodeItalic", isCodeItalic);
+        prefs.putBoolean("isCodeBold", isCodeBold);
+    }
+    
+    /**
      * Returns the user rwhead head color preference
      * The preference is read from the OS specific registry. If no such
-     * preference can be found, null is returned.
+     * preference can be found, a default of maroon is returned.
      * 
      * @return settings, an object array containing the retrieved settings
      */
