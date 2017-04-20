@@ -1330,6 +1330,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         startLabel.setText("start");
         startLabel.layoutXProperty().bindBidirectional(startNode.centerXProperty());
         startLabel.layoutYProperty().bindBidirectional(startNode.centerYProperty());
+        startNode.toBack();
         statePane.getChildren().addAll(startNode,startLabel);
                 
         drawUniqueInitNodes();     
@@ -1339,7 +1340,8 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         drawSameStateArcbacks(); 
         drawTransitionLabels();
 
-        connectStates(startNode, stateNodes[0]); 
+        Line toback = connectStates(startNode, stateNodes[0]); 
+        toback.toBack();
 
         //updateStateNodes("");  // this will be moved
 
@@ -1417,7 +1419,8 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             {
                 XCOORD = stateTabWidth*.20;//50;
                 YCOORD += stateTabHeight*.30;//100;
-            }        
+            } 
+            uniqueNodes[j].toFront();
         }
     }
     
@@ -1495,25 +1498,14 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
     public void drawTransitionLabels(){
             transLabels = new Label[numAllStates];
             transNodes = new Circle[numAllStates];
-            transLines = new Line[numAllStates];
-            
+            transLines = new Line[numAllStates];            
             
             for (int j = 0; j< numAllStates; j++){
 
                 transLabels[j] = new Label();
-                transNodes[j] = new Circle();
-                
-                
-                String transition = "  " + allTransitions[j];
-            /*    
-                ArrayList<Node> fromStateTab = getAllNodes(statePane);
-            for(int i=0; i<fromStateTab.size(); i++){
-                System.out.println("i= "+fromStateTab.get(i).toString());
-            }
-             */   
+                transNodes[j] = new Circle();                          
+                String transition = "  " + allTransitions[j]; 
                 transLabels[j].setText(transLabels[j].getText()+"/n/n/n/n/n");
-                //allTransitions[j] = "  " + allTransitions[j];
-                
                 transLines[j] = connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
                 transLines[j].toBack();
                 double transCenterX = (transLines[j].getStartX() + transLines[j].getEndX())/2;
@@ -1521,8 +1513,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
                 transNodes[j] = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.BROWN);                
                 transLabels[j].layoutXProperty().bind(transNodes[j].centerXProperty());
                 transLabels[j].layoutYProperty().bind(transNodes[j].centerYProperty());
-                transLabels[j].setText(transition.replaceAll(", ", " "));
-              
+                transLabels[j].setText(transition.replaceAll(", ", " "));         
                 
                 transLabels[j].setTextFill(Color.web("#67112b"));
                 transNodes[j].setVisible(false);
@@ -1544,9 +1535,6 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
                     arc.setLength(50.0f);
                     arc.setType(ArcType.ROUND);
                     arc.setFill(Color.TRANSPARENT);
-                    //transLabels[j].setText(transLabels[j].getText()+"/n/n/n/n/n");
-                    //Ellipse anchor1 = new Ellipse(stateNodes[j].getCenterX(),stateNodes[j].getCenterY()-10,3,24);
-                    //anchor1.setFill(Color.BEIGE);
                     arc.setStroke(Color.BLACK);
                     arc.setStrokeType(StrokeType.OUTSIDE);
                     //anchor1.setRotate(45.0);
@@ -1702,11 +1690,9 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         });
         c.setFill(lg1);
         c.setStrokeType(StrokeType.OUTSIDE);
-                c.setStroke(lg1);//Color.BLACK);
+        c.setStroke(lg1);//Color.BLACK);
                 
         c.addEventFilter(MouseEvent.MOUSE_CLICKED, Event::consume);
-        
-        //parent.getChildren().add(c);
         return c ;
     }
 
