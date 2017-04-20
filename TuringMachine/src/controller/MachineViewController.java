@@ -351,9 +351,7 @@ public class MachineViewController implements Initializable {
             codeViewTab.getChildren().clear();
             statePaneTab.getChildren().clear();
             clearStateTuples();
-            
-            XCOORD = 72;
-            YCOORD = 72;
+
             String input = controller.openFile(selectedFile);
             //when initializing interpreter, give it both an input and a view controller (this) to work with
             interp = new Interpreter(input, this, tapes);
@@ -427,8 +425,6 @@ public class MachineViewController implements Initializable {
         statePaneTab.getChildren().clear();
         clearStateTuples();
 
-        XCOORD = 72;
-        YCOORD = 72;
         String input = controller.openExample("examples/Palindrome.tm");
         //when initializing interpreter, give it both an input and a view controller (this) to work with
         interp = new Interpreter(input, this, tapes);
@@ -465,8 +461,6 @@ public class MachineViewController implements Initializable {
         statePaneTab.getChildren().clear();
         clearStateTuples();
 
-        XCOORD = 72;
-        YCOORD = 72;
         String input = controller.openExample("examples/GoBuffs.tm");
         //this is a three tape program, so make sure all tapes are active
         activateTapeTwo();
@@ -506,8 +500,6 @@ public class MachineViewController implements Initializable {
         statePaneTab.getChildren().clear();
         clearStateTuples();
 
-        XCOORD = 72;
-        YCOORD = 72;
         String input = controller.openExample("examples/BinaryAddition.tm");
         //This is a three tape program, so make sure all tapes active
         activateTapeTwo();
@@ -1203,24 +1195,29 @@ public class MachineViewController implements Initializable {
             //set the scene and its owner
             ScrollPane layout = new ScrollPane();
             stage.setTitle("State Diagram Window");
-            Pane pane = new Pane();
+            Pane windowPane = statePane;
             Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
             LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
         
-            Circle r1 = createDraggingCircle(200, 200, 20, statePane, Color.BLUE);
-            r1.setFill(lg1);
+            //Circle r1 = createDraggingCircle(200, 200, 20, statePane, Color.BLUE);
+            //r1.setFill(lg1);
             //Circle startNode1 = createDraggingCircle(200, 200, 5, statePane, Color.BLUE);
-            pane.getChildren().add(r1);
-            Scene scene = new Scene(layout, 450, 450);
+            //ArrayList<Node> fromStateTab = getAllNodes(statePane);
+            //addAllDescendents(windowPane,fromStateTab);
+            //pane.getChildren().add(r1);
+            Scene scene = new Scene(layout, 550, 450);
             
             System.out.println("Making state diagram window");
             layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
             layout.setFitToHeight(true);
             layout.setFitToWidth(true);      
-            pane.setStyle("-fx-background-color: #F5F5DC");
+            //pane.setStyle("-fx-background-color: #F5F5DC");
+            windowPane.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
+                + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
+                + " -fx-border-radius: 5.0");
             
-            layout.setContent(pane);
+            layout.setContent(windowPane);
             stage.setScene(scene);
 
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
@@ -1242,13 +1239,15 @@ public class MachineViewController implements Initializable {
             statePane.getChildren().removeAll(transNodes[j],transLabels[j]);
             double transCenterX = (transLines[j].getStartX() + transLines[j].getEndX())/2;
             double transCenterY = (transLines[j].getStartY() + transLines[j].getEndY())/2;
+            
+            
             transNodes[j] = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.GRAY);
   
                 transLabels[j].layoutXProperty().bind(transNodes[j].centerXProperty());
                 transLabels[j].layoutYProperty().bind(transNodes[j].centerYProperty());
                 //prevLabels[j].setStyle("-fx-font-weight: bold;");      
                 transNodes[j].setVisible(false);
-                transLabels[j].setTextFill(Color.MAROON);
+                transLabels[j].setTextFill(Color.web("#67112b"));
                 statePane.getChildren().addAll(transNodes[j],transLabels[j]);
             //System.out.println("Trans line = " + transLines[j]);
         }
@@ -1277,7 +1276,7 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
 }
            
     public void drawStates(ArrayList<StateTransition> states) {       
-        
+        //statePaneTab.getChildren().clear();
         //currentStates = states;        
         statePane = new Pane();
         double stateTabWidth = statePaneTab. widthProperty().get();
@@ -1399,7 +1398,13 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             statePane.getChildren().add(uniqueNodes[i]);
             for(int j=0; j<numAllStates; j++){
                 Circle stateNode = stateNodes[j];
-                Circle endNode = endNodes[j];                
+                Circle endNode = endNodes[j];   
+                stateNodes[j].setOpacity(.5);
+                stateNodes[j].setVisible(true);
+                stateNodes[j].setRadius(4);
+                stateNodes[j].setFill(Color.web("#67112b"));
+                stateNodes[j].setStroke(Color.web("#67112b"));
+                stateNodes[j].toFront();
                     
                 if(!allInitStates[j].equalsIgnoreCase(initialUniqueStates[i])){
                 } else {
@@ -1416,14 +1421,14 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
                     endNode.centerXProperty().bindBidirectional(acceptNode.centerXProperty());
                     endNode.centerYProperty().bindBidirectional(acceptNode.centerYProperty()); 
                     endNode.setFill(Color.GREEN);
-                    endNode.setRadius(1);
+                    endNode.setRadius(4.0f);
                 }
                 if(allEndStates[j].equalsIgnoreCase("rejectHalt")){   
                     
                     endNode.centerXProperty().bindBidirectional(rejectNode.centerXProperty());
                     endNode.centerYProperty().bindBidirectional(rejectNode.centerYProperty()); 
                     endNode.setFill(Color.RED);
-                    endNode.setRadius(1);
+                    endNode.setRadius(4.0f);
                 }                             
             }            
         } 
@@ -1461,30 +1466,35 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             transLabels = new Label[numAllStates];
             transNodes = new Circle[numAllStates];
             transLines = new Line[numAllStates];
+            
+            
             for (int j = 0; j< numAllStates; j++){
 
                 transLabels[j] = new Label();
                 transNodes[j] = new Circle();
-                allTransitions[j] = "    " + allTransitions[j];
-                transLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
-
-                transLabels[j] = new Label();
-                transNodes[j] = new Circle();
-                allTransitions[j] = "  " + allTransitions[j];
-                transLabels[j].setText(allTransitions[j].replaceAll(", ", " "));
-
                 
-                transLabels[j].setTextFill(Color.web("#67112b"));
+                
+                String transition = "  " + allTransitions[j];
+            /*    
+                ArrayList<Node> fromStateTab = getAllNodes(statePane);
+            for(int i=0; i<fromStateTab.size(); i++){
+                System.out.println("i= "+fromStateTab.get(i).toString());
+            }
+             */   
+                transLabels[j].setText(transLabels[j].getText()+"/n/n/n/n/n");
+                //allTransitions[j] = "  " + allTransitions[j];
+                
                 transLines[j] = connectStates(endLabels[j].getLabelFor(), stateLabels[j].getLabelFor());
+                transLines[j].toBack();
                 double transCenterX = (transLines[j].getStartX() + transLines[j].getEndX())/2;
-                double transCenterY = (transLines[j].getStartY() + transLines[j].getEndY())/2;
-                
-                
-                transNodes[j] = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.BROWN);
-                
+                double transCenterY = (transLines[j].getStartY() + transLines[j].getEndY())/2;                        
+                transNodes[j] = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.BROWN);                
                 transLabels[j].layoutXProperty().bind(transNodes[j].centerXProperty());
                 transLabels[j].layoutYProperty().bind(transNodes[j].centerYProperty());
-                //prevLabels[j].setStyle("-fx-font-weight: bold;");
+                transLabels[j].setText(transition.replaceAll(", ", " "));
+              
+                
+                transLabels[j].setTextFill(Color.web("#67112b"));
                 transNodes[j].setVisible(false);
                 statePane.getChildren().addAll(transNodes[j],transLabels[j]);
                 connected++;          
@@ -1494,15 +1504,32 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
     public void drawSameStateArcbacks(){
             for(int j=0; j<numAllStates; j++){
                 if(allEndStates[j].equalsIgnoreCase(allInitStates[j])){  
-                    Ellipse anchor1 = new Ellipse(stateNodes[j].getCenterX(),stateNodes[j].getCenterY()-10,3,24);
-                    anchor1.setFill(Color.BEIGE);
-                    anchor1.setStroke(Color.web("#67112b"));
-                    anchor1.setStrokeType(StrokeType.OUTSIDE);
-                    anchor1.setRotate(45.0);
-                    anchor1.setSmooth(true);
-                    anchor1.centerXProperty().bindBidirectional(stateNodes[j].centerXProperty());
-                    anchor1.centerYProperty().bindBidirectional(stateNodes[j].centerYProperty());
-                    statePane.getChildren().add(anchor1);
+                   
+                    Arc arc = new Arc();
+arc.setLayoutX(stateNodes[j].getCenterX()+stateNodes[j].getRadius());
+arc.setLayoutY(stateNodes[j].getCenterX()+stateNodes[j].getRadius());
+arc.setRadiusX(50.0f);
+arc.setRadiusY(50.0f);
+arc.setStartAngle(45.0f);
+arc.setLength(50.0f);
+arc.setType(ArcType.ROUND);
+arc.setFill(Color.TRANSPARENT);
+                    //transLabels[j].setText(transLabels[j].getText()+"/n/n/n/n/n");
+                    //Ellipse anchor1 = new Ellipse(stateNodes[j].getCenterX(),stateNodes[j].getCenterY()-10,3,24);
+                    //anchor1.setFill(Color.BEIGE);
+                    arc.setStroke(Color.BLACK);
+                    arc.setStrokeType(StrokeType.OUTSIDE);
+                    //anchor1.setRotate(45.0);
+                    arc.setSmooth(true);
+                    arc.setOpacity(.7);
+                     arc.getStrokeDashArray().addAll(15d, 5d, 10d, 15d, 20d);
+        arc.setStrokeDashOffset(5);
+        arc.setStrokeLineJoin(StrokeLineJoin.ROUND);
+        arc.setStrokeLineCap(StrokeLineCap.ROUND);
+                    
+                    arc.layoutXProperty().bindBidirectional(stateNodes[j].centerXProperty());
+                    arc.layoutYProperty().bindBidirectional(stateNodes[j].centerYProperty());
+                    statePane.getChildren().add(arc);
                 }
             } 
         }
@@ -1513,8 +1540,8 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         }
         Pane parent = (Pane) n1.getParent();
         Line line = new Line();
-        line.setFill(Color.BLUE);
-        line.setOpacity(.5);
+        line.setFill(Color.ROYALBLUE);
+        line.setOpacity(.7);
         line.startXProperty().bind(Bindings.createDoubleBinding(() -> {
             Bounds b = n1.getBoundsInParent();
             return b.getMinX() + b.getWidth() / 2 ;
@@ -1531,10 +1558,10 @@ private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
             Bounds b = n2.getBoundsInParent();
             return b.getMinY() + b.getHeight() / 2 ;
         }, n2.boundsInParentProperty()));
-        line.getStrokeDashArray().addAll(15d, 5d, 15d, 10d, 20d);
+        line.getStrokeDashArray().addAll(15d, 5d, 10d, 15d, 20d);
         line.setStrokeDashOffset(5);
         line.setStrokeLineJoin(StrokeLineJoin.ROUND);
-        line. setStrokeLineCap(StrokeLineCap.ROUND);
+        line.setStrokeLineCap(StrokeLineCap.ROUND);
        
         line.toBack();
         parent.getChildren().add(line);
