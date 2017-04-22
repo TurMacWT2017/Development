@@ -299,7 +299,6 @@ public class Interpreter
                 {
                     tokens[i] = "t2";
                     if ((view.getCurrentMode() != 2) && (view.getCurrentMode() != 3)) {
-                        System.out.println("Tapes was changed to 2");
                         numTapes = 2;
                     }
                     if (DEBUG) {System.out.println("\nTape 2 token: " + tokens[i] + " on line " + tupleNum);}
@@ -314,7 +313,7 @@ public class Interpreter
                 }
                 else 
                 {
-                    errorString = "Error on line " + tupleNum + ": Invalid tape " + tokens[i];
+                    errorString = "Error on tuple " + tupleNum + ": Invalid tape " + tokens[i];
                     errorReport.append(errorString);
                     errorsPresent = true;
                 }
@@ -330,14 +329,26 @@ public class Interpreter
             // Get the token being read
             if (i%7 == 2)
             {
-                tokens[i] = tokens[i].trim();
+                String token = tokens[i].trim();
+                if (token.length() > 1) {
+                    errorString = "Error on tuple " + tupleNum + ": maximum length of read character is 1, provided character was " + tokens[i];
+                    errorReport.append(errorString);
+                    errorsPresent = true;
+                }
+                tokens[i] = token;
                 
             }
 
             // Write desired token
             if (i%7 == 3)
             {
-                tokens[i] = tokens[i].trim();
+                String token = tokens[i].trim();
+                if (token.length() > 1) {
+                    errorString = "Error on tuple " + tupleNum + ": maximum length of write character is 1, provided character was " + tokens[i];
+                    errorReport.append(errorString);
+                    errorsPresent = true;
+                }
+                tokens[i] = token;
             }
 
             // Get the direction the read/write head needs to move
@@ -346,7 +357,7 @@ public class Interpreter
                 String token = tokens[i].trim();
                 StringBuilder dir = new StringBuilder();
                 if (DEBUG) {
-                    System.out.println("Direction token: " + tokens[i] + " on line " + tupleNum + "\n");
+                    System.out.println("Direction token: " + tokens[i] + " on tuple " + tupleNum + "\n");
                     System.out.println("Token length was" + token.length());
                 }
                 if (token.matches("([R|r|\\>])(.*)"))
@@ -363,7 +374,7 @@ public class Interpreter
                 }
                 else 
                 {
-                    errorString = "\nInvalid direction on line " + tupleNum + ":  "+ tokens[i] + " ,check your first specified direction";
+                    errorString = "\nInvalid direction on tuple " + tupleNum + ":  "+ tokens[i] + " ,check your first specified direction";
                     errorReport.append(errorString);
                     errorsPresent = true;
                 }
@@ -384,7 +395,7 @@ public class Interpreter
                     }
                     else 
                     {
-                        errorString = "\nInvalid direction on line " + tupleNum + ":  "+ tokens[i] + " ,check your 2nd specified direction";
+                        errorString = "\nInvalid direction on tuple " + tupleNum + ":  "+ tokens[i] + " ,check your 2nd specified direction";
                         errorReport.append(errorString);
                         errorsPresent = true;
                     }
@@ -406,7 +417,7 @@ public class Interpreter
                     }
                     else 
                     {
-                        errorString = "\nInvalid direction on line " + tupleNum + ":  "+ tokens[i] + " ,check your third specified direction";
+                        errorString = "\nInvalid direction on tuple " + tupleNum + ":  "+ tokens[i] + " ,check your third specified direction";
                         errorReport.append(errorString);
                         errorsPresent = true;
                     }
@@ -419,7 +430,7 @@ public class Interpreter
             {
                 String token = tokens[i].trim();
                 if (!token.matches("(t1|t2|t3|\\*)")) {
-                    errorString = "\nInvalid write tape specified on line " + tupleNum + ":  "+ tokens[i] + "\n";
+                    errorString = "\nInvalid write tape specified on tuple " + tupleNum + ":  "+ tokens[i] + "\n";
                     errorReport.append(errorString);
                     errorsPresent = true;
                 }
@@ -439,7 +450,7 @@ public class Interpreter
                     tokens[i] = token;
                 }
                 
-                if (DEBUG) {System.out.println("End state token: " + tokens[i] + " on line " + tupleNum + "\n");}
+                if (DEBUG) {System.out.println("End state token: " + tokens[i] + " on tuple " + tupleNum + "\n");}
             }
             //get the end state taken
             if (i%7 == 6) {
