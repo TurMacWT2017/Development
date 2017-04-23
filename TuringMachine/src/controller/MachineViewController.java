@@ -1373,13 +1373,9 @@ public class MachineViewController implements Initializable {
             stateLabel.setLabelFor(stateNodes[j]);
             endLabel.setLabelFor(endNodes[j]);
             stateLabels[j] = stateLabel;
-            endLabels[j] = endLabel;
-          
+            endLabels[j] = endLabel;          
             stateNodes[j].setSmooth(true);
-            endNodes[j].setSmooth(true);         
-            //stateNodes[j].autosize();
-            //endNodes[j].autosize();
-       
+            endNodes[j].setSmooth(true);                
             statePane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);//,endLabel);
         } 
     }
@@ -1387,28 +1383,28 @@ public class MachineViewController implements Initializable {
     public void drawUniqueInitNodes(){
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
-        XCOORD = stateTabWidth*.05;//50.0;
-        YCOORD = stateTabHeight*.25;//25.0;
+        XCOORD = stateTabWidth*.05;
+        YCOORD = stateTabHeight*.25;
         
         double evenRowsStart = .10;
         double oddRowStart = .125;
             for (int j=0; j< numUniqueStates; j++){
             uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 12, statePane, tapeColor[j]);    
             uniqueNodes[j].setStrokeType(StrokeType.OUTSIDE);
-            uniqueNodes[j].setStroke(tapeColor[j]);//Color.BLACK);
+            uniqueNodes[j].setStroke(tapeColor[j]);
             
             if (XCOORD <= stateTabWidth*.95)
             {
-                XCOORD += stateTabWidth*.10;//+= 75;
+                XCOORD += stateTabWidth*.10;
                 if(j%2==0)
-                    YCOORD += stateTabHeight*.33;//100;
+                    YCOORD += stateTabHeight*.33;
                 else
-                    YCOORD -= stateTabHeight*.33;//100;
+                    YCOORD -= stateTabHeight*.33;
             }
             else
             {
-                XCOORD = stateTabWidth*.20;//50;
-                YCOORD += stateTabHeight*.30;//100;
+                XCOORD = stateTabWidth*.20;
+                YCOORD += stateTabHeight*.30;
             } 
             uniqueNodes[j].toFront();
         }
@@ -1574,8 +1570,7 @@ public class MachineViewController implements Initializable {
             transitionText = "       " + transitionText;        // RETURN BOOLEAN VALUE FOR USE IN CALLER
         }else{
             transitionText = "" + transitionText;
-        }
-        
+        }        
         
         Label transLabel = new Label(transitionText.replaceAll(", ", " ")); 
         transLabel.setTextFill(Color.web("#67112b"));
@@ -1613,11 +1608,8 @@ public class MachineViewController implements Initializable {
         arc.setFill(Color.TRANSPARENT);
         arc.setStroke(Color.BLACK);
         arc.setStrokeType(StrokeType.OUTSIDE);
-        //anchor1.setRotate(45.0);
         arc.setSmooth(true);
         arc.setOpacity(.7);
-        //arc.getStrokeDashArray().addAll(15d, 5d, 10d, 15d, 20d);
-        //arc.setStrokeDashOffset(5);
         arc.setStrokeLineJoin(StrokeLineJoin.ROUND);
         arc.setStrokeLineCap(StrokeLineCap.ROUND);
         arc.layoutXProperty().bindBidirectional(tNode.centerXProperty());
