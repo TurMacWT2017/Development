@@ -78,6 +78,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -980,6 +981,7 @@ public class MachineViewController implements Initializable {
     @FXML
     public void updateState(String state) {
         currentState.setText(state);
+        //updateStateNodes(state);
     }
     
     /**
@@ -1226,17 +1228,11 @@ public class MachineViewController implements Initializable {
             //set the scene and its owner
             ScrollPane layout = new ScrollPane();
             stage.setTitle("State Diagram Window");
-            Pane windowPane = statePane;
-            Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
-            LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
-        
-            //Circle r1 = createDraggingCircle(200, 200, 20, statePane, Color.BLUE);
-            //r1.setFill(lg1);
-            //Circle startNode1 = createDraggingCircle(200, 200, 5, statePane, Color.BLUE);
-            //ArrayList<Node> fromStateTab = getAllNodes(statePane);
-            //addAllDescendents(windowPane,fromStateTab);
-            //pane.getChildren().add(r1);
-            Scene scene = new Scene(layout, 550, 450);
+            Pane windowPane = new Pane();
+            windowPane = statePane;
+
+
+            
             
             System.out.println("Making state diagram window");
             layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -1244,11 +1240,13 @@ public class MachineViewController implements Initializable {
             layout.setFitToHeight(true);
             layout.setFitToWidth(true);      
             //pane.setStyle("-fx-background-color: #F5F5DC");
-            windowPane.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
+            layout.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
                 + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
                 + " -fx-border-radius: 5.0");
-            
-            layout.setContent(windowPane);
+           
+           
+Scene scene = new Scene(layout, 550, 450);
+          
             stage.setScene(scene);
 
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
@@ -1268,6 +1266,21 @@ public class MachineViewController implements Initializable {
     public void updateStateNodes(String stateLabel){
         pullNodes = new ArrayList<>();
         pullNodes = getAllNodes(statePane);
+        
+        for(int i=0; i<numUniqueStates;i++)
+            if(stateLabel == null ? currentState.toString() == null : stateLabel.equals(currentState.toString())){
+                //statePane.getChildren().remove(uniqueNodes[i]);
+                uniqueNodes[i].setFill(Color.WHITE);
+                //statePane.getChildren().add(uniqueNodes[i]);
+                redraw(currentStates);
+                //statePane.getChildren().remove(uniqueNodes[i]);
+                uniqueNodes[i].setFill(Color.RED);
+                //statePane.getChildren().add(uniqueNodes[i]);
+                redraw(currentStates);
+            }
+        
+        
+            
         //System.out.println("pullNodes 0 = " + pullNodes.get(0));
         anchorAcceptRejectNodes();
     }        
@@ -1351,19 +1364,9 @@ public class MachineViewController implements Initializable {
             endNodes[j] = createDraggingCircle(0, 0, 4, statePane, Color.BLUE);            
             //stateNodes[j].setOpacity(.1);
             //endNodes[j].setOpacity(.1);        
-            String stateText = "    " + allInitStates[j];
-            String endText = "    " + allEndStates[j];
-            /*
-            boolean collisionDetected = checkBounds(stateNodes[j]);      
-            if (collisionDetected) {
-                stateText = "";       
-            }           
-            
-            collisionDetected = checkBounds(endNodes[j]);
-            if (collisionDetected) {
-                endText = "";      
-            }          
-            */
+            String stateText = "\n" + allInitStates[j];
+            String endText = "\n" + allEndStates[j];
+
             Label stateLabel = new Label(stateText);
             Label endLabel = new Label(endText);  
             stateLabel.layoutXProperty().bindBidirectional(stateNodes[j].centerXProperty());
@@ -1377,38 +1380,43 @@ public class MachineViewController implements Initializable {
           
             stateNodes[j].setSmooth(true);
             endNodes[j].setSmooth(true);         
-
-       
+            //stateLabels[j].setBlendMode(BlendMode.SOFT_LIGHT);
+            //endLabels[j].setBlendMode(BlendMode.SOFT_LIGHT);
             statePane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);//,endLabel);
         } 
     }
     
     public void drawUniqueInitNodes(){
-        double stateTabWidth = statePaneTab.widthProperty().get();
-        double stateTabHeight = statePaneTab.heightProperty().get();
+        double stateTabWidth = diagramDisplay.widthProperty().get();
+        double stateTabHeight = diagramDisplay.heightProperty().get();
         XCOORD = stateTabWidth*.05;
-        YCOORD = stateTabHeight*.25;
-        
-        double evenRowsStart = .10;
-        double oddRowStart = .125;
-            for (int j=0; j< numUniqueStates; j++){
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 12, statePane, tapeColor[j]);    
+        YCOORD = stateTabHeight*.15;
+
+        for (int j=0; j< numUniqueStates; j++){
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 14, statePane, tapeColor[j]);    
             uniqueNodes[j].setStrokeType(StrokeType.OUTSIDE);
             uniqueNodes[j].setStroke(tapeColor[j]);
             
-            if (XCOORD <= stateTabWidth*.95)
+            if (XCOORD + 80.0 <= stateTabWidth*.95)
             {
-                XCOORD += stateTabWidth*.10;
+                XCOORD += stateTabWidth*.13;
+          
+                
                 if(j%2==0)
-                    YCOORD += stateTabHeight*.33;
+                    YCOORD += stateTabHeight*.25;
                 else
-                    YCOORD -= stateTabHeight*.33;
+                    YCOORD -= stateTabHeight*.25;
+                
             }
             else
             {
-                XCOORD = stateTabWidth*.20;
+                XCOORD = stateTabWidth*.15;
                 YCOORD += stateTabHeight*.30;
             } 
+            if (YCOORD >= stateTabHeight){
+                YCOORD -= stateTabHeight*.55;
+                XCOORD += stateTabWidth*.25;
+            }
             uniqueNodes[j].toFront();
         }
     }
@@ -1483,7 +1491,7 @@ public class MachineViewController implements Initializable {
         for(int j=0; j<numAllStates;j++){
             statePane.getChildren().removeAll(transNodes[j],transLabels[j], 
                     transArcs[j], transLines[j]);
-        }
+        }        
         drawTransitionLabels();
     }
     
@@ -1491,18 +1499,9 @@ public class MachineViewController implements Initializable {
             for (int j = 0; j< numAllStates; j++){
                 transLabels[j] = new Label();
                 transNodes[j] = new Circle();    
-                transArcs[j] = new Arc();
-        
-                String transition;
-                // CHECK FOR ALREADY EXISTING TRANSLINE/LABEL HERE  
-                if(allEndStates[j].equalsIgnoreCase(allInitStates[j])){
-                    transition =  "          " + allTransitions[j];
-                }
-                else{
-                    transition = " " + allTransitions[j]; 
-                }                
+                transArcs[j] = new Arc();              
                 transLines[j] = connectStates(endLabels[j].getLabelFor(), 
-                        stateLabels[j].getLabelFor(), transition, j);
+                        stateLabels[j].getLabelFor(), allTransitions[j], j);
                 //System.out.println("TL = " + transLines[j]);
                 transLines[j].toBack();
                 connected++;          
@@ -1510,9 +1509,9 @@ public class MachineViewController implements Initializable {
         }
     
     // COLLISION CHECKER
-    private boolean checkBounds(Circle tNode) {
+    private boolean checkBounds(Circle tNode, Circle[] nodeList) {
         boolean collisionDetected = false;       
-        for (Circle static_bloc : transNodes) {
+        for (Circle static_bloc : nodeList) {
             if(static_bloc != null)
             if (static_bloc != tNode) {
                 static_bloc.setFill(Color.GREEN);
@@ -1562,40 +1561,48 @@ public class MachineViewController implements Initializable {
         double transCenterX = (line.getStartX() + line.getEndX())/2;
         double transCenterY = (line.getStartY() + line.getEndY())/2;         
         Circle transNode = createDraggingCircle(transCenterX,transCenterY, 5, statePane, Color.BROWN); 
-        transNode.setVisible(true);
+        //transNode.setVisible(true);
         if (index != -1){
             transNodes[index] = transNode;             
         }  
-         /*     
-        // TRANS LABEL COLLISION ADJUSTMENT
-        boolean collisionDetected = checkBounds(transNode);   
-        if (collisionDetected) {
-            transitionText = "         " + transitionText;        // RETURN BOOLEAN VALUE FOR USE IN CALLER
-        }else{
-            transitionText = "" + transitionText;
-        }        
-        */
+             
+        
         Label transLabel = new Label(transitionText.replaceAll(", ", " ")); 
         transLabel.setTextFill(Color.web("#67112b"));
         Arc relayArc;
         if (index != -1){           
             transLabels[index] = transLabel;
             if(allEndStates[index].equalsIgnoreCase(allInitStates[index])){
+                transLabels[index].setText("        "+transLabels[index].getText());
                 relayArc = drawArcback(transNode,transLabel, statePane);
                 relayArc.layoutXProperty().bindBidirectional(transNode.centerXProperty());
                 relayArc.layoutYProperty().bindBidirectional(transNode.centerYProperty());
+                
+                if(checkBounds(transNode,transNodes)==true)
+                    transLabel.setText("");
+                else 
+                    transLabel.setText(transLabels[index].getText());
+                transLabel.layoutXProperty().bindBidirectional(relayArc.layoutXProperty());
+                transLabel.layoutYProperty().bindBidirectional(relayArc.layoutYProperty());
                 relayArc.toBack();
                 transArcs[index] = relayArc; 
-                parent.getChildren().addAll(transArcs[index]);
+                parent.getChildren().addAll(transArcs[index],transLabels[index]);
             }
             else{
+                //transLabels[index].setText("\n"+transLabels[index].getText());
+                
+                transLabel = transLabels[index];
+                if(checkBounds(transNode,transNodes)==true)
+                    transLabel.setText("");
+                else
+                    transLabel.setText(transLabels[index].getText());
                 transLabel.layoutXProperty().bindBidirectional(transNode.centerXProperty());
                 transLabel.layoutYProperty().bindBidirectional(transNode.centerYProperty()); 
                 transNode.setVisible(false);
-                parent.getChildren().addAll(transNode, transLabel);
+                parent.getChildren().addAll(transLabel);
             }
-        }  
-   
+           
+        }     
         return line;
     }
     
@@ -1615,13 +1622,7 @@ public class MachineViewController implements Initializable {
         arc.setOpacity(.7);
         arc.setStrokeLineJoin(StrokeLineJoin.ROUND);
         arc.setStrokeLineCap(StrokeLineCap.ROUND);
-        arc.layoutXProperty().bindBidirectional(tNode.centerXProperty());
-        arc.layoutYProperty().bindBidirectional(tNode.centerYProperty());
-        tLabel.layoutXProperty().bind(tNode.centerXProperty());
-        tLabel.layoutYProperty().bind(tNode.centerYProperty());
-        tNode.setVisible(false);
-           
-        parent.getChildren().addAll(tLabel, tNode);
+        
         return arc;
     }               
     
@@ -1686,9 +1687,9 @@ public class MachineViewController implements Initializable {
         LinearGradient lg3 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops3);
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
-        Circle oneAqua = new Circle(stateTabWidth-60.0,15.0,5,Color.AQUA);
-        Circle twoViolet = new Circle(stateTabWidth-60.0,30.0,5,Color.VIOLET);
-        Circle threeTan = new Circle(stateTabWidth-60.0,45.0,5,Color.TAN);
+        Circle oneAqua = new Circle(stateTabWidth*.35-10,stateTabHeight-10.0,5,Color.AQUA);
+        Circle twoViolet = new Circle(stateTabWidth*.5-10,stateTabHeight-10.0,5,Color.VIOLET);
+        Circle threeTan = new Circle(stateTabWidth*.65-10,stateTabHeight-10.0,5,Color.TAN);
         oneAqua.setFill(lg1);
         twoViolet.setFill(lg2);
         threeTan.setFill(lg3);
@@ -1698,12 +1699,12 @@ public class MachineViewController implements Initializable {
         legend1.setText("  Tape 1");
         legend2.setText("  Tape 2");
         legend3.setText("  Tape 3");
-        legend1.setLayoutX(stateTabWidth-60.0);
-        legend1.setLayoutY(20.0);
-        legend2.setLayoutX(stateTabWidth-60.0);
-        legend2.setLayoutY(35.0);
-        legend3.setLayoutX(stateTabWidth-60.0);
-        legend3.setLayoutY(50.0);       
+        legend1.setLayoutX(stateTabWidth*.35-10);
+        legend1.setLayoutY(stateTabHeight-5.0);
+        legend2.setLayoutX(stateTabWidth*.5-10);
+        legend2.setLayoutY(stateTabHeight-5.0);
+        legend3.setLayoutX(stateTabWidth*.65-10);
+        legend3.setLayoutY(stateTabHeight-5.0);       
         statePane.getChildren().addAll(oneAqua,twoViolet,threeTan);
         statePane.getChildren().addAll(legend1,legend2,legend3);      
     }
