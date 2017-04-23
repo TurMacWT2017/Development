@@ -1351,8 +1351,8 @@ public class MachineViewController implements Initializable {
             endNodes[j] = createDraggingCircle(0, 0, 4, statePane, Color.BLUE);            
             //stateNodes[j].setOpacity(.1);
             //endNodes[j].setOpacity(.1);        
-            String stateText = "    \n" + allInitStates[j];
-            String endText = "    \n" + allEndStates[j];
+            String stateText = "    " + allInitStates[j];
+            String endText = "    " + allEndStates[j];
             /*
             boolean collisionDetected = checkBounds(stateNodes[j]);      
             if (collisionDetected) {
@@ -1373,9 +1373,12 @@ public class MachineViewController implements Initializable {
             stateLabel.setLabelFor(stateNodes[j]);
             endLabel.setLabelFor(endNodes[j]);
             stateLabels[j] = stateLabel;
-            endLabels[j] = endLabel;          
+            endLabels[j] = endLabel;
+          
             stateNodes[j].setSmooth(true);
-            endNodes[j].setSmooth(true);                
+            endNodes[j].setSmooth(true);         
+
+       
             statePane.getChildren().addAll(stateNodes[j],stateLabel, endNodes[j],endLabel);//,endLabel);
         } 
     }
@@ -1493,7 +1496,7 @@ public class MachineViewController implements Initializable {
                 String transition;
                 // CHECK FOR ALREADY EXISTING TRANSLINE/LABEL HERE  
                 if(allEndStates[j].equalsIgnoreCase(allInitStates[j])){
-                    transition =  "\n" + allTransitions[j] + "";
+                    transition =  "          " + allTransitions[j];
                 }
                 else{
                     transition = " " + allTransitions[j]; 
@@ -1563,15 +1566,15 @@ public class MachineViewController implements Initializable {
         if (index != -1){
             transNodes[index] = transNode;             
         }  
-              
+         /*     
         // TRANS LABEL COLLISION ADJUSTMENT
         boolean collisionDetected = checkBounds(transNode);   
         if (collisionDetected) {
-            transitionText = "       " + transitionText;        // RETURN BOOLEAN VALUE FOR USE IN CALLER
+            transitionText = "         " + transitionText;        // RETURN BOOLEAN VALUE FOR USE IN CALLER
         }else{
             transitionText = "" + transitionText;
         }        
-        
+        */
         Label transLabel = new Label(transitionText.replaceAll(", ", " ")); 
         transLabel.setTextFill(Color.web("#67112b"));
         Arc relayArc;
