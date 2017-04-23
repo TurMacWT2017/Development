@@ -889,7 +889,7 @@ public class MachineViewController implements Initializable {
         // stuff
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
-        URL url = MachineViewController.class.getResource(File.separator + "view" + File.separator + "about.html");
+        URL url = MachineViewController.class.getResource("/view/about.html");
         String content = url.toExternalForm();
         webEngine.load(content);
         
@@ -914,7 +914,7 @@ public class MachineViewController implements Initializable {
         // stuff
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
-        URL url = MachineViewController.class.getResource(File.separator + "view" + File.separator + "languageReference.html");
+        URL url = MachineViewController.class.getResource("/view/languageReference.html");
         String content = url.toExternalForm();
         webEngine.load(content);
                 
