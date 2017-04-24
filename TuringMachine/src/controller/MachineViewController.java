@@ -1492,6 +1492,7 @@ Scene scene = new Scene(layout, 550, 450);
             statePane.getChildren().removeAll(transNodes[j],transLabels[j], 
                     transArcs[j], transLines[j]);
         }        
+        
         drawTransitionLabels();
     }
     
@@ -1577,29 +1578,35 @@ Scene scene = new Scene(layout, 550, 450);
                 relayArc = drawArcback(transNode,transLabel, statePane);
                 relayArc.layoutXProperty().bindBidirectional(transNode.centerXProperty());
                 relayArc.layoutYProperty().bindBidirectional(transNode.centerYProperty());
-                
+                transNode.setVisible(false);
                 if(checkBounds(transNode,transNodes)==true)
+                    //transNode.setCenterY(transNode.getCenterY()+12.0);
                     transLabel.setText("");
-                else 
+                else{ 
                     transLabel.setText(transLabels[index].getText());
+                }
                 transLabel.layoutXProperty().bindBidirectional(relayArc.layoutXProperty());
                 transLabel.layoutYProperty().bindBidirectional(relayArc.layoutYProperty());
                 relayArc.toBack();
                 transArcs[index] = relayArc; 
-                parent.getChildren().addAll(transArcs[index],transLabels[index]);
+                parent.getChildren().addAll(transArcs[index],transLabel);//,transNode);
             }
             else{
                 //transLabels[index].setText("\n"+transLabels[index].getText());
                 
                 transLabel = transLabels[index];
-                if(checkBounds(transNode,transNodes)==true)
+                if(checkBounds(transNode,transNodes)==true){
+                    
+                    //transNode.setCenterY(transNode.getCenterY()+12.0);
                     transLabel.setText("");
-                else
+                }else{
+                   // transNode.setCenterY(transNode.getCenterY()-12.0);
                     transLabel.setText(transLabels[index].getText());
+                }
                 transLabel.layoutXProperty().bindBidirectional(transNode.centerXProperty());
                 transLabel.layoutYProperty().bindBidirectional(transNode.centerYProperty()); 
                 transNode.setVisible(false);
-                parent.getChildren().addAll(transLabel);
+                parent.getChildren().addAll(transLabel,transNode);
             }
            
         }     
