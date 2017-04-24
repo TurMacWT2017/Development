@@ -1500,14 +1500,32 @@ Scene scene = new Scene(layout, 550, 450);
             for (int j = 0; j< numAllStates; j++){
                 transLabels[j] = new Label();
                 transNodes[j] = new Circle();    
-                transArcs[j] = new Arc();              
-                transLines[j] = connectStates(endLabels[j].getLabelFor(), 
+                transArcs[j] = new Arc();  
+                
+                    transLines[j] = connectStates(endLabels[j].getLabelFor(), 
                         stateLabels[j].getLabelFor(), allTransitions[j], j);
-                //System.out.println("TL = " + transLines[j]);
-                transLines[j].toBack();
+                    transLines[j].toBack();
                 connected++;          
+                
+    
             }              
         }
+    
+    // COLLISION CHECKER
+    private boolean checkLines(Line tNode, Line[] nodeList) {
+        boolean collisionDetected = false;       
+        for (Line static_bloc : nodeList) {
+            if(static_bloc != null)
+            if (static_bloc != tNode) {
+                //static_bloc.setFill(Color.GREEN);
+
+                if (tNode.getBoundsInParent().intersects(static_bloc.getBoundsInParent())) {
+                    collisionDetected = true;
+                }
+            }
+        }
+        return collisionDetected;
+    }
     
     // COLLISION CHECKER
     private boolean checkBounds(Circle tNode, Circle[] nodeList) {
@@ -1598,10 +1616,10 @@ Scene scene = new Scene(layout, 550, 450);
                 if(checkBounds(transNode,transNodes)==true){
                     
                     //transNode.setCenterY(transNode.getCenterY()+12.0);
-                    transLabel.setText("");
+                    transLabel.setText("\n"+transLabels[index].getText());
                 }else{
                    // transNode.setCenterY(transNode.getCenterY()-12.0);
-                    transLabel.setText(transLabels[index].getText());
+                    transLabel.setText(transLabels[index].getText()+"\n");
                 }
                 transLabel.layoutXProperty().bindBidirectional(transNode.centerXProperty());
                 transLabel.layoutYProperty().bindBidirectional(transNode.centerYProperty()); 
@@ -1720,6 +1738,8 @@ Scene scene = new Scene(layout, 550, 450);
     private Circle createDraggingCircle(double radius, double x, double y, Pane parent, Color fill) {
         Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, fill)};
         LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+        double stateTabWidth = statePaneTab.widthProperty().get();
+        double stateTabHeight = statePaneTab.heightProperty().get();
             
         Circle c = new Circle(radius, x, y, fill);        
         ObjectProperty<Point2D> mouseLoc = new SimpleObjectProperty<>();
@@ -1727,8 +1747,15 @@ Scene scene = new Scene(layout, 550, 450);
         c.setOnMouseDragged(e -> {
             double deltaX = e.getX() - mouseLoc.get().getX();
             double deltaY = e.getY() - mouseLoc.get().getY();
-            c.setCenterX(c.getCenterX() + deltaX);
-            c.setCenterY(c.getCenterY() + deltaY);
+            if((c.getCenterX() + deltaX)>0 && (c.getCenterX() + deltaX) < stateTabWidth)
+                c.setCenterX(c.getCenterX() + deltaX);
+            else
+                return;
+            if((c.getCenterY() + deltaY)>0 && (c.getCenterY() + deltaY) < stateTabHeight)
+                c.setCenterY(c.getCenterY() + deltaY);
+            else
+                return;
+            
             mouseLoc.set(new Point2D(e.getX(), e.getY()));
             updateTransLines();
         });
