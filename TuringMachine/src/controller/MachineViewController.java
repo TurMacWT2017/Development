@@ -178,6 +178,7 @@ public class MachineViewController implements Initializable {
     private Circle[] transNodes;
     private Arc[] transArcs;
     private ArrayList pullNodes;
+    private Boolean staticNodes = false;
     
     //UI Buttons
     @FXML private Button runButton;
@@ -351,6 +352,7 @@ public class MachineViewController implements Initializable {
         if (selectedFile != null) {
             //note that a file was loaded
             fileLoaded = true;
+            //staticNodes = false;
             //clear the tapes of any old content
             tapeOne.getChildren().clear();
             tapeTwo.getChildren().clear();
@@ -497,6 +499,7 @@ public class MachineViewController implements Initializable {
      * @throws java.io.IOException
      */
     public void loadBinaryAdditionClicked(ActionEvent event) throws IOException {
+        // = true;
         //note that a file was loaded
         fileLoaded = true;
         //clear the tapes of any old content
@@ -1277,9 +1280,7 @@ Scene scene = new Scene(layout, 550, 450);
                 uniqueNodes[i].setFill(Color.RED);
                 //statePane.getChildren().add(uniqueNodes[i]);
                 redraw(currentStates);
-            }
-        
-        
+            }   
             
         //System.out.println("pullNodes 0 = " + pullNodes.get(0));
         anchorAcceptRejectNodes();
@@ -1299,7 +1300,8 @@ Scene scene = new Scene(layout, 550, 450);
     }
 }
            
-    public void drawStates(ArrayList<StateTransition> states) {       
+    public void drawStates(ArrayList<StateTransition> states) {      
+        staticNodes=false;
         //statePaneTab.getChildren().clear();
         //currentStates = states;        
         statePane = new Pane();
@@ -1387,19 +1389,26 @@ Scene scene = new Scene(layout, 550, 450);
     }
     
     public void drawUniqueInitNodes(){
-        double stateTabWidth = diagramDisplay.widthProperty().get();
-        double stateTabHeight = diagramDisplay.heightProperty().get();
+        double stateTabWidth = statePaneTab.widthProperty().get();
+        double stateTabHeight = statePaneTab.heightProperty().get();
         XCOORD = stateTabWidth*.05;
         YCOORD = stateTabHeight*.15;
 
         for (int j=0; j< numUniqueStates; j++){
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 14, statePane, tapeColor[j]);    
+            //if(XCOORD<=stateTabWidth && YCOORD <=stateTabHeight){
+                uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 14, statePane, tapeColor[j]);    
+            //}
+            //else{
+            //    XCOORD = stateTabWidth - 50;
+            //    YCOORD = stateTabHeight -50;
+            //    uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 14, statePane, tapeColor[j]); 
+            //}
             uniqueNodes[j].setStrokeType(StrokeType.OUTSIDE);
             uniqueNodes[j].setStroke(tapeColor[j]);
             
-            if (XCOORD + 80.0 <= stateTabWidth*.95)
+            if (XCOORD + 50.0 <= stateTabWidth*.98)
             {
-                XCOORD += stateTabWidth*.13;
+                XCOORD += stateTabWidth*.10;
           
                 
                 if(j%2==0)
@@ -1411,12 +1420,10 @@ Scene scene = new Scene(layout, 550, 450);
             else
             {
                 XCOORD = stateTabWidth*.15;
-                YCOORD += stateTabHeight*.30;
+                
+                YCOORD += stateTabHeight*.60;
             } 
-            if (YCOORD >= stateTabHeight){
-                YCOORD -= stateTabHeight*.55;
-                XCOORD += stateTabWidth*.25;
-            }
+            
             uniqueNodes[j].toFront();
         }
     }
@@ -1549,6 +1556,11 @@ Scene scene = new Scene(layout, 550, 450);
         }
         Pane parent = (Pane) n1.getParent();
         
+        
+    // DO checkLines here to keep from dropping dupe lines ////////////////////////////////////////////////////////////////////////////
+        
+        
+        
         Line line = new Line();
         line.setFill(Color.ROYALBLUE);
         line.setOpacity(.7);
@@ -1583,8 +1595,7 @@ Scene scene = new Scene(layout, 550, 450);
         //transNode.setVisible(true);
         if (index != -1){
             transNodes[index] = transNode;             
-        }  
-             
+        }            
         
         Label transLabel = new Label(transitionText.replaceAll(", ", " ")); 
         transLabel.setTextFill(Color.web("#67112b"));
@@ -1598,7 +1609,6 @@ Scene scene = new Scene(layout, 550, 450);
                 relayArc.layoutYProperty().bindBidirectional(transNode.centerYProperty());
                 transNode.setVisible(false);
                 if(checkBounds(transNode,transNodes)==true)
-                    //transNode.setCenterY(transNode.getCenterY()+12.0);
                     transLabel.setText("");
                 else{ 
                     transLabel.setText(transLabels[index].getText());
@@ -1609,18 +1619,17 @@ Scene scene = new Scene(layout, 550, 450);
                 transArcs[index] = relayArc; 
                 parent.getChildren().addAll(transArcs[index],transLabel);//,transNode);
             }
-            else{
-                //transLabels[index].setText("\n"+transLabels[index].getText());
-                
+            else{                
                 transLabel = transLabels[index];
                 if(checkBounds(transNode,transNodes)==true){
-                    
-                    //transNode.setCenterY(transNode.getCenterY()+12.0);
                     transLabel.setText("\n"+transLabels[index].getText());
-                }else{
-                   // transNode.setCenterY(transNode.getCenterY()-12.0);
+                }else{   
                     transLabel.setText(transLabels[index].getText()+"\n");
                 }
+                
+    // OR here a checkLines can be done to drop dupe lines... //////////////////////////////////////////////////////////////////////////////////
+                
+                
                 transLabel.layoutXProperty().bindBidirectional(transNode.centerXProperty());
                 transLabel.layoutYProperty().bindBidirectional(transNode.centerYProperty()); 
                 transNode.setVisible(false);
