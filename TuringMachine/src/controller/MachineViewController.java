@@ -1266,7 +1266,11 @@ Scene scene = new Scene(layout, 550, 450);
         }
     }  
     
-    public void updateStateNodes(String stateLabel){
+    /**
+     * Helper method called by NULL to update colors of nodes during execution
+     * @param stateLabel String of text from stateLabel
+     */
+    private void updateStateNodes(String stateLabel){
         pullNodes = new ArrayList<>();
         pullNodes = getAllNodes(statePane);
         
@@ -1286,12 +1290,22 @@ Scene scene = new Scene(layout, 550, 450);
         anchorAcceptRejectNodes();
     }        
 
-    public static ArrayList<Node> getAllNodes(Pane parent) {
+    /**
+     * Helper method called by various to retrieve all nodes currently in Pane
+     * @param pane Pane from which to grab all nodes
+     * @return nodes ArrayList of nodes loaded with that which is retrieved
+     */
+    private static ArrayList<Node> getAllNodes(Pane parent) {
         ArrayList<Node> nodes = new ArrayList<>();
         addAllDescendents(parent, nodes);
         return nodes;
     }
 
+    /**
+     * Helper method called by various to add all nodes in ArrayList to Pane
+     * @param pane Pane from which to grab all nodes
+     * @param nodes ArrayList of nodes loaded with that which is retrieved
+     */
     private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
         for (Node node : parent.getChildrenUnmodifiable()) {
             nodes.add(node);
@@ -1299,7 +1313,11 @@ Scene scene = new Scene(layout, 550, 450);
                 addAllDescendents((Pane)node, nodes);
     }
 }
-           
+     
+    /**
+     * Draws the state diagram via various Helper Methods in this class
+     * @param states ArrayList
+     */
     public void drawStates(ArrayList<StateTransition> states) {      
         staticNodes=false;
         //statePaneTab.getChildren().clear();
@@ -1357,7 +1375,10 @@ Scene scene = new Scene(layout, 550, 450);
        currentStates = states;
     }
     
-    public void bindStateLabels(){
+   /**
+     * Helper method called by drawStates to bind stateLabels tostateNodes in pane
+     */
+    private void bindStateLabels(){
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
             for (int j = 0; j < numAllStates; j++){
@@ -1388,7 +1409,10 @@ Scene scene = new Scene(layout, 550, 450);
         } 
     }
     
-    public void drawUniqueInitNodes(){
+    /**
+     * Helper method called by drawStates to place the unique stateNodes on pane
+     */
+    private void drawUniqueInitNodes(){
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
         XCOORD = stateTabWidth*.05;
@@ -1428,7 +1452,10 @@ Scene scene = new Scene(layout, 550, 450);
         }
     }
     
-    public void bindInitToEndStates(){
+    /**
+     * Helper method called by drawStates to bind the common stateNodes together
+     */
+    private void bindInitToEndStates(){
         for(int i=0; i<numUniqueStates; i++){
             statePane.getChildren().add(uniqueNodes[i]);
             for(int j=0; j<numAllStates; j++){
@@ -1464,7 +1491,10 @@ Scene scene = new Scene(layout, 550, 450);
         } 
     }
     
-    public void anchorAcceptRejectNodes(){
+    /**
+     * Helper method called by drawStates and others to anchor any accept/reject halt nodes
+     */
+    private void anchorAcceptRejectNodes(){
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
         
@@ -1494,16 +1524,22 @@ Scene scene = new Scene(layout, 550, 450);
         }  
     }
     
-    public void updateTransLines(){
+    /**
+     * Helper method called by createDraggingCircle() to update the transitionNodes
+     */
+    private void updateTransLines(){
         for(int j=0; j<numAllStates;j++){
             statePane.getChildren().removeAll(transNodes[j],transLabels[j], 
                     transArcs[j], transLines[j]);
-        }        
+        }       
         
         drawTransitionLabels();
     }
     
-    public void drawTransitionLabels(){           
+    /**
+     * Helper method called by drawStates to drop lines, arcs, and transLabels to pane
+     */
+    private void drawTransitionLabels(){           
             for (int j = 0; j< numAllStates; j++){
                 transLabels[j] = new Label();
                 transNodes[j] = new Circle();    
@@ -1518,7 +1554,11 @@ Scene scene = new Scene(layout, 550, 450);
             }              
         }
     
-    // COLLISION CHECKER
+    /**
+     * Helper method called by connectStates to check for line collision
+     * @param tNode Transition node to be checked against all (node at center of line)
+     * @param nodeList all nodes that tNode is checked against
+     */
     private boolean checkLines(Line tNode, Line[] nodeList) {
         boolean collisionDetected = false;       
         for (Line static_bloc : nodeList) {
@@ -1534,7 +1574,12 @@ Scene scene = new Scene(layout, 550, 450);
         return collisionDetected;
     }
     
-    // COLLISION CHECKER
+    /**
+     * Helper method called by connectStates to check for circle (node) collision
+     * @param tNode Circle node to be checked against all
+     * @param nodeList all nodes that tNode is checked against
+     * @return collisionDetected Boolean is nodes are on top of each other
+     */
     private boolean checkBounds(Circle tNode, Circle[] nodeList) {
         boolean collisionDetected = false;       
         for (Circle static_bloc : nodeList) {
@@ -1550,6 +1595,12 @@ Scene scene = new Scene(layout, 550, 450);
         return collisionDetected;
     }
     
+    /**
+     * Helper method called by drawTransitionLabels() to connect stateNodes to each other
+     * @param n1 Node for initial stateNode
+     * @param n2 Node for ending stateNode
+     * @return line Line to be drawn between states
+     */
     private Line connectStates(Node n1, Node n2, String transitionText, int index) {
         if (n1.getParent() != n2.getParent()) {
             throw new IllegalArgumentException("Nodes are in different containers");
@@ -1640,7 +1691,14 @@ Scene scene = new Scene(layout, 550, 450);
         return line;
     }
     
-    public Arc drawArcback(Circle tNode, Label tLabel, Pane parent){           
+    /**
+     * Helper method called by connectStates to draw loopBacks for Si->Si transition
+     * @param tNode Circle of state to be looped back
+     * @param tLabel Label to be bound to transition loopBack
+     * @param parent Pane to be applied to
+     * @return arc Arc to be drawn when transition is bound by the same (initial) node
+     */
+    private Arc drawArcback(Circle tNode, Label tLabel, Pane parent){           
         Arc arc = new Arc();
         arc.setLayoutX(tNode.getCenterX()+tNode.getRadius());
         arc.setLayoutY(tNode.getCenterY()+tNode.getRadius());
@@ -1660,7 +1718,10 @@ Scene scene = new Scene(layout, 550, 450);
         return arc;
     }               
     
-    public void clearStateTuples(){
+    /**
+     * Helper method called by the new source file methods to reinitialize
+     */
+    private void clearStateTuples(){
         allInitStates = null;
         allTapes = null;
         allTransitions = null;
@@ -1669,7 +1730,11 @@ Scene scene = new Scene(layout, 550, 450);
         currentStates = null;       
     }
     
-    public void loadTupleArrays(ArrayList<StateTransition> states){
+    /**
+     * Helper method called by drawStates to load tuple attributes to arrays
+     * @param states StateTransition ArrayList
+     */
+    private void loadTupleArrays(ArrayList<StateTransition> states){
         final int numStates=states.size();
         allInitStates = new String[numStates];
         allTapes = new String[numStates];
@@ -1699,7 +1764,10 @@ Scene scene = new Scene(layout, 550, 450);
         }         
     }
     
-    public void loadTapeColors(){
+    /**
+     * Helper method called by drawStates to set node colors by Tape number
+     */
+    private void loadTapeColors(){
         tapeColor = new Color[numAllStates];
         for(int i=0;i<numAllStates; i++){
             tapeSelection = allTapes[i];            
@@ -1712,7 +1780,10 @@ Scene scene = new Scene(layout, 550, 450);
         }
     }
     
-    public void drawTapeLegend(){
+    /**
+     * Helper method called by drawStates to draw the tape color legend nodes/text at bottom
+     */
+    private void drawTapeLegend(){
         Stop[] stops1 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.AQUA)};
         LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops1);
         Stop[] stops2 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.VIOLET)};
@@ -1743,7 +1814,16 @@ Scene scene = new Scene(layout, 550, 450);
         statePane.getChildren().addAll(legend1,legend2,legend3);      
     }
     
-    // Instantiates a Circle that is draggable by mouse
+    /**
+     * Helper method called by various drawStates Helper Methods to create the states
+     * Instantiates a Circle that is draggable by mouse
+     * @param radius Double for circleStateNode radius
+     * @param x Double for XCOORD @ center
+     * @param y Double for YCOORD @ center
+     * @param parent Pane to be applied to
+     * @param fill Color to be applied to circleNode
+     * @return c Circle returned that is draggable
+     */
     private Circle createDraggingCircle(double radius, double x, double y, Pane parent, Color fill) {
         Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, fill)};
         LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
@@ -1775,6 +1855,10 @@ Scene scene = new Scene(layout, 550, 450);
         return c ;
     }
 
+    /**
+     * Helper method used to redraw the state diagram at resize events
+     * @param states StateTransition ArrayList containing the state portion of tuples
+     */
     private void redraw(ArrayList<StateTransition> states) {
         if (states != null) {
            statePane.getChildren().clear();
