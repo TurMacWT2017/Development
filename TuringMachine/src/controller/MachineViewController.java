@@ -1272,7 +1272,11 @@ public class MachineViewController implements Initializable {
      * Helper method called by NULL to update colors of nodes during execution
      * @param stateLabel String of text from stateLabel
      */
+<<<<<<< HEAD
     public void updateStateNodes(String stateLabel){
+=======
+    private void updateStateNodes(String stateLabel){
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         pullNodes = new ArrayList<>();
         pullNodes = getAllNodes(statePane);
         
@@ -1294,10 +1298,17 @@ public class MachineViewController implements Initializable {
 
     /**
      * Helper method called by various to retrieve all nodes currently in Pane
+<<<<<<< HEAD
      * @param parent Pane from which to grab all nodes
      * @return nodes ArrayList of nodes loaded with that which is retrieved
      */
     public static ArrayList<Node> getAllNodes(Pane parent) {
+=======
+     * @param pane Pane from which to grab all nodes
+     * @return nodes ArrayList of nodes loaded with that which is retrieved
+     */
+    private static ArrayList<Node> getAllNodes(Pane parent) {
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         ArrayList<Node> nodes = new ArrayList<>();
         addAllDescendents(parent, nodes);
         return nodes;
@@ -1315,7 +1326,12 @@ public class MachineViewController implements Initializable {
                 addAllDescendents((Pane)node, nodes);
         }
     }
+<<<<<<< HEAD
          
+=======
+}
+     
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
     /**
      * Draws the state diagram via various Helper Methods in this class
      * @param states ArrayList
@@ -1372,10 +1388,17 @@ public class MachineViewController implements Initializable {
        currentStates = states;
     }
     
+<<<<<<< HEAD
       /**
      * Helper method called by drawStates to bind stateLabels tostateNodes in pane
      */
     public void bindStateLabels(){
+=======
+   /**
+     * Helper method called by drawStates to bind stateLabels tostateNodes in pane
+     */
+    private void bindStateLabels(){
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
             for (int j = 0; j < numAllStates; j++){
@@ -1405,7 +1428,11 @@ public class MachineViewController implements Initializable {
     /**
      * Helper method called by drawStates to place the unique stateNodes on pane
      */
+<<<<<<< HEAD
     public void drawUniqueInitNodes(){
+=======
+    private void drawUniqueInitNodes(){
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
         XCOORD = stateTabWidth*.05;
@@ -1433,10 +1460,17 @@ public class MachineViewController implements Initializable {
         }
     }
     
+<<<<<<< HEAD
      /**
      * Helper method called by drawStates to bind the common stateNodes together
      */
     public void bindInitToEndStates(){
+=======
+    /**
+     * Helper method called by drawStates to bind the common stateNodes together
+     */
+    private void bindInitToEndStates(){
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         for(int i=0; i<numUniqueStates; i++){
             statePane.getChildren().add(uniqueNodes[i]);
             for(int j=0; j<numAllStates; j++){
@@ -1475,7 +1509,11 @@ public class MachineViewController implements Initializable {
     /**
      * Helper method called by drawStates and others to anchor any accept/reject halt nodes
      */
+<<<<<<< HEAD
     public void anchorAcceptRejectNodes(){
+=======
+    private void anchorAcceptRejectNodes(){
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
         
@@ -1505,6 +1543,7 @@ public class MachineViewController implements Initializable {
         }  
     }
     
+<<<<<<< HEAD
        /**
      * Helper method called by createDraggingCircle() to update the transitionNodes
      */
@@ -1513,13 +1552,28 @@ public class MachineViewController implements Initializable {
             statePane.getChildren().removeAll(transNodes[j],transLabels[j], 
                     transArcs[j], transLines[j]);
         }                
+=======
+    /**
+     * Helper method called by createDraggingCircle() to update the transitionNodes
+     */
+    private void updateTransLines(){
+        for(int j=0; j<numAllStates;j++){
+            statePane.getChildren().removeAll(transNodes[j],transLabels[j], 
+                    transArcs[j], transLines[j]);
+        }       
+        
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         drawTransitionLabels();
     }
     
     /**
      * Helper method called by drawStates to drop lines, arcs, and transLabels to pane
      */
+<<<<<<< HEAD
     public void drawTransitionLabels(){           
+=======
+    private void drawTransitionLabels(){           
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
             for (int j = 0; j< numAllStates; j++){
                 transLabels[j] = new Label();
                 transNodes[j] = new Circle();    
@@ -1532,6 +1586,7 @@ public class MachineViewController implements Initializable {
             }              
         }
     
+<<<<<<< HEAD
      /**
      * Helper method called by connectStates to check for line collision
      * @param tNode Transition node to be checked against all (node at center of line)
@@ -1539,6 +1594,13 @@ public class MachineViewController implements Initializable {
      * @return collisionDetected Boolean is lines are on top of each other
      */
     // COLLISION CHECKER
+=======
+    /**
+     * Helper method called by connectStates to check for line collision
+     * @param tNode Transition node to be checked against all (node at center of line)
+     * @param nodeList all nodes that tNode is checked against
+     */
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
     private boolean checkLines(Line tNode, Line[] nodeList) {
         boolean collisionDetected = false;       
         for (Line static_bloc : nodeList) {
@@ -1554,13 +1616,20 @@ public class MachineViewController implements Initializable {
         return collisionDetected;
     }
     
+<<<<<<< HEAD
      /**
+=======
+    /**
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
      * Helper method called by connectStates to check for circle (node) collision
      * @param tNode Circle node to be checked against all
      * @param nodeList all nodes that tNode is checked against
      * @return collisionDetected Boolean is nodes are on top of each other
      */
+<<<<<<< HEAD
     // COLLISION CHECKER
+=======
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
     private boolean checkBounds(Circle tNode, Circle[] nodeList) {
         boolean collisionDetected = false;       
         for (Circle static_bloc : nodeList) {
@@ -1580,8 +1649,11 @@ public class MachineViewController implements Initializable {
      * Helper method called by drawTransitionLabels() to connect stateNodes to each other
      * @param n1 Node for initial stateNode
      * @param n2 Node for ending stateNode
+<<<<<<< HEAD
      * @param transitionText String containing transition tuple attributes for display
      * @param index int for node index
+=======
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
      * @return line Line to be drawn between states
      */
     private Line connectStates(Node n1, Node n2, String transitionText, int index) {
@@ -1682,7 +1754,11 @@ public class MachineViewController implements Initializable {
      * @param parent Pane to be applied to
      * @return arc Arc to be drawn when transition is bound by the same (initial) node
      */
+<<<<<<< HEAD
     public Arc drawArcback(Circle tNode, Label tLabel, Pane parent){           
+=======
+    private Arc drawArcback(Circle tNode, Label tLabel, Pane parent){           
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         Arc arc = new Arc();
         arc.setLayoutX(tNode.getCenterX()+tNode.getRadius());
         arc.setLayoutY(tNode.getCenterY()+tNode.getRadius());
@@ -1702,10 +1778,17 @@ public class MachineViewController implements Initializable {
         return arc;
     }               
     
+<<<<<<< HEAD
        /**
      * Helper method called by the new source file methods to reinitialize
      */
     public void clearStateTuples(){
+=======
+    /**
+     * Helper method called by the new source file methods to reinitialize
+     */
+    private void clearStateTuples(){
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         allInitStates = null;
         allTapes = null;
         allTransitions = null;
@@ -1714,11 +1797,19 @@ public class MachineViewController implements Initializable {
         currentStates = null;       
     }
     
+<<<<<<< HEAD
      /**
      * Helper method called by drawStates to load tuple attributes to arrays
      * @param states StateTransition ArrayList
      */
     public void loadTupleArrays(ArrayList<StateTransition> states){
+=======
+    /**
+     * Helper method called by drawStates to load tuple attributes to arrays
+     * @param states StateTransition ArrayList
+     */
+    private void loadTupleArrays(ArrayList<StateTransition> states){
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         final int numStates=states.size();
         allInitStates = new String[numStates];
         allTapes = new String[numStates];
@@ -1748,10 +1839,17 @@ public class MachineViewController implements Initializable {
         }         
     }
     
+<<<<<<< HEAD
       /**
      * Helper method called by drawStates to set node colors by Tape number
      */
     public void loadTapeColors(){
+=======
+    /**
+     * Helper method called by drawStates to set node colors by Tape number
+     */
+    private void loadTapeColors(){
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         tapeColor = new Color[numAllStates];
         for(int i=0;i<numAllStates; i++){
             tapeSelection = allTapes[i];            
@@ -1764,10 +1862,17 @@ public class MachineViewController implements Initializable {
         }
     }
     
+<<<<<<< HEAD
       /**
      * Helper method called by drawStates to draw the tape color legend nodes/text at bottom
      */
     public void drawTapeLegend(){
+=======
+    /**
+     * Helper method called by drawStates to draw the tape color legend nodes/text at bottom
+     */
+    private void drawTapeLegend(){
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
         Stop[] stops1 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.AQUA)};
         LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops1);
         Stop[] stops2 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.VIOLET)};
@@ -1798,7 +1903,11 @@ public class MachineViewController implements Initializable {
         statePane.getChildren().addAll(legend1,legend2,legend3);      
     }
     
+<<<<<<< HEAD
        /**
+=======
+    /**
+>>>>>>> 6366f0a1a526e0eee38a0b6b016e20b188050b11
      * Helper method called by various drawStates Helper Methods to create the states
      * Instantiates a Circle that is draggable by mouse
      * @param radius Double for circleStateNode radius
