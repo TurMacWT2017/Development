@@ -1584,7 +1584,7 @@ public class MachineViewController implements Initializable {
         for (Circle static_bloc : nodeList) {
             if(static_bloc != null)
             if (static_bloc != tNode) {
-                static_bloc.setFill(Color.GREEN);
+                //static_bloc.setFill(Color.GREEN);
 
                 if (tNode.getBoundsInParent().intersects(static_bloc.getBoundsInParent())) {
                     collisionDetected = true;
@@ -1674,13 +1674,19 @@ public class MachineViewController implements Initializable {
                 transArcs[index] = relayArc; 
                 transLabel.setFont(getCurrentCodeFontSettings());
                 parent.getChildren().addAll(transArcs[index],transLabel);//,transNode);
-            }
+            }// temporary label overstrike correction
             else{                
                 transLabel = transLabels[index];
                 if(checkBounds(transNode,transNodes)==true){
+                    
+                    transLabels[index].setText("0 1 SSL");
+                    transLabel = transLabels[index];
+                    
                     transLabel.setText("\n"+transLabels[index].getText());
+                    //transLabel.setVisible(false);
                 }else{   
-                    transLabel.setText(transLabels[index].getText()+"\n");
+                    transLabel.setText(transLabels[index].getText());
+                    transLabel.setVisible(true);
                 }
                 
     // OR here a checkLines can be done to drop dupe lines... //////////////////////////////////////////////////////////////////////////////////
