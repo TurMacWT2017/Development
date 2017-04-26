@@ -1442,8 +1442,8 @@ public class MachineViewController implements Initializable {
             }
             else
             {
-                XCOORD = stateTabWidth*.13;                
-                YCOORD += stateTabHeight*.32;
+                XCOORD = stateTabWidth*.05;                
+                YCOORD += stateTabHeight*.25;
             }             
             uniqueNodes[j].toFront();
         }
@@ -1682,6 +1682,7 @@ public class MachineViewController implements Initializable {
                 if(checkBounds(transNode,transNodes)==true){
                     
                     transLabels[index].setText("0 1 SSL");
+                    transLabels[index].setFont(getCurrentCodeFontSettings());
                     transLabel = transLabels[index];
                     
                     transLabel.setText("\n"+transLabels[index].getText());
@@ -1690,10 +1691,6 @@ public class MachineViewController implements Initializable {
                     transLabel.setText(transLabels[index].getText());
                     transLabel.setVisible(true);
                 }
-                
-    // OR here a checkLines can be done to drop dupe lines... //////////////////////////////////////////////////////////////////////////////////
-                
-                
                 transLabel.layoutXProperty().bindBidirectional(transNode.centerXProperty());
                 transLabel.layoutYProperty().bindBidirectional(transNode.centerYProperty()); 
                 transLabel.setFont(getCurrentCodeFontSettings());
@@ -1704,8 +1701,6 @@ public class MachineViewController implements Initializable {
         }     
         return line;
     }
-    
-    // Time wrapup
     
     /**
      * Helper method called by connectStates to draw loopBacks for Si->Si transition
