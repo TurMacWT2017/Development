@@ -1593,10 +1593,11 @@ public class MachineViewController implements Initializable {
         if (n1.getParent() != n2.getParent()) {
             throw new IllegalArgumentException("Nodes are in different containers");
         }
+        
         Pane parent = (Pane) n1.getParent();
         
         
-    // DO checkLines here to keep from dropping dupe lines ////////////////////////////////////////////////////////////////////////////
+    // DO checkLines here to keep from dropping dupe lines ////////////////
         
         
         
@@ -1680,7 +1681,7 @@ public class MachineViewController implements Initializable {
         return line;
     }
     
-    // Eronius Comment...
+    // Time wrapup
     
     /**
      * Helper method called by connectStates to draw loopBacks for Si->Si transition
@@ -1689,7 +1690,6 @@ public class MachineViewController implements Initializable {
      * @param parent Pane to be applied to
      * @return arc Arc to be drawn when transition is bound by the same (initial) node
      */
-
     private Arc drawArcback(Circle tNode, Label tLabel, Pane parent){           
         Arc arc = new Arc();
         arc.setLayoutX(tNode.getCenterX()+tNode.getRadius());
