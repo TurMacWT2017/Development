@@ -1545,6 +1545,7 @@ public class MachineViewController implements Initializable {
                 
                     transLines[j] = connectStates(endLabels[j].getLabelFor(), 
                         stateLabels[j].getLabelFor(), allTransitions[j], j);
+                    transLines[j].setFill(Color.AZURE);
                     transLines[j].toBack();
                 connected++;         
             }              
@@ -1615,7 +1616,7 @@ public class MachineViewController implements Initializable {
         
         
         Line line = new Line();
-        line.setFill(Color.ROYALBLUE);
+        
         line.setOpacity(.7);
         line.startXProperty().bind(Bindings.createDoubleBinding(() -> {
             Bounds b = n1.getBoundsInParent();
@@ -1634,11 +1635,12 @@ public class MachineViewController implements Initializable {
             return b.getMinY() + b.getHeight() / 2 ;
         }, n2.boundsInParentProperty()));
         
-        line.getStrokeDashArray().addAll(2d, 2d, 2d, 2d, 2d);
+        line.getStrokeDashArray().addAll(2d, 3d, 2d, 3d, 2d, 3d);
         line.setStrokeDashOffset(5);
         line.setStrokeLineJoin(StrokeLineJoin.ROUND);
         line.setStrokeLineCap(StrokeLineCap.ROUND);       
         line.toBack();
+        line.setFill(Color.ROYALBLUE);
         parent.getChildren().addAll(line);
         
         // Center-label line with transition data and dynamically keep centered      
