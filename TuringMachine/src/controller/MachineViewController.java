@@ -1361,6 +1361,7 @@ public class MachineViewController implements Initializable {
         startLabel.layoutXProperty().bindBidirectional(startNode.centerXProperty());
         startLabel.layoutYProperty().bindBidirectional(startNode.centerYProperty());
         startNode.toBack();
+        startLabel.setFont(getCurrentCodeFontSettings());
         statePane.getChildren().addAll(startNode,startLabel);
                 
         drawUniqueInitNodes();     
@@ -1651,6 +1652,7 @@ public class MachineViewController implements Initializable {
         
         Label transLabel = new Label(transitionText.replaceAll(", ", " ")); 
         transLabel.setTextFill(Color.web("#67112b"));
+        transLabel.setFont(getCurrentCodeFontSettings());
         transLabel.toBack();
         Arc relayArc;
         if (index != -1){           
@@ -1668,9 +1670,9 @@ public class MachineViewController implements Initializable {
                 }
                 transLabel.layoutXProperty().bindBidirectional(relayArc.layoutXProperty());
                 transLabel.layoutYProperty().bindBidirectional(relayArc.layoutYProperty());
-                transLabel.setFont(getCurrentCodeFontSettings());
                 relayArc.toBack();
                 transArcs[index] = relayArc; 
+                transLabel.setFont(getCurrentCodeFontSettings());
                 parent.getChildren().addAll(transArcs[index],transLabel);//,transNode);
             }
             else{                
@@ -1683,9 +1685,10 @@ public class MachineViewController implements Initializable {
                 
     // OR here a checkLines can be done to drop dupe lines... //////////////////////////////////////////////////////////////////////////////////
                 
-                transLabel.setFont(getCurrentCodeFontSettings());
+                
                 transLabel.layoutXProperty().bindBidirectional(transNode.centerXProperty());
                 transLabel.layoutYProperty().bindBidirectional(transNode.centerYProperty()); 
+                transLabel.setFont(getCurrentCodeFontSettings());
                 transNode.setVisible(false);
                 parent.getChildren().addAll(transLabel,transNode);
             }
@@ -1814,7 +1817,10 @@ public class MachineViewController implements Initializable {
         legend2.setLayoutX(stateTabWidth*.5-10);
         legend2.setLayoutY(stateTabHeight-5.0);
         legend3.setLayoutX(stateTabWidth*.65-10);
-        legend3.setLayoutY(stateTabHeight-5.0);       
+        legend3.setLayoutY(stateTabHeight-5.0);    
+        legend1.setFont(getCurrentCodeFontSettings());
+        legend2.setFont(getCurrentCodeFontSettings());
+        legend3.setFont(getCurrentCodeFontSettings());
         statePane.getChildren().addAll(oneAqua,twoViolet,threeTan);
         statePane.getChildren().addAll(legend1,legend2,legend3);      
     }
