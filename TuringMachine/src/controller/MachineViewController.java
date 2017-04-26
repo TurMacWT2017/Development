@@ -115,6 +115,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 /**
  * This controller controls the Main Program User Interface. The FXML that it
@@ -1234,7 +1235,7 @@ public class MachineViewController implements Initializable {
             ScrollPane layout = new ScrollPane();
             stage.setTitle("State Diagram Window");
             Pane windowPane = new Pane();
-            windowPane = statePane;
+            windowPane.getChildren().add(statePane);
 
 
             
@@ -1248,7 +1249,7 @@ public class MachineViewController implements Initializable {
             layout.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
                 + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
                 + " -fx-border-radius: 5.0");
-           
+            layout.setContent(windowPane);
            
             Scene scene = new Scene(layout, 550, 450);
           
@@ -1257,7 +1258,16 @@ public class MachineViewController implements Initializable {
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
             stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
             stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
-            stage.show();           
+            stage.show();   
+            stage.setOnCloseRequest((WindowEvent event1) -> {
+                try {
+                    drawStates(currentStates);
+                } catch (Exception ex) {
+                    Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Stage is closing");
+                // Save file
+            });
         }
         else {
             Alert alert = new Alert(AlertType.INFORMATION);
@@ -1764,11 +1774,11 @@ public class MachineViewController implements Initializable {
         for(int i=0;i<numAllStates; i++){
             tapeSelection = allTapes[i];            
             if(tapeSelection.equalsIgnoreCase("t1"))
-                tapeColor[i] = Color.AQUA;
+                tapeColor[i] = Color.ROYALBLUE;
             if(tapeSelection.equalsIgnoreCase("t2"))
-                tapeColor[i] = Color.VIOLET;
+                tapeColor[i] = Color.CHARTREUSE;
             if(tapeSelection.equalsIgnoreCase("t3"))
-                tapeColor[i] = Color.TAN;
+                tapeColor[i] = Color.FUCHSIA;
         }
     }
     
@@ -1776,17 +1786,17 @@ public class MachineViewController implements Initializable {
      * Helper method called by drawStates to draw the tape color legend nodes/text at bottom
      */
     public void drawTapeLegend(){
-        Stop[] stops1 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.AQUA)};
+        Stop[] stops1 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.ROYALBLUE)};
         LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops1);
-        Stop[] stops2 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.VIOLET)};
+        Stop[] stops2 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.CHARTREUSE)};
         LinearGradient lg2 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops2);
-        Stop[] stops3 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.TAN)};
+        Stop[] stops3 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.FUCHSIA)};
         LinearGradient lg3 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops3);
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
-        Circle oneAqua = new Circle(stateTabWidth*.35-10,stateTabHeight-10.0,5,Color.AQUA);
-        Circle twoViolet = new Circle(stateTabWidth*.5-10,stateTabHeight-10.0,5,Color.VIOLET);
-        Circle threeTan = new Circle(stateTabWidth*.65-10,stateTabHeight-10.0,5,Color.TAN);
+        Circle oneAqua = new Circle(stateTabWidth*.35-10,stateTabHeight-10.0,5,Color.ROYALBLUE);
+        Circle twoViolet = new Circle(stateTabWidth*.5-10,stateTabHeight-10.0,5,Color.CHARTREUSE);
+        Circle threeTan = new Circle(stateTabWidth*.65-10,stateTabHeight-10.0,5,Color.FUCHSIA);
         oneAqua.setFill(lg1);
         twoViolet.setFill(lg2);
         threeTan.setFill(lg3);
