@@ -1216,7 +1216,7 @@ public class MachineViewController implements Initializable {
      * Gets the current value of the speed slider
      * @return int speed
      */
-    public int getSpeed(){
+    private int getSpeed(){
         return (int)speedSlider.getValue();
     }
     
@@ -1227,15 +1227,15 @@ public class MachineViewController implements Initializable {
      * @param event ActionEvent 
      */
     @FXML
-    public void launchStateWindow(ActionEvent event){
+    private void launchStateWindow(ActionEvent event){
         
         if (fileLoaded) {
             Stage stage = new Stage();
             //set the scene and its owner
             ScrollPane layout = new ScrollPane();
             stage.setTitle("State Diagram Window");
-            Pane windowPane = new Pane();
-            windowPane.getChildren().add(statePane);
+            //Pane windowPane = new Pane();
+            //windowPane.getChildren().add(statePane);
 
 
             
@@ -1249,9 +1249,9 @@ public class MachineViewController implements Initializable {
             layout.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
                 + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
                 + " -fx-border-radius: 5.0");
-            layout.setContent(windowPane);
+            layout.setContent(statePane);
            
-            Scene scene = new Scene(layout, 550, 450);
+            Scene scene = new Scene(layout, 600,600);
           
             stage.setScene(scene);
 
@@ -1428,7 +1428,8 @@ public class MachineViewController implements Initializable {
         YCOORD = stateTabHeight*.15;
 
         for (int j=0; j< numUniqueStates; j++){
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 10, statePane, tapeColor[j]);    
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 10, statePane, tapeColor[j]); 
+            //uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, XCOORD*.005, statePane, tapeColor[j]); 
             uniqueNodes[j].setStrokeType(StrokeType.OUTSIDE);
             uniqueNodes[j].setStroke(tapeColor[j]);
             
@@ -1681,7 +1682,7 @@ public class MachineViewController implements Initializable {
                 transLabel = transLabels[index];
                 if(checkBounds(transNode,transNodes)==true){
                     
-                    transLabels[index].setText("0 1 SSL");
+                    transLabels[index].setText("0 _ L");
                     transLabels[index].setFont(getCurrentCodeFontSettings());
                     transLabel = transLabels[index];
                     
