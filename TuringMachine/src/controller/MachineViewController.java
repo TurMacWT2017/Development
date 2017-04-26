@@ -1405,6 +1405,8 @@ public class MachineViewController implements Initializable {
             endLabel.layoutYProperty().bindBidirectional(endNodes[j].centerYProperty());               
             stateLabel.setLabelFor(stateNodes[j]);
             endLabel.setLabelFor(endNodes[j]);
+            stateLabel.setFont(getCurrentCodeFontSettings());
+            endLabel.setFont(getCurrentCodeFontSettings());
             stateLabels[j] = stateLabel;
             endLabels[j] = endLabel;
           
@@ -1666,6 +1668,7 @@ public class MachineViewController implements Initializable {
                 }
                 transLabel.layoutXProperty().bindBidirectional(relayArc.layoutXProperty());
                 transLabel.layoutYProperty().bindBidirectional(relayArc.layoutYProperty());
+                transLabel.setFont(getCurrentCodeFontSettings());
                 relayArc.toBack();
                 transArcs[index] = relayArc; 
                 parent.getChildren().addAll(transArcs[index],transLabel);//,transNode);
@@ -1680,7 +1683,7 @@ public class MachineViewController implements Initializable {
                 
     // OR here a checkLines can be done to drop dupe lines... //////////////////////////////////////////////////////////////////////////////////
                 
-                
+                transLabel.setFont(getCurrentCodeFontSettings());
                 transLabel.layoutXProperty().bindBidirectional(transNode.centerXProperty());
                 transLabel.layoutYProperty().bindBidirectional(transNode.centerYProperty()); 
                 transNode.setVisible(false);
