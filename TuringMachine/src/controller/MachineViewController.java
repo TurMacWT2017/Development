@@ -1680,6 +1680,8 @@ public class MachineViewController implements Initializable {
         return line;
     }
     
+    // Eronius Comment...
+    
     /**
      * Helper method called by connectStates to draw loopBacks for Si->Si transition
      * @param tNode Circle of state to be looped back
