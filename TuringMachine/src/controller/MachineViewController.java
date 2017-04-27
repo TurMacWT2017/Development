@@ -1455,14 +1455,14 @@ public class MachineViewController implements Initializable {
             {
                 XCOORD += stateTabWidth*.10;              
                 if(j%2==0)
-                    YCOORD += stateTabHeight*.23;
+                    YCOORD += stateTabHeight*.46;
                 else
-                    YCOORD -= stateTabHeight*.23;                
+                    YCOORD -= stateTabHeight*.46;                
             }
             else
             {
                 XCOORD = stateTabWidth*.05;                
-                YCOORD += stateTabHeight*.25;
+                YCOORD -= stateTabHeight*.25;
             }             
             uniqueNodes[j].toFront();
         }
