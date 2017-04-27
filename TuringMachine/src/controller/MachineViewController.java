@@ -1182,7 +1182,7 @@ public class MachineViewController implements Initializable {
         isCodeItalic = (boolean) codeSettings[2];
         isCodeBold = (boolean) codeSettings[3];
         //these lines allow the canvas to dynamically resize when the program does
-        
+       
         statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
         statePaneTab.heightProperty().addListener(observable -> redraw(currentStates));
        
@@ -1348,7 +1348,12 @@ public class MachineViewController implements Initializable {
     public void drawStates(ArrayList<StateTransition> states) {      
         staticNodes=false;       
         statePane = new Pane();
-        double stateTabWidth = statePaneTab. widthProperty().get();
+        statePane.setPrefSize(statePaneTab.getPrefWidth(),statePaneTab.getPrefHeight());
+            //System.out.println("stPnW = " + statePane.getPrefWidth());
+            //System.out.println("stPnH = " + statePane.getPrefHeight());
+            //System.out.println("stPnTbW = " + statePane.getPrefWidth());
+            //System.out.println("stPnTbH = " + statePane.getPrefHeight());
+        double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();        
         
         // LOAD the initial state, end state, and transition arrays
@@ -1529,7 +1534,7 @@ public class MachineViewController implements Initializable {
         if(rejectCheck > 0){
             int k = 0;
             while(k<1){
-                rejectNode = createDraggingCircle(stateTabWidth - 70,
+                rejectNode = createDraggingCircle(stateTabWidth - 75,
                         stateTabHeight - 40, 12, statePane, rejectColor);    
                 rejectNode.setStrokeType(StrokeType.OUTSIDE);
                 rejectNode.setStroke(rejectColor);
@@ -1554,18 +1559,18 @@ public class MachineViewController implements Initializable {
      * Helper method called by drawStates to drop lines, arcs, and transLabels to pane
      */
     public void drawTransitionLabels(){           
-            for (int j = 0; j< numAllStates; j++){
-                transLabels[j] = new Label();
-                transNodes[j] = new Circle();    
-                transArcs[j] = new Arc();  
-                
-                    transLines[j] = connectStates(endLabels[j].getLabelFor(), 
-                        stateLabels[j].getLabelFor(), allTransitions[j], j);
-                    transLines[j].setFill(Color.AZURE);
-                    transLines[j].toBack();
-                connected++;         
-            }              
-        }
+        for (int j = 0; j< numAllStates; j++){
+            transLabels[j] = new Label();
+            transNodes[j] = new Circle();    
+            transArcs[j] = new Arc();  
+            
+            transLines[j] = connectStates(endLabels[j].getLabelFor(), 
+            stateLabels[j].getLabelFor(), allTransitions[j], j);
+            transLines[j].setFill(Color.AZURE);
+            transLines[j].toBack();
+            connected++;         
+        }              
+    }
     
      /**
      * Helper method called by connectStates to check for line collision
@@ -1622,17 +1627,10 @@ public class MachineViewController implements Initializable {
     private Line connectStates(Node n1, Node n2, String transitionText, int index) {
         if (n1.getParent() != n2.getParent()) {
             throw new IllegalArgumentException("Nodes are in different containers");
-        }
-        
+        }        
         Pane parent = (Pane) n1.getParent();
         
-        
-    // DO checkLines here to keep from dropping dupe lines ////////////////
-        
-        
-        
-        Line line = new Line();
-        
+        Line line = new Line();        
         line.setOpacity(.7);
         line.startXProperty().bind(Bindings.createDoubleBinding(() -> {
             Bounds b = n1.getBoundsInParent();
@@ -1740,8 +1738,7 @@ public class MachineViewController implements Initializable {
         arc.setSmooth(true);
         arc.setOpacity(.7);
         arc.setStrokeLineJoin(StrokeLineJoin.ROUND);
-        arc.setStrokeLineCap(StrokeLineCap.ROUND);
-        
+        arc.setStrokeLineCap(StrokeLineCap.ROUND);        
         return arc;
     }               
     
@@ -1825,6 +1822,7 @@ public class MachineViewController implements Initializable {
         oneAqua.setFill(lg1);
         twoViolet.setFill(lg2);
         threeTan.setFill(lg3);
+
         Text legend1 = new Text();
         Text legend2 = new Text();
         Text legend3 = new Text();
