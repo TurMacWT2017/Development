@@ -882,6 +882,7 @@ public class MachineViewController implements Initializable {
                     newContent.setFont(getCurrentCodeFontSettings());
                     codeDisplay.getChildren().add(newContent);
                 }
+                
             }
             //This line helps prevent the viewport from "breaking" scrolling
             tapeOneScroll.setPrefViewportWidth(700);
@@ -1239,6 +1240,9 @@ public class MachineViewController implements Initializable {
             windowPane = new Pane();
             statePaneTab.getChildren().remove(statePane);
             windowPane.getChildren().add(statePane);
+        
+            
+            //statePaneTab. getSelectionModel().selectNext();
             //statePaneTab.setMaxSize(600, 400);
 
             
@@ -1249,12 +1253,15 @@ public class MachineViewController implements Initializable {
             layout.setFitToHeight(true);
             layout.setFitToWidth(true);      
             //pane.setStyle("-fx-background-color: #F5F5DC");
-            layout.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
-                + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
-                + " -fx-border-radius: 5.0");
-            windowPane.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
-                + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
-                + " -fx-border-radius: 5.0");
+            layout.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);");
+                //+ " -fx-border: 16px solid; -fx-border-color: #67112b;)");// -fx-background-radius: 1.0;"
+                //+ " -fx-border-radius: 5.0");
+            windowPane.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);");
+                //+ " -fx-border: 16px solid; -fx-border-color: #67112b;)");// -fx-background-radius: 1.0;"
+                //+ " -fx-border-radius: 5.0");
+            BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
+                StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
+            windowPane.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
             layout.setContent(windowPane);
            
             Scene scene = new Scene(layout,600,400);
@@ -1436,6 +1443,7 @@ public class MachineViewController implements Initializable {
 
         for (int j=0; j< numUniqueStates; j++){
             uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 10, statePane, tapeColor[j]); 
+  
             //uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, XCOORD*.005, statePane, tapeColor[j]); 
             uniqueNodes[j].setStrokeType(StrokeType.OUTSIDE);
             uniqueNodes[j].setStroke(tapeColor[j]);
