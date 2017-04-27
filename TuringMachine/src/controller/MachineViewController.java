@@ -360,6 +360,7 @@ public class MachineViewController implements Initializable {
             tapeTwo.getChildren().clear();
             tapeThree.getChildren().clear();
             codeViewTab.getChildren().clear();
+            
             statePaneTab.getChildren().clear();
             clearStateTuples();
 
@@ -401,6 +402,10 @@ public class MachineViewController implements Initializable {
                 //    launchCodeWindow(input);
                     Text text1 = new Text(input);
                     text1.setFont(getCurrentCodeFontSettings());
+                    codeViewTab.setStyle("-fx-background-color: linear-gradient(to left, #777676,#F5F5DC );");
+                    BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
+                            StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
+                    codeViewTab.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
                     codeViewTab.getChildren().add(text1);
                     //statePaneTab.getChildren().add(statePane);
                     //tapeOne.setText(interp.getInitialInput());
@@ -445,6 +450,10 @@ public class MachineViewController implements Initializable {
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
         text1.setFont(getCurrentCodeFontSettings());
+        codeViewTab.setStyle("-fx-background-color: linear-gradient(to left, #777676,#F5F5DC );");
+                    BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
+                            StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
+                    codeViewTab.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -484,6 +493,10 @@ public class MachineViewController implements Initializable {
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
         text1.setFont(getCurrentCodeFontSettings());
+        codeViewTab.setStyle("-fx-background-color: linear-gradient(to left, #777676,#F5F5DC );");
+                    BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
+                            StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
+                    codeViewTab.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -524,6 +537,10 @@ public class MachineViewController implements Initializable {
         speedLabel.setDisable(false);
         Text text1 = new Text(input);
         text1.setFont(getCurrentCodeFontSettings());
+        codeViewTab.setStyle("-fx-background-color: linear-gradient(to left, #777676,#F5F5DC );");
+                    BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
+                            StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
+                    codeViewTab.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
         codeViewTab.getChildren().add(text1);
         try {
             interp.start();
@@ -797,6 +814,11 @@ public class MachineViewController implements Initializable {
             content.setFont(getCurrentCodeFontSettings());
             codeDisplay.getChildren().add(content);
             //set the scene and its owner
+            codeDisplay.setStyle("-fx-background-color: linear-gradient(to left, #777676,#F5F5DC );");
+            BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
+                StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
+            codeDisplay.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
+            
             codeStage.setScene(new Scene(layout, 450, 450));
             codeStage.setTitle("Code Window");
             codeStage.initOwner(tapeOne.getScene().getWindow());
@@ -880,6 +902,10 @@ public class MachineViewController implements Initializable {
                     codeDisplay.getChildren().clear();
                     Text newContent = new Text(txt);
                     newContent.setFont(getCurrentCodeFontSettings());
+                    codeDisplay.setStyle("-fx-background-color: linear-gradient(to left, #777676,#F5F5DC );");
+                    BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
+                            StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
+                    codeDisplay.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
                     codeDisplay.getChildren().add(newContent);
                 }
                 
@@ -1145,6 +1171,10 @@ public class MachineViewController implements Initializable {
         Text newContent = new Text(content);
         codeViewTab.getChildren().clear();
         newContent.setFont(getCurrentCodeFontSettings());
+        codeViewTab.setStyle("-fx-background-color: linear-gradient(to left, #777676,#F5F5DC );");
+                    BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
+                            StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
+                    codeViewTab.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
         codeViewTab.getChildren().add(newContent);
     }
     
@@ -1210,9 +1240,7 @@ public class MachineViewController implements Initializable {
         if (tapes == 3) {
             activateTapeTwo();
             activateTapeThree();
-        }
-        
-        
+        }      
     }    
 
     /**
@@ -1251,7 +1279,7 @@ public class MachineViewController implements Initializable {
             layout.setFitToHeight(true);
             layout.setFitToWidth(true);      
             //pane.setStyle("-fx-background-color: #F5F5DC");
-            layout.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);");
+            
                 //+ " -fx-border: 16px solid; -fx-border-color: #67112b;)");// -fx-background-radius: 1.0;"
                 //+ " -fx-border-radius: 5.0");
             windowPane.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);");
@@ -1261,7 +1289,7 @@ public class MachineViewController implements Initializable {
                 StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
             windowPane.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
             layout.setContent(windowPane);
-           
+            layout.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);");
             Scene scene = new Scene(layout,600,400);
           
             stage.setScene(scene);
@@ -1445,9 +1473,9 @@ public class MachineViewController implements Initializable {
         YCOORD = stateTabHeight*.15;
 
         for (int j=0; j< numUniqueStates; j++){
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 11, statePane, tapeColor[j]); 
-  
-            //uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, XCOORD*.005, statePane, tapeColor[j]); 
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 11, statePane, tapeColor[j]);   // Aesthetic A
+                   // UNCOMMENT THE FOLLOWING LINE, COMMENT THE ABOVE LINE - TO SWITCH NODE AESTHETICS
+            //uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, XCOORD*.005, statePane, tapeColor[j]);         // Aesthetic B
             uniqueNodes[j].setStrokeType(StrokeType.OUTSIDE);
             uniqueNodes[j].setStroke(tapeColor[j]);
             
@@ -1511,7 +1539,6 @@ public class MachineViewController implements Initializable {
     /**
      * Helper method called by drawStates and others to anchor any accept/reject halt nodes
      */
-
     public void anchorAcceptRejectNodes(){
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
