@@ -1383,9 +1383,9 @@ public class MachineViewController implements Initializable {
         BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
                 StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
 
-        statePaneTab.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
-                + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
-                + " -fx-border-radius: 5.0");
+        statePaneTab.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);");
+         //       + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 0.0;"
+         //       + " -fx-border-radius: 5.0");
         statePaneTab.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
         statePaneTab.getChildren().add(statePane);
        currentStates = states;
