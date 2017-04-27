@@ -180,6 +180,7 @@ public class MachineViewController implements Initializable {
     private Arc[] transArcs;
     private ArrayList pullNodes;
     private Boolean staticNodes = false;
+    private Pane windowPane;
     
     //UI Buttons
     @FXML private Button runButton;
@@ -1183,6 +1184,7 @@ public class MachineViewController implements Initializable {
         
         statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
         statePaneTab.heightProperty().addListener(observable -> redraw(currentStates));
+       
         
         //these lines allow the the UI to expand and shrink dynamically with panes as they expand or collapse
         tapeTwoPane.expandedProperty().addListener(observable -> resetTapePaneTwoHeight());
@@ -1216,7 +1218,7 @@ public class MachineViewController implements Initializable {
      * Gets the current value of the speed slider
      * @return int speed
      */
-    private int getSpeed(){
+    public int getSpeed(){
         return (int)speedSlider.getValue();
     }
     
@@ -1234,9 +1236,10 @@ public class MachineViewController implements Initializable {
             //set the scene and its owner
             ScrollPane layout = new ScrollPane();
             stage.setTitle("State Diagram Window");
-            //Pane windowPane = new Pane();
-            //windowPane.getChildren().add(statePane);
-
+            windowPane = new Pane();
+            statePaneTab.getChildren().remove(statePane);
+            windowPane.getChildren().add(statePane);
+            //statePaneTab.setMaxSize(600, 400);
 
             
             
@@ -1249,9 +1252,12 @@ public class MachineViewController implements Initializable {
             layout.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
                 + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
                 + " -fx-border-radius: 5.0");
-            layout.setContent(statePane);
+            windowPane.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);"
+                + " -fx-border: 16px solid; -fx-border-color: #67112b; -fx-background-radius: 1.0;"
+                + " -fx-border-radius: 5.0");
+            layout.setContent(windowPane);
            
-            Scene scene = new Scene(layout, 600,600);
+            Scene scene = new Scene(layout,600,400);
           
             stage.setScene(scene);
 
@@ -1261,6 +1267,7 @@ public class MachineViewController implements Initializable {
             stage.show();   
             stage.setOnCloseRequest((WindowEvent event1) -> {
                 try {
+                    //statePaneTab.setMaxSize(454, 283); //PrefSize(454, 283);
                     drawStates(currentStates);
                 } catch (Exception ex) {
                     Logger.getLogger(MachineViewController.class.getName()).log(Level.SEVERE, null, ex);
