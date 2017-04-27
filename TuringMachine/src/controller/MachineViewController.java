@@ -428,7 +428,7 @@ public class MachineViewController implements Initializable {
     /**
      * Loads the example program "Palindrome.tm".
      * @param event ActionEvent
-     * @throws java.io.IOException
+     * @throws java.io.IOException input output exception
      */
     public void loadPalindromeClicked(ActionEvent event) throws IOException {
         //note that a file was loaded
@@ -468,7 +468,7 @@ public class MachineViewController implements Initializable {
     /**
      * Loads the example program "GoBuffs.tm".
      * @param event ActionEvent
-     * @throws java.io.IOException
+     * @throws java.io.IOException input output exception
      */
     public void loadGoBuffsClicked(ActionEvent event) throws IOException {
         //note that a file was loaded
@@ -511,7 +511,7 @@ public class MachineViewController implements Initializable {
         /**
      * Loads the example program "BinaryAddition.tm".
      * @param event ActionEvent
-     * @throws java.io.IOException
+     * @throws java.io.IOException input output exception
      */
     public void loadBinaryAdditionClicked(ActionEvent event) throws IOException {
         // = true;
@@ -923,7 +923,7 @@ public class MachineViewController implements Initializable {
         // stuff
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
-        URL url = MachineViewController.class.getResource(File.separator + "view" + File.separator + "about.html");
+        URL url = MachineViewController.class.getResource("/view/about.html");
         String content = url.toExternalForm();
         webEngine.load(content);
         
@@ -948,7 +948,7 @@ public class MachineViewController implements Initializable {
         // stuff
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
-        URL url = MachineViewController.class.getResource(File.separator + "view" + File.separator + "languageReference.html");
+        URL url = MachineViewController.class.getResource("/view/languageReference.html");
         String content = url.toExternalForm();
         webEngine.load(content);
                 
