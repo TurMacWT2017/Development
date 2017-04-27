@@ -1243,9 +1243,7 @@ public class MachineViewController implements Initializable {
         
             
             //statePaneTab. getSelectionModel().selectNext();
-            //statePaneTab.setMaxSize(600, 400);
-
-            
+            //statePane.setPrefSize(600, 400);           
             
             System.out.println("Making state diagram window");
             layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -1267,7 +1265,7 @@ public class MachineViewController implements Initializable {
             Scene scene = new Scene(layout,600,400);
           
             stage.setScene(scene);
-
+            stage.initOwner(statePaneTab.getScene().getWindow());
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
             stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4); 
             stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 8);
@@ -1297,7 +1295,7 @@ public class MachineViewController implements Initializable {
      * @param stateLabel String of text from stateLabel
      */
     private void updateStateNodes(String stateLabel){
-
+        // FUTURE USE: NO CALLERS
         pullNodes = new ArrayList<>();
         pullNodes = getAllNodes(statePane);
         
