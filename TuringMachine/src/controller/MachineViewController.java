@@ -417,7 +417,7 @@ public class MachineViewController implements Initializable {
     /**
      * Loads the example program "Palindrome.tm".
      * @param event ActionEvent
-     * @throws java.io.IOException
+     * @throws java.io.IOException input output exception
      */
     public void loadPalindromeClicked(ActionEvent event) throws IOException {
         //note that a file was loaded
@@ -453,7 +453,7 @@ public class MachineViewController implements Initializable {
     /**
      * Loads the example program "GoBuffs.tm".
      * @param event ActionEvent
-     * @throws java.io.IOException
+     * @throws java.io.IOException input output exception
      */
     public void loadGoBuffsClicked(ActionEvent event) throws IOException {
         //note that a file was loaded
@@ -492,7 +492,7 @@ public class MachineViewController implements Initializable {
         /**
      * Loads the example program "BinaryAddition.tm".
      * @param event ActionEvent
-     * @throws java.io.IOException
+     * @throws java.io.IOException input output exception
      */
     public void loadBinaryAdditionClicked(ActionEvent event) throws IOException {
         //note that a file was loaded

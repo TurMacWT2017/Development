@@ -57,7 +57,7 @@ public class MachineController {
      * Example programs are built into the jar file.
      * @param fileToOpen requested example file
      * @return String representation of program
-     * @throws IOException 
+     * @throws IOException input output exception
      */
     public String openExample(String fileToOpen) throws IOException {
         StringBuilder sb = new StringBuilder();

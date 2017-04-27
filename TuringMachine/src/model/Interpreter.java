@@ -1,7 +1,6 @@
 package model;
 
 import controller.MachineViewController;
-import controller.Tape;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
