@@ -1268,23 +1268,13 @@ public class MachineViewController implements Initializable {
             windowPane = new Pane();
             statePaneTab.getChildren().remove(statePane);
             windowPane.getChildren().add(statePane);
-        
-            
-            //statePaneTab. getSelectionModel().selectNext();
-            //statePane.setPrefSize(600, 400);           
-            
+
             System.out.println("Making state diagram window");
             layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);        
             layout.setFitToHeight(true);
             layout.setFitToWidth(true);      
-            //pane.setStyle("-fx-background-color: #F5F5DC");
-            
-                //+ " -fx-border: 16px solid; -fx-border-color: #67112b;)");// -fx-background-radius: 1.0;"
-                //+ " -fx-border-radius: 5.0");
             windowPane.setStyle("-fx-background-color: linear-gradient(to left, #F5F5DC, #777676);");
-                //+ " -fx-border: 16px solid; -fx-border-color: #67112b;)");// -fx-background-radius: 1.0;"
-                //+ " -fx-border-radius: 5.0");
             BorderStrokeStyle style = new BorderStrokeStyle(StrokeType.CENTERED, 
                 StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE,10, 0, null);
             windowPane.setBorder(new Border(new BorderStroke(Color.web("#67112b"), style, CornerRadii.EMPTY, new BorderWidths(5))));
@@ -1338,8 +1328,6 @@ public class MachineViewController implements Initializable {
                 //statePane.getChildren().add(uniqueNodes[i]);
                 redraw(currentStates);
             }   
-            
-        //System.out.println("pullNodes 0 = " + pullNodes.get(0));
         anchorAcceptRejectNodes();
     }        
 
@@ -1375,10 +1363,12 @@ public class MachineViewController implements Initializable {
         staticNodes=false;       
         statePane = new Pane();
         statePane.setPrefSize(statePaneTab.getPrefWidth(),statePaneTab.getPrefHeight());
-            //System.out.println("stPnW = " + statePane.getPrefWidth());
-            //System.out.println("stPnH = " + statePane.getPrefHeight());
-            //System.out.println("stPnTbW = " + statePane.getPrefWidth());
-            //System.out.println("stPnTbH = " + statePane.getPrefHeight());
+        if(DEBUG){
+            System.out.println("stPnW = " + statePane.getPrefWidth());
+            System.out.println("stPnH = " + statePane.getPrefHeight());
+            System.out.println("stPnTbW = " + statePane.getPrefWidth());
+            System.out.println("stPnTbH = " + statePane.getPrefHeight());
+        }
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();        
         
@@ -1451,8 +1441,6 @@ public class MachineViewController implements Initializable {
             endLabel.layoutYProperty().bindBidirectional(endNodes[j].centerYProperty());               
             stateLabel.setLabelFor(stateNodes[j]);
             endLabel.setLabelFor(endNodes[j]);
-            stateLabel.setFont(getCurrentCodeFontSettings());
-            endLabel.setFont(getCurrentCodeFontSettings());
             stateLabels[j] = stateLabel;
             endLabels[j] = endLabel;
           
@@ -1473,9 +1461,7 @@ public class MachineViewController implements Initializable {
         YCOORD = stateTabHeight*.15;
 
         for (int j=0; j< numUniqueStates; j++){
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 11, statePane, tapeColor[j]);   // Aesthetic A
-                   // UNCOMMENT THE FOLLOWING LINE, COMMENT THE ABOVE LINE - TO SWITCH NODE AESTHETICS
-            //uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, XCOORD*.005, statePane, tapeColor[j]);         // Aesthetic B
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 11, statePane, tapeColor[j]);
             uniqueNodes[j].setStrokeType(StrokeType.OUTSIDE);
             uniqueNodes[j].setStroke(tapeColor[j]);
             
@@ -1713,7 +1699,6 @@ public class MachineViewController implements Initializable {
                 transLabel.layoutYProperty().bindBidirectional(relayArc.layoutYProperty());
                 relayArc.toBack();
                 transArcs[index] = relayArc; 
-                transLabel.setFont(getCurrentCodeFontSettings());
                 parent.getChildren().addAll(transArcs[index],transLabel);//,transNode);
             }// temporary label overstrike correction
             else{                
@@ -1721,7 +1706,6 @@ public class MachineViewController implements Initializable {
                 if(checkBounds(transNode,transNodes)==true){
                     
                     transLabels[index].setText("0 _ L");
-                    transLabels[index].setFont(getCurrentCodeFontSettings());
                     transLabel = transLabels[index];
                     
                     transLabel.setText("\n"+transLabels[index].getText());
@@ -1732,7 +1716,6 @@ public class MachineViewController implements Initializable {
                 }
                 transLabel.layoutXProperty().bindBidirectional(transNode.centerXProperty());
                 transLabel.layoutYProperty().bindBidirectional(transNode.centerYProperty()); 
-                transLabel.setFont(getCurrentCodeFontSettings());
                 transNode.setVisible(false);
                 parent.getChildren().addAll(transLabel,transNode);
             }
@@ -1860,9 +1843,6 @@ public class MachineViewController implements Initializable {
         legend2.setLayoutY(stateTabHeight-5.0);
         legend3.setLayoutX(stateTabWidth*.65-10);
         legend3.setLayoutY(stateTabHeight-5.0);    
-        legend1.setFont(getCurrentCodeFontSettings());
-        legend2.setFont(getCurrentCodeFontSettings());
-        legend3.setFont(getCurrentCodeFontSettings());
         statePane.getChildren().addAll(oneAqua,twoViolet,threeTan);
         statePane.getChildren().addAll(legend1,legend2,legend3);      
     }

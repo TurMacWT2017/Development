@@ -50,7 +50,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Options">
               <items>
-                    <MenuItem fx:id="showStateWindow" mnemonicParsing="false" onAction="#launchStateWindow" text="Show State Diagram in a new window" />
+                    <!-- <MenuItem fx:id="showStateWindow" mnemonicParsing="false" onAction="#launchStateWindow" text="Show State Diagram in a new window" /> -->
                     <MenuItem fx:id="showCodeWindow" mnemonicParsing="false" onAction="#launchCodeWindow" text="Show Code in a new window" />
                   <MenuItem fx:id="fontOptions" mnemonicParsing="false" onAction="#showFontChooser" text="Font Options" />
               </items>
