@@ -1445,7 +1445,7 @@ public class MachineViewController implements Initializable {
         YCOORD = stateTabHeight*.15;
 
         for (int j=0; j< numUniqueStates; j++){
-            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 10, statePane, tapeColor[j]); 
+            uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, 11, statePane, tapeColor[j]); 
   
             //uniqueNodes[j] = createDraggingCircle(XCOORD, YCOORD, XCOORD*.005, statePane, tapeColor[j]); 
             uniqueNodes[j].setStrokeType(StrokeType.OUTSIDE);
