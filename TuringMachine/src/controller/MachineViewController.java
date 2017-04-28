@@ -333,23 +333,23 @@ public class MachineViewController implements Initializable {
         // This if-else determines if the program was ran through the .jar file or
         // through NetBeans, and then directs the file chooser to the correct
         // path of the TestFiles directory
-        if (System.getProperty("user.dir").contains("dist")) {
-            /*try {
-                filePath = referenceFile.getCanonicalPath();
-            } catch(Exception e) {
-                System.out.println(e);
-            }     
-            initialDirectory = new File(filePath);*/
-            initialDirectory = new File(".." + File.separator + ".." + File.separator + "TestFiles");
-        }
-        else {
-            initialDirectory = new File(".." + File.separator + "TestFiles");
-        }
+//        if (System.getProperty("user.dir").contains("dist")) {
+//            /*try {
+//                filePath = referenceFile.getCanonicalPath();
+//            } catch(Exception e) {
+//                System.out.println(e);
+//            }     
+//            initialDirectory = new File(filePath);*/
+//            initialDirectory = new File(".." + File.separator + ".." + File.separator + "TestFiles");
+//        }
+//        else {
+//            initialDirectory = new File(".." + File.separator + "TestFiles");
+//        }
         //System.out.println("PWD: " + System.getProperty("user.dir"));
         fileChooser.setTitle("Open Machine File");
         fileChooser.getExtensionFilters().addAll(
                 new ExtensionFilter("Machine Files", "*.tm"));
-        fileChooser.setInitialDirectory(initialDirectory);
+        //fileChooser.setInitialDirectory(initialDirectory);
         File selectedFile = fileChooser.showOpenDialog(tapeOne.getScene().getWindow());
         if (selectedFile != null) {
             //note that a file was loaded
