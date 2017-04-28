@@ -659,6 +659,8 @@ public class MachineViewController implements Initializable {
                 //reboot the interpreter
                 interp.stop();
                 tapeOne.getChildren().clear();
+                statePaneTab.getChildren().clear();
+                clearStateTuples();
                 String input = interp.getMachineCode();
                 interp = null;
                 //reboot the interpreter in the new mode
@@ -694,8 +696,11 @@ public class MachineViewController implements Initializable {
                 interp.stop();
                 tapeOne.getChildren().clear();
                 tapeTwo.getChildren().clear();
+                statePaneTab.getChildren().clear();
+                clearStateTuples();
                 String input = interp.getMachineCode();
                 //reboot the interpreter in the new mode
+                interp = null;
                 interp = new Interpreter(input, this, tapes);
                 try {
                     interp.start();
@@ -729,7 +734,10 @@ public class MachineViewController implements Initializable {
                 tapeOne.getChildren().clear();
                 tapeTwo.getChildren().clear();
                 tapeThree.getChildren().clear();
+                statePaneTab.getChildren().clear();
+                clearStateTuples();
                 String input = interp.getMachineCode();
+                interp = null;
                 //reboot the interpreter in the new mode
                 interp = new Interpreter(input, this, tapes);
                 try {
