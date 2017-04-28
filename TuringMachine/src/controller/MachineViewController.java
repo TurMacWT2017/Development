@@ -1344,7 +1344,7 @@ public class MachineViewController implements Initializable {
 
     /**
      * Helper method called by various to add all nodes in ArrayList to Pane
-     * @param pane Pane from which to grab all nodes
+     * @param parent Pane from which to grab all nodes
      * @param nodes ArrayList of nodes loaded with that which is retrieved
      */
     private static void addAllDescendents(Pane parent, ArrayList<Node> nodes) {
@@ -1396,7 +1396,9 @@ public class MachineViewController implements Initializable {
         startLabel.layoutXProperty().bindBidirectional(startNode.centerXProperty());
         startLabel.layoutYProperty().bindBidirectional(startNode.centerYProperty());
         startNode.toBack();
-        startLabel.setFont(getCurrentCodeFontSettings());
+        //startLabel.setFont(getCurrentCodeFontSettings());
+        Font defaultFont = Font.getDefault();
+        startLabel.setFont(defaultFont);
         statePane.getChildren().addAll(startNode,startLabel);
                 
         drawUniqueInitNodes();     
@@ -1679,7 +1681,7 @@ public class MachineViewController implements Initializable {
         
         Label transLabel = new Label(transitionText.replaceAll(", ", " ")); 
         transLabel.setTextFill(Color.web("#67112b"));
-        transLabel.setFont(getCurrentCodeFontSettings());
+        transLabel.setFont(Font.getDefault());
         transLabel.toBack();
         Arc relayArc;
         if (index != -1){           
@@ -1725,7 +1727,7 @@ public class MachineViewController implements Initializable {
     }
     
     /**
-     * Helper method called by connectStates to draw loopBacks for Si->Si transition
+     * Helper method called by connectStates to draw loopBacks for Si to Si transition
      * @param tNode Circle of state to be looped back
      * @param tLabel Label to be bound to transition loopBack
      * @param parent Pane to be applied to

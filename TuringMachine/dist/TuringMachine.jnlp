@@ -2,17 +2,13 @@
 <jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="TuringMachine.jnlp">
   <information>
     <title>TuringMachine</title>
-    <vendor>student</vendor>
-    <description>null</description>
+    <vendor>Turing Machine</vendor>
+    <description>A robust Turing Machine simulator built using JavaFX. Supports operations on up to three tapes, and runs programs written by the user in any external text editor. Great for beginners, and advanced users alike in using or learning about Turing Machines.</description>
     <offline-allowed/>
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-<<<<<<< HEAD
-    <jar href="TuringMachine.jar" size="133032" download="eager" />
-=======
-    <jar href="TuringMachine.jar" size="131698" download="eager" />
->>>>>>> lastRefinements
+    <jar href="TuringMachine.jar" size="133123" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="TuringMachine" >
     <param name="requiredFXVersion" value="8.0+"/>
