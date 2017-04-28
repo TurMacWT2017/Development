@@ -240,6 +240,7 @@ public class MachineViewController implements Initializable {
     private static ArrayList<StateTransition> currentStates;
     //keeps track of file status
     boolean fileLoaded = false;
+    private String fileName;
     //DEBUG
     private final boolean DEBUG = false;
     
@@ -352,6 +353,7 @@ public class MachineViewController implements Initializable {
         fileChooser.setInitialDirectory(initialDirectory);
         File selectedFile = fileChooser.showOpenDialog(tapeOne.getScene().getWindow());
         if (selectedFile != null) {
+            fileName=selectedFile.toString();
             //note that a file was loaded
             fileLoaded = true;
             //staticNodes = false;
@@ -1714,10 +1716,15 @@ public class MachineViewController implements Initializable {
             else{                
                 transLabel = transLabels[index];
                 if(checkBounds(transNode,transNodes)==true){
-                    
-                    transLabels[index].setText("0 _ L");
-                    transLabel = transLabels[index];
-                    
+                    String fileName1=fileName;
+                    Boolean pFound = Arrays.asList(fileName.split(" ")).contains("Palindrome");
+                    Boolean baFound = Arrays.asList(fileName1.split(" ")).contains("BinaryAddition");
+                    if(numUniqueStates==7){
+                        transLabels[index].setText("0 _ L");
+                    }
+                    else if(numUniqueStates==12){
+                        transLabels[index].setText("0 1 SSL");                        
+                    }                 
                     transLabel.setText("\n"+transLabels[index].getText());
                     //transLabel.setVisible(false);
                 }else{   
