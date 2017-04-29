@@ -1716,9 +1716,6 @@ public class MachineViewController implements Initializable {
             else{                
                 transLabel = transLabels[index];
                 if(checkBounds(transNode,transNodes)==true){
-                    String fileName1=fileName;
-                    Boolean pFound = Arrays.asList(fileName.split(" ")).contains("Palindrome");
-                    Boolean baFound = Arrays.asList(fileName1.split(" ")).contains("BinaryAddition");
                     if(numUniqueStates==7){
                         transLabels[index].setText("0 _ L");
                     }
@@ -1823,9 +1820,9 @@ public class MachineViewController implements Initializable {
             if(tapeSelection.equalsIgnoreCase("t1"))
                 tapeColor[i] = Color.ROYALBLUE;
             if(tapeSelection.equalsIgnoreCase("t2"))
-                tapeColor[i] = Color.CHARTREUSE;
-            if(tapeSelection.equalsIgnoreCase("t3"))
                 tapeColor[i] = Color.FUCHSIA;
+            if(tapeSelection.equalsIgnoreCase("t3"))
+                tapeColor[i] = Color.CHARTREUSE;
         }
     }
     
@@ -1835,15 +1832,15 @@ public class MachineViewController implements Initializable {
     public void drawTapeLegend(){
         Stop[] stops1 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.ROYALBLUE)};
         LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops1);
-        Stop[] stops2 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.CHARTREUSE)};
+        Stop[] stops2 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.FUCHSIA)};
         LinearGradient lg2 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops2);
-        Stop[] stops3 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.FUCHSIA)};
+        Stop[] stops3 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.CHARTREUSE)};
         LinearGradient lg3 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops3);
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
         Circle oneAqua = new Circle(stateTabWidth*.35-10,stateTabHeight-10.0,5,Color.ROYALBLUE);
-        Circle twoViolet = new Circle(stateTabWidth*.5-10,stateTabHeight-10.0,5,Color.CHARTREUSE);
-        Circle threeTan = new Circle(stateTabWidth*.65-10,stateTabHeight-10.0,5,Color.FUCHSIA);
+        Circle twoViolet = new Circle(stateTabWidth*.5-10,stateTabHeight-10.0,5,Color.FUCHSIA);
+        Circle threeTan = new Circle(stateTabWidth*.65-10,stateTabHeight-10.0,5,Color.CHARTREUSE);
         oneAqua.setFill(lg1);
         twoViolet.setFill(lg2);
         threeTan.setFill(lg3);
