@@ -1787,6 +1787,7 @@ public class MachineViewController implements Initializable {
         allEndStates = new String[numStates];       
         acceptCheck = 0;
         rejectCheck = 0;
+        
         for(int i =0; i< states.size();i++){
             allInitStates[i] = states.get(i).getInitialState();
             allTapes[i] = states.get(i).getTape();
