@@ -1194,8 +1194,7 @@ public class MachineViewController implements Initializable {
      */
     private String getCodeTabContent() {
         return codeViewTab.getChildren().toString();
-    }
-    
+    }    
     
     /**
      * Ran on launch to add listeners and finish initialization of UI
@@ -1224,8 +1223,7 @@ public class MachineViewController implements Initializable {
         //these lines allow the canvas to dynamically resize when the program does
        
         statePaneTab.widthProperty().addListener(observable -> redraw(currentStates));
-        statePaneTab.heightProperty().addListener(observable -> redraw(currentStates));
-       
+        statePaneTab.heightProperty().addListener(observable -> redraw(currentStates));       
         
         //these lines allow the the UI to expand and shrink dynamically with panes as they expand or collapse
         tapeTwoPane.expandedProperty().addListener(observable -> resetTapePaneTwoHeight());
@@ -1836,11 +1834,14 @@ public class MachineViewController implements Initializable {
         LinearGradient lg2 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops2);
         Stop[] stops3 = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.CHARTREUSE)};
         LinearGradient lg3 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops3);
+        
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
+        
         Circle oneAqua = new Circle(stateTabWidth*.35-10,stateTabHeight-10.0,5,Color.ROYALBLUE);
         Circle twoViolet = new Circle(stateTabWidth*.5-10,stateTabHeight-10.0,5,Color.FUCHSIA);
         Circle threeTan = new Circle(stateTabWidth*.65-10,stateTabHeight-10.0,5,Color.CHARTREUSE);
+        
         oneAqua.setFill(lg1);
         twoViolet.setFill(lg2);
         threeTan.setFill(lg3);
@@ -1848,9 +1849,11 @@ public class MachineViewController implements Initializable {
         Text legend1 = new Text();
         Text legend2 = new Text();
         Text legend3 = new Text();
+        
         legend1.setText("  Tape 1");
         legend2.setText("  Tape 2");
         legend3.setText("  Tape 3");
+        
         legend1.setLayoutX(stateTabWidth*.35-10);
         legend1.setLayoutY(stateTabHeight-5.0);
         legend2.setLayoutX(stateTabWidth*.5-10);
