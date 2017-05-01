@@ -1838,28 +1838,35 @@ public class MachineViewController implements Initializable {
         double stateTabWidth = statePaneTab.widthProperty().get();
         double stateTabHeight = statePaneTab.heightProperty().get();
         
+        // Legend color nodes
         Circle oneAqua = new Circle(stateTabWidth*.35-10,stateTabHeight-10.0,5,Color.ROYALBLUE);
         Circle twoViolet = new Circle(stateTabWidth*.5-10,stateTabHeight-10.0,5,Color.FUCHSIA);
         Circle threeTan = new Circle(stateTabWidth*.65-10,stateTabHeight-10.0,5,Color.CHARTREUSE);
         
+        // Color for each legend item
         oneAqua.setFill(lg1);
         twoViolet.setFill(lg2);
         threeTan.setFill(lg3);
 
+        // Color label for each tape
         Text legend1 = new Text();
         Text legend2 = new Text();
         Text legend3 = new Text();
         
+        // Text label for each tape
         legend1.setText("  Tape 1");
         legend2.setText("  Tape 2");
         legend3.setText("  Tape 3");
         
+        // Layout the text labels
         legend1.setLayoutX(stateTabWidth*.35-10);
         legend1.setLayoutY(stateTabHeight-5.0);
         legend2.setLayoutX(stateTabWidth*.5-10);
         legend2.setLayoutY(stateTabHeight-5.0);
         legend3.setLayoutX(stateTabWidth*.65-10);
-        legend3.setLayoutY(stateTabHeight-5.0);    
+        legend3.setLayoutY(stateTabHeight-5.0); 
+        
+        // Layout the colored legend nodes
         statePane.getChildren().addAll(oneAqua,twoViolet,threeTan);
         statePane.getChildren().addAll(legend1,legend2,legend3);      
     }
