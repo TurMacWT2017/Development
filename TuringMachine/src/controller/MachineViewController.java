@@ -1874,8 +1874,8 @@ public class MachineViewController implements Initializable {
     /* Helper method called by various drawStates Helper Methods to create the states
      * Instantiates a Circle that is draggable by mouse
      * @param radius Double for circleStateNode radius
-     * @param x Double for XCOORD @ center
-     * @param y Double for YCOORD @ center
+     * @param x Double for XCOORD @ center of nodes
+     * @param y Double for YCOORD @ center of nodes
      * @param parent Pane to be applied to
      * @param fill Color to be applied to circleNode
      * @return c Circle returned that is draggable
